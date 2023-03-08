@@ -9,7 +9,8 @@ const eventSchema = new mongoose.Schema({
     EndTime: Date,
     note: String,
     type: {
-        type: Number
+        type: Number,
+        required: true,
     },
     complete: Boolean
 })
