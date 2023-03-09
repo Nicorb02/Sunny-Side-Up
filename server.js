@@ -3,17 +3,19 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const path = require("path")
+const path = require("path");
+const { default: App } = require('./frontend/src/App');
 const PORT = process.env.PORT || 8000;
 
 const app = express();
-require("dotenv").config()
+require("dotenv").config();
 
 
-mongoose.connect("mongodb+srv://user123:Group22Rules@COP4331.bvp84gt.mongodb.net/COP4331?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://user123:Group22Rules@COP4331.bvp84gt.mongodb.net/COP4331?retryWrites=true&w=majority");
 
-app.set('port', (process.env.PORT || 8000))
-app.use(express.static(path.join(__dirname, "client", "build")))
+app.set('port', (process.env.PORT || 8000));
+// app.use(express.static(path.join(__dirname, "client", "build")))
+app.use(express.static('frontend/build'));
 
 app.use(cors());
 app.use(bodyParser.json());

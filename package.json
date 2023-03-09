@@ -5,7 +5,8 @@
     "main": "server.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon server.js"
+        "start": "node server.js",
+        "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
     },
     "author": "",
     "license": "ISC",
@@ -16,5 +17,8 @@
         "express": "^4.18.2",
         "mongodb": "^5.1.0",
         "mongoose": "^7.0.1"
+    },
+    "engines": {
+        "node": "8.9.2"
     }
 }
