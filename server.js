@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const path = require("path");
-const { default: App } = require('./frontend/src/App');
+const { default: App } = require('./frontend/src/App.js');
 const PORT = process.env.PORT || 8000;
 
 const app = express();
