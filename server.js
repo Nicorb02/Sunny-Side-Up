@@ -1,67 +1,41 @@
-import express from "express";
-// const express = require("express");
-import cors from "cors";
-import mongoose from "mongoose";
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+const path = require("path");
+// const { default: App } = require('./frontend/src/App.js');
+const PORT = process.env.PORT || 8000;
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded());
+require("dotenv").config();
+
+
+mongoose.connect("mongodb+srv://user123:Group22Rules@COP4331.bvp84gt.mongodb.net/COP4331?retryWrites=true&w=majority");
+
+app.set('port', (process.env.PORT || 8000));
+// app.use(express.static(path.join(__dirname, "client", "build")))
+app.use(express.static('frontend/build'));
+
 app.use(cors());
+app.use(bodyParser.json());
+app.use((req, res, next) => 
+{
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    );
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PATCH, DELETE, OPTIONS'
+      );
+      next();
+    });
+    
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    });
+    
 
-
-mongoose.connect("mongodb://localhost:27017/auth",{
-    useNewUrlParser:true,
-    useUnifiedTopology:true
-});()=>{
-    console.log("connected to DB")
-}
-
-
-//user schema 
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String
-})
-
-const User = new mongoose.model("User", userSchema)
-
-//routes routes
-app.post("/Login",(req,res)=>{
-    const {email,password} =req.body;
-    User.findone({email:email},(err,user)=>{
-        if(user){
-           if(password === user.password){
-               res.send({message:"login sucess",user:user})
-           }else{
-               res.send({message:"wrong credentials"})
-           }
-        }else{
-            res.send("not register")
-        }
-    })
-});
-app.post("/Register",(req,res)=>{
-    console.log(req.body) 
-    const {name,email,password} =req.body;
-    User.findOne({email:email},(err,user)=>{
-        if(user){
-            res.send({message:"user already exist"})
-        }else {
-            const user = new User({name,email,password})
-            user.save(err=>{
-                if(err){
-                    res.send(err)
-                }else{
-                    res.send({message:"sucessfull"})
-                }
-            })
-        }
-    })
-
-
-}) 
-
-app.listen(6969,()=>{
-    console.log("started")
-})
+app.listen(PORT); // start Node + Express server on port 8000

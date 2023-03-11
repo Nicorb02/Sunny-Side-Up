@@ -1,17 +1,12 @@
 const mongoose = require("mongoose")
+const { boolean } = require("webidl-conversions")
 
 const eventSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
+    name: {String},
     startTime: Date,
     EndTime: Date,
     note: String,
-    type: {
-        type: Number,
-        required: true,
-    },
+    type: Number,
     complete: Boolean
 })
 
