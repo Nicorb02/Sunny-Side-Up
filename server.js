@@ -12,9 +12,9 @@ app.use(bodyParser.json());
 
 app.set('port', (process.env.PORT || 8080));
 
-// const url = 'mongodb+srv://RickLeinecker:COP4331Rocks@cluster0.ehunp00.mongodb.net/?retryWrites=true&w=majority';
+const url = 'mongodb+srv://RickLeinecker:COP4331Rocks@cluster0.ehunp00.mongodb.net/?retryWrites=true&w=majority';
 require('dotenv').config();
-const url = process.env.MONGODB_URI;
+//const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
