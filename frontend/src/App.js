@@ -14,6 +14,5 @@ function App() {
     </BrowserRouter>
   );
 }
-// rand
 
 export default App;

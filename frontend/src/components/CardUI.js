@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function CardUI()
 {
-    const app_name = 'test-cards-2'
+    const app_name = 'sunny-side-up-planner';
     function buildPath(route)
     {
         if (process.env.NODE_ENV === 'production')
