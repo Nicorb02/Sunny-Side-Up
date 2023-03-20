@@ -1,68 +1,39 @@
 import React, { useState } from 'react';
+import '../styles/Login.css';
 
-function Login()
-{
-    const app_name = 'sunny-side-up-planner';
-    function buildPath(route)
-    {
-        if (process.env.NODE_ENV === 'production')
-        {
-            return 'https://' + app_name + '.herokuapp.com/' + route;
-        }
-        else
-        {
-            return 'http://localhost:8080/' + route;
-        }
-    }
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    var loginName;
-    var loginPassword;
-    
-    const [message,setMessage] = useState('');
-
-    const doLogin = async event =>
-    {
-        event.preventDefault();
-        
-        var obj = {login:loginName.value,password:loginPassword.value};
-        var js = JSON.stringify(obj);
-        
-        try
-        {
-            const response = await fetch(buildPath('api/login'), {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-            
-            var res = JSON.parse(await response.text());
-            
-            if( res.id <= 0 )
-            {
-                setMessage('User/Password combination incorrect');
-            }
-            else
-            {
-                var user = {firstName:res.firstName,lastName:res.lastName,id:res.id};
-                localStorage.setItem('user_data', JSON.stringify(user));
-                setMessage('');
-                window.location.href = '/cards';
-            }
-        }
-        catch(e)
-        {
-            alert(e.toString());
-            return;
-        }
-    };
-    
-    return(
-        <div id="loginDiv">
-            <form onSubmit={doLogin}>
-                <span id="inner-title">PLEASE LOG IN</span><br />
-                <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} /><br />
-                <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} /><br />
-                <input type="submit" id="loginButton" class="buttons" value = "Do It" onClick={doLogin} />
-            </form>
-            <span id="loginResult">{message}</span>
+  return (
+    <body className="login-body">
+        <div className="login-form">
+            <p className="welcome-text">Welcome Back</p>
+            <section className="email-section">
+                <div className="email-div">
+                    <span className="email-name">Email Address</span>
+                    <input type="text" className="field-input"></input>
+                </div>
+            </section>
+            <section className="password-section">
+                <div className="password-div">
+                    <span className="password-name">Password</span>
+                    <input type="text" className="field-input"></input>
+                </div>
+            </section>
+            <section className="login-form-bottom">
+                <button className="login-button">Login</button>
+                <p className="register-prompt">Don't have an account?</p>
+                <a href="#" className="go-register-button">Register</a>
+            </section>
         </div>
-    );
-};
+        <div className="loginpage-background">
+            <div className="title-div">
+                <p className="title-text">Sunny Side Up</p>
+            </div>
+        </div>
+    </body>
+  );
+}
 
 export default Login;

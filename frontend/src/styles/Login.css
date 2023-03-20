@@ -1,0 +1,163 @@
+@font-face {
+    font-family: Soap;
+    src: url(./fonts/Soap.woff);
+}
+
+@font-face {
+    font-family: Bodoni_72;
+    src: url(./fonts/Bodoni-72-Fatface.woff);
+}
+
+.login-body{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background: #f7fff7;
+    justify-content: flex-start;
+}
+
+.login-form{
+    background: #ff9900;
+    height: 100vh;
+    width: 33vw;
+    color: #f7fff7;
+    margin-left: 0px;
+    margin-right: 0px;
+    text-align: center;
+}
+
+.welcome-text{
+    color: #f7fff7;
+    font-family: Soap;
+    font-size: 42px;
+    padding-top: 150px;
+    padding-bottom: 0px;
+
+    margin-bottom: 0px;
+    text-align: center;
+    font-weight: 300;
+    margin-top: 0;
+}
+
+.email-section{
+    height: 20vh;
+    text-align: center;
+    align-items: flex-end;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.email-div{
+    width: 247px;
+    height: 52px;
+    background: rgba(214, 51, 132, 0);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.email-name{
+    background: #00000000;
+    font-size: 16px;
+    font-family: Bodoni_72;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.field-input{
+    width: 248px;
+    background: rgba(247,255,247,0);
+    overflow: hidden;
+    padding-bottom: 0px;
+    margin-left: 0px;
+    padding-left: 0px;
+    text-align: right;
+    margin-right: 0px;
+    color: #f7fff7;
+    padding-right: 0px;
+    border-top-style: none;
+    font-family: Oswald, sans-serif;
+    border-bottom: 1.5px solid #f7fff7;
+    border-right-style: none;
+    border-left-style: none;      
+}
+
+.password-section{
+    height: 20vh;
+    text-align: center;
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+}
+
+.password-div{
+    width: 247px;
+    height: 52px;
+    background: rgba(102,16,242,0);
+    margin: auto;
+}
+
+.password-name{
+    background: #00000000;
+    font-size: 16px;
+    font-family: Bodoni_72;
+    justify-content: flex-end;
+    display: flex;
+}
+.login-form-button{
+    height: 35vh;
+}
+
+.login-button{
+    background: #e94d0b;
+    border-style: none;
+    border-radius: 10px;
+    font-family: 'Abyssinica SIL';
+    font-weight: bold;
+    color: #f7fff7;
+    height: 36px;
+    width: 63px;
+}
+
+.register-prompt{
+    color: #f7fff7;
+    font-size: 17px;
+    padding-top: 46px;
+    text-align: center;
+    font-family: 'Abyssinica SIL';
+    margin-bottom: 0px;
+    margin-top: 0;
+}
+
+.go-register-button{
+    color: #f7fff7;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+.loginpage-background{
+    width: 67vw;
+    margin-right: 0px;
+    background: rgba(111, 66, 193, 0);
+    height: 100vh;
+    align-items: center;
+    display: flex;
+}
+
+.title-div{
+    height: 62px;
+    width: 400px;
+    background: rgba(111, 66, 193, 0);
+    margin: auto;
+    margin-bottom: auto;
+    text-align: center;
+}
+
+.title-text{
+    font-family: Soap;
+    font-size: 45px;
+    height: 62px;
+    color: #e94d0b;
+    padding-left: 0px;
+    margin-left: 0px;
+    margin-top: 0;
+}
