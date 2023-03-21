@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Blobs from './Blobs';
 import '../styles/Login.css';
 
 function Login() {
@@ -8,7 +9,10 @@ function Login() {
   const [isRegisterFormSlid, setIsRegisterFormSlid] = useState(false);
 
   return (
-    <body className="login-body">
+    <body className="login-body">    
+        <div>
+            <Blobs />
+        </div>    
         <div className={`login-form ${isLoginFormSlid ? 'slide-left' : ''}`}>
             <p className="welcome-text">Welcome Back</p>
             <section className="email-section">
