@@ -24,7 +24,7 @@
     margin-left: 0px;
     margin-right: 0px;
     text-align: center;
-    transition: transform 0.5s ease-in-out 0.3s;
+    transition: transform 0.4s ease-in-out 0.25s;
     transform: translateX(0%);
 }
 
@@ -44,7 +44,7 @@
     margin-left: -33vw;
     margin-right: 0px;
     text-align: center;
-    transition: transform 0.5s ease-in-out 0.3s;
+    transition: transform 0.4s ease-in-out 0.25s;
     transform: translateX(-100%);
 }
 
@@ -219,6 +219,8 @@
 }
 
 .title-text{
+    position: fixed;
+    z-index: 100;
     font-family: Soap;
     font-size: 45px;
     height: 62px;
