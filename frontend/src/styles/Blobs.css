@@ -1,7 +1,9 @@
 .blobs-container {
     position: absolute;
-    height: 100vh;
-    width: 100vw;
+    height: 90vh;
+    width: 85vw;
+    margin-right:auto;
+    margin-left: auto;
   }
   
   .blob {
