@@ -11,6 +11,7 @@
 .login-body{
     display: flex;
     height: 100vh;
+    overflow: hidden;
     width: 100vw;
     background: #f7fff7;
     justify-content: flex-start;
@@ -86,6 +87,14 @@
     font-size: 16px;
 }
 
+.register-button:hover {
+    background: transparent;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #ff9900;
+    cursor: pointer;
+}
+
 .go-login-button {
     color: #f7fff7;
     font-size: 16px;
@@ -137,6 +146,7 @@
 }
 
 .field-input{
+    font-size: 16px;
     width: 248px;
     background: rgba(247,255,247,0);
     overflow: hidden;
@@ -184,6 +194,15 @@
     width: 63px;
 }
 
+.login-button:hover {
+    background: transparent;
+    color: #e94d0b;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #e94d0b;
+    cursor: pointer;
+}
+
 .register-prompt{
     color: #f7fff7;
     font-size: 17px;
@@ -210,22 +229,34 @@
 }
 
 .title-div{
-    height: 62px;
+    display: flex;
+    height: 46px;
     width: 400px;
-    background: rgba(111, 66, 193, 0);
+    background: transparent;
+    z-index: 100;
     margin: auto;
     margin-bottom: auto;
-    text-align: center;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 .title-text{
-    position: fixed;
+    text-align: center;
     z-index: 100;
     font-family: Soap;
     font-size: 45px;
-    height: 62px;
+    height: 46px;
     color: #e94d0b;
-    padding-left: 0px;
-    margin-left: 0px;
-    margin-top: 0;
+    text-decoration: none;
+}
+
+.title-text:hover{
+    color: transparent;
+    outline: #e94d0b;
+    -webkit-text-stroke: 2px #e94d0b;
+}
+
+.title-text-href{
+    text-decoration: none;
 }

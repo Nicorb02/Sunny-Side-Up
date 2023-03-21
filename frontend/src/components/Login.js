@@ -67,7 +67,9 @@ function Login() {
         </div>
         <div className="loginpage-background">
             <div className="title-div">
-                <p className="title-text">Sunny Side Up</p>
+                <a href="https://github.com/Nicorb02/Large-Project/tree/master" className='title-text-href'>
+                    <p className="title-text">Sunny Side Up</p>
+                </a>
             </div>
         </div>
     </body>
