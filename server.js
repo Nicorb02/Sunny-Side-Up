@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 app.set('port', (process.env.PORT || 8080));
 
-// const url = "mongodb+srv://user123:Group22Rules@COP4331.bvp84gt.mongodb.net/COP4331?retryWrites=true&w=majority";
+//const url = "mongodb+srv://user123:Group22Rules@COP4331.bvp84gt.mongodb.net/COP4331?retryWrites=true&w=majority";
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
@@ -34,8 +34,8 @@ app.post('/api/login', async (req, res) =>
   // outgoing: id, firstName, lastName, error
   var error = '';
   const { email, password } = req.body;
-  const db = client.db(/Database Name/);
-  const results = await db.collection('Users').find({Email:email,Password:password}).toArray();
+  const db = client.db("COP4331");
+  const results = await db.collection('users').find({Email:email,Password:password}).toArray();
   var id = -1;
   var fn = '';
   var ln = '';
@@ -45,7 +45,7 @@ app.post('/api/login', async (req, res) =>
     fn = results[0].FirstName;
     ln = results[0].LastName;
     }
-  var ret = { id:id, firstName:fn, lastName:ln, error:''};
+  var ret = { _id:id, firstName:fn, lastName:ln, error:''};
   res.status(200).json(ret);
 });
 
@@ -59,8 +59,8 @@ app.post('/api/register', async(req,res)=>{
     const newUser = {FirstName:firstName, LastName:lastName, Email:email, Password:password};
     try
     {
-      const db = client.db(/Database Name/);
-      db.collection("Users").insertOne(newUser);
+      const db = client.db("COP4331");
+      db.collection("users").insertOne(newUser);
     }
     catch(e)
     {
