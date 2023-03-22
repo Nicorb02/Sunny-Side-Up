@@ -8,6 +8,36 @@ function Login() {
   const [isLoginFormSlid, setIsLoginFormSlid] = useState(false);
   const [isRegisterFormSlid, setIsRegisterFormSlid] = useState(false);
 
+  const app_name = 'ssu-testing'
+  function buildPath(route)
+  {
+    if (process.env.NODE_ENV === 'production')
+    {
+        return 'https://' + app_name + '.herokuapp.com/' + route;
+    }
+    else
+    {
+        return 'http://localhost:8080' + route;
+    }
+  }
+
+  async function handleLogin() {
+    const response = await fetch(buildPath('/api/login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      if (data.error == '') 
+      {
+        console.log('good login');
+      }
+      else 
+      {
+        console.error(data.error);
+      }
+  }
+
   return (
     <body className="login-body">    
         <div>
@@ -18,17 +48,17 @@ function Login() {
             <section className="email-section">
                 <div className="email-div">
                     <span className="form-name">Email Address</span>
-                    <input type="text" className="field-input"></input>
+                    <input type="text" className="field-input" value={email} onChange={e => setEmail(e.target.value)}></input>
                 </div>
             </section>
             <section className="password-section">
                 <div className="password-div">
                     <span className="form-name">Password</span>
-                    <input type="text" className="field-input" id="password"></input>
+                    <input type="password" className="field-input" value={password} onChange={e => setPassword(e.target.value)}></input>
                 </div>
             </section>
             <section className="login-form-bottom">
-                <button className="login-button">Login</button>
+                <button className="login-button" onClick={handleLogin}>Login</button>
                 <p className="register-prompt">Don't have an account?</p>
                 <a href="#" className="go-register-button" onClick={() => { setIsLoginFormSlid(true); setIsRegisterFormSlid(true);}}>Register</a>
             </section>
