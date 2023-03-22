@@ -1,0 +1,262 @@
+@font-face {
+    font-family: Soap;
+    src: url(./fonts/Soap.woff);
+}
+
+@font-face {
+    font-family: Bodoni_72;
+    src: url(./fonts/Bodoni-72-Fatface.woff);
+}
+
+.login-body{
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    width: 100vw;
+    background: #f7fff7;
+    justify-content: flex-start;
+}
+
+.login-form{
+    background: #ff9900;
+    height: 100vh;
+    width: 33vw;
+    color: #f7fff7;
+    margin-left: 0px;
+    margin-right: 0px;
+    text-align: center;
+    transition: transform 0.4s ease-in-out 0.25s;
+    transform: translateX(0%);
+}
+
+.login-form.slide-left {
+  transform: translateX(-100%);
+}
+
+.login-form.slide-right {
+    transform: translateX(100%);
+}
+
+.register-form {
+    background: #e94d0b;
+    height: 100vh;
+    width: 33vw;
+    color: #f7fff7;
+    margin-left: -33vw;
+    margin-right: 0px;
+    text-align: center;
+    transition: transform 0.4s ease-in-out 0.25s;
+    transform: translateX(-100%);
+}
+
+.register-form.slide-right {
+    transform: translateX(0%);
+}
+
+.register-email-section {
+    height: 12vh;
+    text-align: center;
+    margin-top: 0px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.register-name-section {
+    height: 10vh;
+    text-align: center;
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+}
+
+.register-form-button {
+    margin-top: 0px;
+    height: 33vh;
+}
+
+.register-button {
+    background: #ff9900;
+    border-style: none;
+    color: #f7fff7;
+    font-family: 'Abyssinica SIL';
+    margin-top: 15px;
+    border-radius: 10px;
+    width: 82px;
+    height: 36px;
+    font-size: 16px;
+}
+
+.register-button:hover {
+    background: transparent;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #ff9900;
+    cursor: pointer;
+}
+
+.go-login-button {
+    color: #f7fff7;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+.field-form-div {
+    width: 247px;
+    height: 52px;
+    background: transparent;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.form-name {
+    font-size: 16px;
+    font-family: Bodoni_72;
+    display: flex;
+    justify-content: flex-end;
+}
+    
+.welcome-text{
+    color: #f7fff7;
+    font-family: Soap;
+    font-size: 42px;
+    padding-top: 150px;
+    padding-bottom: 0px;
+
+    margin-bottom: 0px;
+    text-align: center;
+    font-weight: 300;
+    margin-top: 0;
+}
+
+.email-section{
+    height: 20vh;
+    text-align: center;
+    align-items: flex-end;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.email-div{
+    width: 247px;
+    height: 52px;
+    background: rgba(214, 51, 132, 0);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.field-input{
+    font-size: 16px;
+    width: 248px;
+    background: rgba(247,255,247,0);
+    overflow: hidden;
+    padding-bottom: 0px;
+    margin-left: 0px;
+    padding-left: 0px;
+    text-align: right;
+    margin-right: 0px;
+    color: #f7fff7;
+    padding-right: 0px;
+    border-top-style: none;
+    font-family: Oswald, sans-serif;
+    border-bottom: 1.5px solid #f7fff7;
+    border-right-style: none;
+    border-left-style: none;      
+}
+
+.password-section{
+    height: 20vh;
+    text-align: center;
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+}
+
+.password-div{
+    width: 247px;
+    height: 52px;
+    background: rgba(102,16,242,0);
+    margin: auto;
+}
+
+.login-form-button{
+    height: 35vh;
+}
+
+.login-button{
+    background: #e94d0b;
+    border-style: none;
+    border-radius: 10px;
+    font-family: 'Abyssinica SIL';
+    font-weight: bold;
+    color: #f7fff7;
+    height: 36px;
+    width: 63px;
+}
+
+.login-button:hover {
+    background: transparent;
+    color: #e94d0b;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #e94d0b;
+    cursor: pointer;
+}
+
+.register-prompt{
+    color: #f7fff7;
+    font-size: 17px;
+    padding-top: 46px;
+    text-align: center;
+    font-family: 'Abyssinica SIL';
+    margin-bottom: 0px;
+    margin-top: 0;
+}
+
+.go-register-button{
+    color: #f7fff7;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+.loginpage-background{
+    width: 67vw;
+    margin-right: 0px;
+    background: rgba(111, 66, 193, 0);
+    height: 100vh;
+    align-items: center;
+    display: flex;
+}
+
+.title-div{
+    display: flex;
+    height: 46px;
+    width: 400px;
+    background: transparent;
+    z-index: 100;
+    margin: auto;
+    margin-bottom: auto;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-text{
+    text-align: center;
+    z-index: 100;
+    font-family: Soap;
+    font-size: 45px;
+    height: 46px;
+    color: #e94d0b;
+    text-decoration: none;
+}
+
+.title-text:hover{
+    color: transparent;
+    outline: #e94d0b;
+    -webkit-text-stroke: 2px #e94d0b;
+}
+
+.title-text-href{
+    text-decoration: none;
+}

@@ -1,0 +1,36 @@
+.blobs-container {
+    position: fixed;
+    height: 85vh;
+    width: 85vw;
+    margin-right:auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    border: none;
+    opacity: 0.8;
+    transform: translate(-50%, -50%);
+    filter: blur(7.5px);
+    animation-name: morph;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+  
+  @keyframes morph {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  
+  
