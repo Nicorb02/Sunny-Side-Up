@@ -10,6 +10,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-} // testing again
+}
 
 export default App;
