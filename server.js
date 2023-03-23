@@ -30,21 +30,25 @@ app.use((req, res, next) =>
 app.post('/api/login', async (req, res) =>
 {
   // incoming: email, password
-  // outgoing: id, firstName, lastName, error
+  // outgoing: _id, firstName, lastName, error
   var error = '';
   const { email, password } = req.body;
-  const db = client.db("COP4331");
-  const results = await db.collection('users').find({Email:email,Password:password}).toArray();
+  const db = client.db('COP4331');
+  const results = await db.collection('users').find({email:email, password:password}).toArray();
   var id = -1;
   var fn = '';
   var ln = '';
   if( results.length > 0 )
     {
-    id = results[0].UserID;
-    fn = results[0].FirstName;
-    ln = results[0].LastName;
+    id = results[0]._id;
+    fn = results[0].firstName;
+    ln = results[0].lastName;
     }
-  var ret = { _id:id, firstName:fn, lastName:ln, error:''};
+    else
+    {
+        error = 'Invalid email or password';
+    }
+  var ret = { _id:id, firstName:fn, lastName:ln, error:error};
   res.status(200).json(ret);
 });
 
@@ -55,11 +59,20 @@ app.post('/api/register', async(req,res)=>{
   
     var error = '';
     const {firstName, lastName, email, password} = req.body;
-    const newUser = {FirstName:firstName, LastName:lastName, Email:email, Password:password};
+
+    // check if any fields are empty
+    if (!firstName || !lastName || !email || !password) {
+        error = 'All fields are required';
+        var ret = {error: error};
+        res.status(400).json(ret);
+        return;
+    }
+
+    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
-      const db = client.db("COP4331");
-      db.collection("users").insertOne(newUser);
+      const db = client.db('COP4331');
+      db.collection('users').insertOne(newUser);
     }
     catch(e)
     {
