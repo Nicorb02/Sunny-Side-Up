@@ -47,6 +47,7 @@
     text-align: center;
     transition: transform 0.4s ease-in-out 0.25s;
     transform: translateX(-100%);
+    
 }
 
 .register-form.slide-right {
@@ -282,4 +283,32 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
+}
+
+.pass-comp-form {
+    height: 120px;
+    width: 250px;
+    background: #343434;
+    border-radius: 15px;
+    position: absolute;
+    top: -130px; 
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    transition: top 0.4s ease-in-out 0.25s;
+}
+
+.pass-comp-form.slide-down {
+    top: 10px;
+}
+
+.pass-comp-text {
+    font-weight: bold;
+    font-family: Oswald, sans-serif;
+    font-size: 14px;
+    text-align: justify;
+    margin-top: 5px;  
+    margin-bottom: 1rem;
 }
