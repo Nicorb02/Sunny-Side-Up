@@ -6,7 +6,7 @@ const Blobs = () => {
 
   // function to generate a random blob with a random color
   const generateBlob = () => {
-    const colors = ['#e94d0b', '#ff9900', '#343434'];
+    const colors = ['#ffe66d', '#ff9900', '#343434'];
     const color = colors[Math.floor(Math.random() * colors.length)];
 
     return {
@@ -82,4 +82,3 @@ const Blobs = () => {
 };
 
 export default Blobs;
-
