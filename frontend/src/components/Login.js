@@ -7,6 +7,9 @@ import EyeOpen from '../styles/assets/EyeOpen';
 import EyeClosed from '../styles/assets/EyeClosed';
 
 function Login() {
+  // "email" is the variable name, "setEmail" is the function we invoke later in the html to set the email value
+  // since email is a string, useState('') is just an empty string
+  // reference line 90 for using "setEmail"
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -14,22 +17,44 @@ function Login() {
   // useStates to check if login or register is open
   const [isLoginFormSlid, setIsLoginFormSlid] = useState(false);
   const [isRegisterFormSlid, setIsRegisterFormSlid] = useState(false);
+  const [isPassCompFormSlid, setIsPassCompFormSlid] = useState(false);
   // useState to password visibility
+  // since showPassword is a boolean, useState(false) initialize it as false
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   // toggle password visibility
   function toggleShowPassword() {
     setShowPassword(!showPassword);
   }
 
+  // if password complexity is valid, then set as password
+  function handlePasswordChange(event) {
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+    setIsPasswordValid(isPasswordValidFunc(newPassword));
+  }
+
+  // checking for password complexity 
+  // 1 lowercase, 1 uppercase, 1 special, 1 num, length >= 8
+  function isPasswordValidFunc(password) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    let flag = regex.test(password);
+    setIsPasswordValid(flag);
+    return flag;
+  }
+
   // for local and prod testing build paths (connects us to the backend)
-  const app_name = 'ssu-testing'
+  // const app_name = 'ssu-planner'     // prod server
+  const app_name = 'ssu-testing'        // testing server
   function buildPath(route)
   {
+    // check if we are on a server
     if (process.env.NODE_ENV === 'production')
     {
-        return 'https://' + app_name + '.herokuapp.com/' + route;
+        return 'https://' + app_name + '.herokuapp.com' + route;
     }
+    // else, we are working locally
     else
     {
         return 'http://localhost:8080' + route;
@@ -44,6 +69,7 @@ function Login() {
         body: JSON.stringify({ email, password })
       });
       const data = await response.json();
+      // prints to console for now (inspect element to see console)
       if (data.error == '') 
       {
         console.log('good login');
@@ -56,17 +82,31 @@ function Login() {
 
   // connects to register api
   async function handleRegister() {
-    const response = await fetch(buildPath('/api/register'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password })
-      });
-      const data = await response.json();
-      if (data.error === '') {
-        console.log('good register');
-      } else {
-        console.error(data.error);
-      }
+    // checks for valid password complexity first
+    if (!isPasswordValidFunc(password))
+    {
+        setIsPassCompFormSlid(true);
+        return;
+    }
+    else
+    {
+        setIsPassCompFormSlid(false);
+        const response = await fetch(buildPath('/api/register'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firstName, lastName, email, password })
+          });
+          const data = await response.json();
+          // prints to console for now (inspect element to see console)
+          if (data.error === '') 
+          {
+            console.log('good register');
+          } 
+          else 
+          {
+            console.error(data.error);
+          }
+    }
   }
 
   // jsx ("html") of the login and register forms
@@ -99,6 +139,14 @@ function Login() {
             </section>
         </div>
         <div className={`register-form ${isRegisterFormSlid ? 'slide-right' : ''}`}>
+            <div className={`pass-comp-form ${isPassCompFormSlid ? 'slide-down' : ''}`}>
+                <p className="pass-comp-text">
+                    1 Lowercase <br />
+                    1 Uppercase <br />
+                    1 Special Character <br />
+                    Minimum Length 8
+                </p>
+            </div>
             <p className="welcome-text">Welcome</p>
             <section className="register-email-section">
                 <div className="field-form-div">
