@@ -5,7 +5,7 @@ import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 
 
-const ForgotPasswordScreen = () => {
+const ForgotPasswordScreen = ({navigation}) => {
     const {height} = useWindowDimensions();
 
     const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ const ForgotPasswordScreen = () => {
                 </View>
             <View style={{width: '100%', marginVertical: 100}}>
                 <CustomButton text="Send" onPress={onSendPressed}/>
-                <CustomButton text="Back to Sign In" onPress={onSignInPressed} type="TERTIARY"/>
+                <CustomButton text="Back to Sign In" onPress={() => navigation.navigate('Login')} type="TERTIARY"/>
             </View>
         
     </View>

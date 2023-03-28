@@ -5,7 +5,7 @@ import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 
 
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}) => {
     const {height} = useWindowDimensions();
 
     const [firstName, setFirstName] = useState('');
@@ -15,10 +15,10 @@ const RegisterScreen = () => {
     const [passwordRepeat, setPasswordRepeat] = useState('');
     
     const onSignInPressed = () => {
-        console.warn("sign in");
+        console.warn("Sign in");
     }
     const onRegisterPressed = () => {
-        console.warn("registered");
+        console.warn("Registered");
     }
     const [fontsloaded, setFontsLoaded] = useState(false);
 
@@ -35,7 +35,7 @@ const RegisterScreen = () => {
                 </View>
                 <View style={{width: '100%', marginVertical: 100}}>
                     <CustomButton text="Register" onPress={onRegisterPressed}/>
-                    <CustomButton text="Already have an account? Sign In" onPress={onSignInPressed} type="TERTIARY"/>
+                    <CustomButton text="Already have an account? Sign In" onPress={() => navigation.navigate('Login')} type="TERTIARY"/>
                 </View>
             
         </View>
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
         padding: 10,
+        marginVertical: 50,
     },
     title: {
         fontSize: 24,
