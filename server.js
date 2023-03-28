@@ -96,7 +96,7 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
-    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password, };
+    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
       const db = client.db("COP4331");
