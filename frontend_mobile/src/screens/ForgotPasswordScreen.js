@@ -11,7 +11,7 @@ const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState('');
     
     const onSendPressed = () => {
-        console.warn("registered");
+        console.warn("sent");
     }
 
     const onSignInPressed = () => {
