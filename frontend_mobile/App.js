@@ -1,12 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import LoginScreen from './src/screens/LoginScreen.js'
+import RegisterScreen from './src/screens/RegisterScreen.js'
+import ConfirmEmailScreen from './src/screens/ConfirmEmailScreen.js'
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen.js'
+
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Test Test</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.root}>
+      <RegisterScreen/>
+    </SafeAreaView> 
   );
 }
 
