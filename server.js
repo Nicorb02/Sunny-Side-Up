@@ -19,7 +19,7 @@ const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
 
 const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey('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')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 app.use((req, res, next) =>
 {
@@ -96,8 +96,7 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
-
-    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
+    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password, };
     try
     {
       const db = client.db("COP4331");
@@ -111,6 +110,39 @@ app.post('/api/register', async(req,res)=>{
     var ret = {error: error};
     res.status(200).json(ret);
   })
+
+
+app.post('/api/editNote', async(req, res)=>{
+  // incoming: id(of user), title
+  // outgoing: error (if applicable)
+  var error = '';
+  
+  const{id,title} = req.body;
+  const db = client.db('COP4331');
+
+  if(!title)
+  {
+    error = 'Must have title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  //find planner collection for specific user
+  const results = await db.collection('users').find({_id:id});
+  try
+  {
+    results.collection('planner').collection('notes').deleteOne({title:title});
+  }
+  catch
+  {
+    error = 'cannot find note';
+    res.status(400).json(ret);
+    return;
+  }
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
 
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
