@@ -9,7 +9,7 @@ import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen.js'
 export default function App() {
   return (
     <SafeAreaView style={styles.root}>
-      <RegisterScreen/>
+      <LoginScreen/>
     </SafeAreaView> 
   );
 }
