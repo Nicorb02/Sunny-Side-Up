@@ -18,6 +18,9 @@ const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
 
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
 app.use((req, res, next) =>
 {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -52,6 +55,32 @@ app.post('/api/login', async (req, res) =>
   res.status(200).json(ret);
 });
 
+app.post('/api/emailVer', async(req,res)=>{
+  // incoming: email address
+  // outgoing: 
+  var error = '';
+  const email = req.body
+  const randomCode = Math.floor(100000 + Math.random() * 900000)
+  console.log(randomCode)
+  const msg = {
+    to: email, // Change to your recipient
+    from: 'sunnysideupplanner@gmail.com', // Change to your verified sender
+    subject: 'SSU Email Verification',
+    text: 'EmailVar',
+    html: 'Thank you for registering, please input this code:' + String(randomCode),
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+    var ret = {error: error, code: randomCode};
+    res.status(200).json(ret);
+})
+
 app.post('/api/register', async(req,res)=>{
   
     // incoming: firstName, lastName, email, password
@@ -70,8 +99,8 @@ app.post('/api/register', async(req,res)=>{
     const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
-      const db = client.db('COP4331');
-      db.collection('users').insertOne(newUser);
+      const db = client.db("COP4331");
+      db.collection("users").insertOne(newUser);
     }
     catch(e)
     {
