@@ -83,6 +83,159 @@ app.post('/api/register', async(req,res)=>{
     res.status(200).json(ret);
   })
 
+
+
+app.post('/api/addNote', async(req, res)=>{
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+  var error = '';
+  
+  const{id,title, content} = req.body;
+  const db = client.db('COP4331');
+
+  if(!title)
+  {
+    error = 'Must have title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const newNote = {title:title, content:content};
+
+  //find planner collection for specific user
+  const results = await db.collection('users').find({_id:id});
+  results.collection('planner').collection('notes').insertOne(newNote);
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/delNote', async(req, res)=>{
+  // incoming: id(of user), title
+  // outgoing: error (if applicable)
+  var error = '';
+  
+  const{id,title} = req.body;
+  const db = client.db('COP4331');
+
+  if(!title)
+  {
+    error = 'Must have title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  //find planner collection for specific user
+  const results = await db.collection('users').find({_id:id});
+  try
+  {
+    results.collection('planner').collection('notes').deleteOne({title:title});
+  }
+  catch
+  {
+    error = 'cannot find note';
+    res.status(400).json(ret);
+    return;
+  }
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/readNotes', async(req, res)=>{
+  // incoming: id(of user), title
+  // outgoing: content
+  var error = '';
+  
+  const{id,title} = req.body;
+  const db = client.db('COP4331');
+
+  //find planner collection for specific user
+  try
+  {
+    const results = await db.collection('notes').find({_id:id}).toArray();
+    content = results[0].content;
+  }
+  catch
+  {
+    error = 'cannot find note';
+    res.status(400).json(ret);
+    return;
+  }
+  var ret = {error: error, content:content};
+  res.status(200).json(ret);
+})
+
+app.post('/api/updateNote', async(req, res)=>{
+  // incoming: id(of the user), title, content
+  // outgoing: error (if applicable)
+  const{id,title} = req.body;
+  var partTitle = ("%" + title + "%" )
+  const results = await db.collection('notes').find({_id:id, title:partTitle}).toArray();
+  results[0].content = content
+  var ret = {error: error};
+  res.status(200).json(ret);
+
+})
+
+app.post('/api/addNote', async(req, res)=>{
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+  var error = '';
+  
+  
+  const{id,title, content} = req.body;
+  const db = client.db('COP4331');
+
+  if(!title)
+  {
+    error = 'Must have title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const newNote = {title:title, content:content};
+
+  //find planner collection for specific user
+  const results = await db.collection('users').find({_id:id});
+  results.collection('planner').collection('notes').insertOne(newNote);
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/delNote', async(req, res)=>{
+  // incoming: id(of user), title
+  // outgoing: error (if applicable)
+  var error = '';
+  
+  const{id,title} = req.body;
+  const db = client.db('COP4331');
+
+  if(!title)
+  {
+    error = 'Must have title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  //find planner collection for specific user
+  const results = await db.collection('users').find({_id:id});
+  try
+  {
+    results.collection('planner').collection('notes').deleteOne({title:title});
+  }
+  catch
+  {
+    error = 'cannot find note';
+    res.status(400).json(ret);
+    return;
+  }
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production')
