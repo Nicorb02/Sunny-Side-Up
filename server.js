@@ -67,7 +67,6 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
-
     const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
@@ -75,6 +74,42 @@ app.post('/api/register', async(req,res)=>{
       db.collection('users').insertOne(newUser);
     }
     catch(e)
+    {
+      error = e.toString();
+    }
+  
+    var ret = {error: error};
+    res.status(200).json(ret);
+  })
+
+  app.post('/api/CreateNote', async(req, res) => {
+    // incoming: note-name, content
+    // outgoing: error (if applicable)
+    let error = "";
+    const {name, content} = req.body;
+  
+    // both the name and content must be filled
+    if (!name || !content)
+    {
+      error = "Notes require both a name and the content";
+  
+      let ret = {error: error};
+      res.status(400).json(ret);  
+  
+      return;
+    }
+  
+    // After getting the required fields:
+    const newNote = {name: name, content: content};
+  
+    try 
+    {
+      const db = client.db('COP4331'); 
+
+      // wouldn't work -> every user has their own planner
+      db.collection('users').collection('planner').collection('notes').insertOne(newNote);
+    }
+    catch (e)
     {
       error = e.toString();
     }
