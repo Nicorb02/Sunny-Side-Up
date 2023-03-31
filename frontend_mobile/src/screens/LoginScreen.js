@@ -10,42 +10,30 @@ const LoginScreen = ({navigation}) => {
     const {height} = useWindowDimensions();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const app_name = 'ssu-testing'        // testing server
+
+    const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
     const onLoginPressed = async () => {
-          // connects to login api
-        // const response = await axios.get(('/api/login'), {
-            // method: 'POST',
-            // headers: { 'Content-Type': 'application/json' },
-            // body: JSON.stringify({ email, password })
-        // });
-        // const data = await response.json();
-        // // prints to console for now (inspect element to see console)
-        // if (data.error == '') 
-        // {
-        //     console.warn('good login');
-        // }
-        // else 
-        // {
-        //     console.error(data.error);
-        // }
-        // axios.get('/api/login')
-        // .then((response) => {
-        //     console.log(response.data);
-        // })
-        // .catch((error) => {
-        //     console.error(error);
-        // });
-        // try {
-        //     const response = await axios.get(('/api/login'), {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ email, password })
-        //     }
-        //     );
-        //     console.warn(response.data)
-        // } catch (err) {
-        //     console.error(err)
-        // }
-        console.warn("logged in");
+        const response = await fetch(buildPath('/api/login'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await response.json();
+          // prints to console for now (inspect element to see console)
+          if (data.error == '') 
+          {
+            console.warn('good login');
+          }
+          else 
+          {
+            console.error(data.error);
+          }
 
     }
 
@@ -56,7 +44,7 @@ const LoginScreen = ({navigation}) => {
     const onRegisterPressed = () => {
         console.warn("register");
     }
-    
+
     return(
         <View style={styles.root}>
 
