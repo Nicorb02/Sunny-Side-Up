@@ -12,12 +12,15 @@ app.use(bodyParser.json());
 
 app.set('port', (process.env.PORT || 8080));
 
-const url = 'mongodb+srv://RickLeinecker:COP4331Rocks@cluster0.ehunp00.mongodb.net/?retryWrites=true&w=majority';
 require('dotenv').config();
-//const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
+var ObjectId = require('mongodb').ObjectId; 
+
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 app.use((req, res, next) =>
 {
@@ -27,179 +30,162 @@ app.use((req, res, next) =>
     next();
 });
 
-var cardList =
-[
-'Roy Campanella',
-'Paul Molitor',
-'Tony Gwynn',
-'Dennis Eckersley',
-'Reggie Jackson',
-'Gaylord Perry',
-'Buck Leonard',
-'Rollie Fingers',
-'Charlie Gehringer',
-'Wade Boggs',
-'Carl Hubbell',
-'Dave Winfield',
-'Jackie Robinson',
-'Ken Griffey, Jr.',
-'Al Simmons',
-'Chuck Klein',
-'Mel Ott',
-'Mark McGwire',
-'Nolan Ryan',
-'Ralph Kiner',
-'Yogi Berra',
-'Goose Goslin',
-'Greg Maddux',
-'Frankie Frisch',
-'Ernie Banks',
-'Ozzie Smith',
-'Hank Greenberg',
-'Kirby Puckett',
-'Bob Feller',
-'Dizzy Dean',
-'Joe Jackson',
-'Sam Crawford',
-'Barry Bonds',
-'Duke Snider',
-'George Sisler',
-'Ed Walsh',
-'Tom Seaver',
-'Willie Stargell',
-'Bob Gibson',
-'Brooks Robinson',
-'Steve Carlton',
-'Joe Medwick',
-'Nap Lajoie',
-'Cal Ripken, Jr.',
-'Mike Schmidt',
-'Eddie Murray',
-'Tris Speaker',
-'Al Kaline',
-'Sandy Koufax',
-'Willie Keeler',
-'Pete Rose',
-'Robin Roberts',
-'Eddie Collins',
-'Lefty Gomez',
-'Lefty Grove',
-'Carl Yastrzemski',
-'Frank Robinson',
-'Juan Marichal',
-'Warren Spahn',
-'Pie Traynor',
-'Roberto Clemente',
-'Harmon Killebrew',
-'Satchel Paige',
-'Eddie Plank',
-'Josh Gibson',
-'Oscar Charleston',
-'Mickey Mantle',
-'Cool Papa Bell',
-'Johnny Bench',
-'Mickey Cochrane',
-'Jimmie Foxx',
-'Jim Palmer',
-'Cy Young',
-'Eddie Mathews',
-'Honus Wagner',
-'Paul Waner',
-'Grover Alexander',
-'Rod Carew',
-'Joe DiMaggio',
-'Joe Morgan',
-'Stan Musial',
-'Bill Terry',
-'Rogers Hornsby',
-'Lou Brock',
-'Ted Williams',
-'Bill Dickey',
-'Christy Mathewson',
-'Willie McCovey',
-'Lou Gehrig',
-'George Brett',
-'Hank Aaron',
-'Harry Heilmann',
-'Walter Johnson',
-'Roger Clemens',
-'Ty Cobb',
-'Whitey Ford',
-'Willie Mays',
-'Rickey Henderson',
-'Babe Ruth'
-];
-
-app.post('/api/addcard', async (req, res, next) =>
+// need to configure database stuff (apis and file as whole)
+app.post('/api/login', async (req, res) =>
 {
-    // incoming: userId, color
-    // outgoing: error
-    const { userId, card } = req.body;
-    const newCard = {Card:card,UserId:userId};
+  // incoming: email, password
+  // outgoing: _id, firstName, lastName, error
+  var error = '';
+  const { email, password } = req.body;
+  const db = client.db('COP4331');
+  const results = await db.collection('users').find({email:email, password:password}).toArray();
+  var id = -1;
+  var fn = '';
+  var ln = '';
+  if( results.length > 0 )
+    {
+    id = results[0]._id;
+    fn = results[0].firstName;
+    ln = results[0].lastName;
+    }
+    else
+    {
+        error = 'Invalid email or password';
+    }
+  var ret = { _id:id, firstName:fn, lastName:ln, error:error};
+  res.status(200).json(ret);
+});
+
+app.post('/api/emailVer', async(req,res)=>{
+  // incoming: email address
+  // outgoing: 
+  var error = '';
+  const email = req.body
+  const randomCode = Math.floor(100000 + Math.random() * 900000)
+  console.log(randomCode)
+  const msg = {
+    to: email, // Change to your recipient
+    from: 'sunnysideupplanner@gmail.com', // Change to your verified sender
+    subject: 'SSU Email Verification',
+    text: 'EmailVar',
+    html: 'Thank you for registering, please input this code:' + String(randomCode),
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
+    })
+    .catch((error) => {
+      console.error(error)
+      error = "400"
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
+    })
+})
+
+app.post('/api/register', async(req,res)=>{
+  
+    // incoming: firstName, lastName, email, password
+    // outgoing: error (if applicable)
+  
     var error = '';
-    
+    const {firstName, lastName, email, password} = req.body;
+
+    // check if any fields are empty
+    if (!firstName || !lastName || !email || !password) {
+        error = 'All fields are required';
+        var ret = {error: error};
+        res.status(400).json(ret);
+        return;
+    }
+    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
-        const db = client.db("COP4331Cards");
-        const result = db.collection('Cards').insertOne(newCard);
+      const db = client.db("COP4331");
+      db.collection("users").insertOne(newUser);
     }
     catch(e)
     {
-        error = e.toString();
+      error = e.toString();
     }
-
-    cardList.push( card );
-    var ret = { error: error };
+  
+    var ret = {error: error};
     res.status(200).json(ret);
-});
-
-app.post('/api/login', async (req, res, next) =>
-{
-    // incoming: login, password
-    // outgoing: id, firstName, lastName, error
-    var error = '';
-    const { login, password } = req.body;
-    const db = client.db("COP4331Cards");
-    
-    const results = await
-    db.collection('Users').find({Login:login,Password:password}).toArray();
-    
-    var id = -1;
-    var fn = '';
-    var ln = '';
-    
-    if( results.length > 0 )
-    {
-        id = results[0].UserID;
-        fn = results[0].FirstName;
-        ln = results[0].LastName;
-    }
-    
-    var ret = { id:id, firstName:fn, lastName:ln, error:''};
-    res.status(200).json(ret);
-});
+  })
 
 
-app.post('/api/searchcards', async (req, res, next) =>
-{
-    // incoming: userId, search
-    // outgoing: results[], error
-    var error = '';
-    const { userId, search } = req.body;
-    var _search = search.trim();
-    const db = client.db("COP4331Cards");
-    const results = await db.collection('Cards').find({"Card":{$regex:_search+'.*', $options:'r'}}).toArray();
-    var _ret = [];
-    
-    for( var i=0; i<results.length; i++ )
-    {
-        _ret.push( results[i].Card );
-    }
+app.post('/api/addPermNote', async(req,res)=>{
 
-    var ret = {results:_ret, error:error};
-    res.status(200).json(ret);
-});
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
 
+  var error = '';
+  const {_id, title, content} = req.body;
+
+  // check if any fields are empty
+  if (!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+  }
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({ _id: o_id });
+  if(results == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  const newPermNote = {userId:_id, title:title, content:content};
+  try
+  {
+    db.collection("permNotes").insertOne(newPermNote);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/searchPermNote', async(req,res)=>{
+
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title} = req.body;
+
+  // check if any fields are empty
+  if (!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+  }
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const result = await db.collection('users').findOne({ _id: o_id });
+  if(result == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  const results = await db.collection('permNotes').find({userId:_id, title:new RegExp(title)}).toArray();
+  console.log(results);
+
+  var ret = {error: error, results:results};
+  res.status(200).json(ret);
+})
+
+// ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production')
 {
