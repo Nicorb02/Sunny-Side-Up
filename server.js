@@ -18,6 +18,9 @@ const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 app.use((req, res, next) =>
 {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -51,6 +54,35 @@ app.post('/api/login', async (req, res) =>
   var ret = { _id:id, firstName:fn, lastName:ln, error:error};
   res.status(200).json(ret);
 });
+
+app.post('/api/emailVer', async(req,res)=>{
+  // incoming: email address
+  // outgoing: 
+  var error = '';
+  const email = req.body
+  const randomCode = Math.floor(100000 + Math.random() * 900000)
+  console.log(randomCode)
+  const msg = {
+    to: email, // Change to your recipient
+    from: 'sunnysideupplanner@gmail.com', // Change to your verified sender
+    subject: 'SSU Email Verification',
+    text: 'EmailVar',
+    html: 'Thank you for registering, please input this code:' + String(randomCode),
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
+    })
+    .catch((error) => {
+      console.error(error)
+      error = "400"
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
+    })
+})
 
 app.post('/api/register', async(req,res)=>{
   
