@@ -74,12 +74,15 @@ app.post('/api/emailVer', async(req,res)=>{
     .send(msg)
     .then(() => {
       console.log('Email sent')
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
     })
     .catch((error) => {
       console.error(error)
+      error = "400"
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
     })
-    var ret = {error: error, code: randomCode};
-    res.status(200).json(ret);
 })
 
 app.post('/api/register', async(req,res)=>{
@@ -111,7 +114,47 @@ app.post('/api/register', async(req,res)=>{
     var ret = {error: error};
     res.status(200).json(ret);
   })
+  
+app.post('/api/addContact', async(req, res) => {
+  // incoming: userId, name, email, phone
+  // outgoing: error
+  let error = '';
+  const {_id, name, email, phone} = req.body;
 
+  if (!name || !email || !phone)
+  {
+    error = "All fields are required to add a contact";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  } 
+
+  const db = client.db("COP4331");
+  let o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({_id: o_id});
+  console.log(results);
+  if (results == null)
+  {
+    error = "Invalid userId";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const newContact = {userId: _id, name: name, email: email, phone: phone};
+
+  try 
+  {
+    db.collection("contacts").insertOne(newContact);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  let ret = {error: error};
+  res.status(400).json(ret);
+})
 
 app.post('/api/addPermNote', async(req,res)=>{
 
@@ -137,10 +180,59 @@ app.post('/api/addPermNote', async(req,res)=>{
     res.status(400).json(ret);
     return;
   }
+
+  const dupeCheck = await db.collection('permNotes').findOne({_id: o_id, title:title})
+
+  if (dupeCheck != null)
+  {
+    error = 'Title already used, please use another title.';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
   const newPermNote = {userId:_id, title:title, content:content};
   try
   {
     db.collection("permNotes").insertOne(newPermNote);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/delPermNote', async(req,res)=>{
+
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title} = req.body;
+
+  // check if any fields are empty
+  if (!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({ _id: o_id });
+  if(results == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  try
+  {
+    db.collection("permNotes").deleteOne({userId:_id, title:title});
   }
   catch(e)
   {
@@ -179,6 +271,45 @@ app.post('/api/searchPermNote', async(req,res)=>{
   console.log(results);
 
   var ret = {error: error, results:results};
+  res.status(200).json(ret);
+})
+
+app.post('/api/editPermNote', async(req,res)=>{
+
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title, content} = req.body;
+
+  // check if any fields are empty
+  if (!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({ _id: o_id });
+  if(results == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  try
+  {
+    db.collection("permNotes").findOneAndUpdate({userId:_id, title:title}, 
+                                                {"$set":{content:content}});
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  var ret = {error: error};
   res.status(200).json(ret);
 })
 
