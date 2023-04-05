@@ -74,12 +74,15 @@ app.post('/api/emailVer', async(req,res)=>{
     .send(msg)
     .then(() => {
       console.log('Email sent')
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
     })
     .catch((error) => {
       console.error(error)
+      error = "400"
+      var ret = {error: error, code: randomCode};
+      res.status(200).json(ret);
     })
-    var ret = {error: error, code: randomCode};
-    res.status(200).json(ret);
 })
 
 app.post('/api/register', async(req,res)=>{
