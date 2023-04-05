@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Navigate, useNavigate } from "react-router-dom";
 import Blobs from './Blobs';
 import '../styles/Login.css';
 
@@ -74,6 +75,7 @@ async function handleLogin() {
       if (data.error == '') 
       {
         console.log('good login');
+        //useNavigate("/LandingPage");
       }
       else 
       {
@@ -152,6 +154,13 @@ async function handleRegister() {
     }
 }
 
+  let navigate = useNavigate(); 
+  const routeChange = () =>{ 
+    let path = `/LandingPage`; 
+    navigate(path);
+  }
+
+  
   // jsx ("html") of the login and register forms
   return (
     <body className="login-body">    
@@ -179,7 +188,7 @@ async function handleRegister() {
                 </button>
             </section>
             <section className="login-form-bottom">
-                <button className="login-button" onClick={handleLogin}>Login</button>
+                <button className="login-button" onClick={event => {handleLogin(); routeChange(); }}>Login</button>
                 <p className="register-prompt">Don't have an account?</p>
                 {/* start animation to go to register form, hide login form */}
                 <a href="#" className="go-register-button" onClick={() => { setIsLoginFormSlid(true); setIsRegisterFormSlid(true);}}>Register</a>
