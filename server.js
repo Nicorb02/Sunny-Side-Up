@@ -182,6 +182,19 @@ app.post('/api/searchPermNote', async(req,res)=>{
   res.status(200).json(ret);
 })
 
+//Get Current time
+app.post('/api/current-time', async (req, res, next) =>{
+  //var error = '';
+  const { } = req.body;
+  var date_ob = new Date();
+  var day = ("0" + date_ob.getDate()).slice(-2);
+  var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+  var year = date_ob.getFullYear();
+   
+  var ret = {year: year, month: month, day: day};
+  res.status(200).json(ret);
+});
+
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production')
