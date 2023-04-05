@@ -17,9 +17,10 @@ const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
+var ObjectId = require('mongodb').ObjectId; 
 
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 app.use((req, res, next) =>
 {
@@ -99,12 +100,11 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
-
     const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
-      const db = client.db('COP4331');
-      db.collection('users').insertOne(newUser);
+      const db = client.db("COP4331");
+      db.collection("users").insertOne(newUser);
     }
     catch(e)
     {
@@ -114,6 +114,76 @@ app.post('/api/register', async(req,res)=>{
     var ret = {error: error};
     res.status(200).json(ret);
   })
+
+
+app.post('/api/addPermNote', async(req,res)=>{
+
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title, content} = req.body;
+
+  // check if any fields are empty
+  if (!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+  }
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({ _id: o_id });
+  if(results == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  const newPermNote = {userId:_id, title:title, content:content};
+  try
+  {
+    db.collection("permNotes").insertOne(newPermNote);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/searchPermNote', async(req,res)=>{
+
+  // incoming: id(of user), title, content
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title} = req.body;
+
+  // check if any fields are empty
+  if (!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+  }
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const result = await db.collection('users').findOne({ _id: o_id });
+  if(result == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  const results = await db.collection('permNotes').find({userId:_id, title:new RegExp(title)}).toArray();
+  console.log(results);
+
+  var ret = {error: error, results:results};
+  res.status(200).json(ret);
+})
 
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
