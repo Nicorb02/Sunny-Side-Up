@@ -114,42 +114,47 @@ app.post('/api/register', async(req,res)=>{
     var ret = {error: error};
     res.status(200).json(ret);
   })
+  
+app.post('/api/addContact', async(req, res) => {
+  // incoming: userId, name, email, phone
+  // outgoing: error
+  let error = '';
+  const {_id, name, email, phone} = req.body;
 
-  app.post('/api/CreateNote', async(req, res) => {
-    // incoming: note-name, content
-    // outgoing: error (if applicable)
-    let error = "";
-    const {name, content} = req.body;
-  
-    // both the name and content must be filled
-    if (!name || !content)
-    {
-      error = "Notes require both a name and the content";
-  
-      let ret = {error: error};
-      res.status(400).json(ret);  
-  
-      return;
-    }
-  
-    // After getting the required fields:
-    const newNote = {name: name, content: content};
-  
-    try 
-    {
-      const db = client.db('COP4331'); 
+  if (!name || !email || !phone)
+  {
+    error = "All fields are required to add a contact";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  } 
 
-      // wouldn't work -> every user has their own planner
-      db.collection('users').collection('planner').collection('notes').insertOne(newNote);
-    }
-    catch (e)
-    {
-      error = e.toString();
-    }
-  
-    var ret = {error: error};
-    res.status(200).json(ret);
-  })
+  const db = client.db("COP4331");
+  let o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({_id: o_id});
+  console.log(results);
+  if (results == null)
+  {
+    error = "Invalid userId";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const newContact = {userId: _id, name: name, email: email, phone: phone};
+
+  try 
+  {
+    db.collection("contacts").insertOne(newContact);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  let ret = {error: error};
+  res.status(400).json(ret);
+})
 
 app.post('/api/addPermNote', async(req,res)=>{
 
