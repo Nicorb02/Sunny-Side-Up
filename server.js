@@ -104,10 +104,17 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
+    const db = client.db("COP4331");
+    const userCheck = await db.collection("users").findOne({email:email});
+    if (userCheck != null){
+      error = 'Email taken';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
     const newUser = {firstName:firstName, lastName:lastName, email:email, password:password, events:eventsA, contacts:contactsA, todo:todoA, notes:notesA};
     try
     {
-      const db = client.db("COP4331");
       db.collection("users").insertOne(newUser);
     }
     catch(e)
