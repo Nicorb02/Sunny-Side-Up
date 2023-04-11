@@ -100,6 +100,7 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
+    //check if the email is unique 
     const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
     try
     {
@@ -325,6 +326,86 @@ app.post('/api/current-time', async (req, res, next) =>{
   var ret = {year: year, month: month, day: day};
   res.status(200).json(ret);
 });
+
+//Password Reset (1st part: forgot password)
+app.post('/api/forgot-password', async (req, res) =>
+{
+  //incoming: email
+  //outcoming: error, 6-digit-code, id
+  var error = '';
+  const {email} = req.body;
+  const db = client.db('COP4331');
+  const results = await db.collection('users').findOne({email:email});
+  if(results == null){
+    error = "User Not Exist";
+    var ret = {error: error};
+    res.status(500).json(ret);
+    return;
+  }
+  const result = await db.collection('users').find({email:email}).toArray();
+  const _id = result[0]._id;
+  const randomCode = Math.floor(100000 + Math.random() * 900000)
+  console.log(randomCode)
+  console.log(_id)
+  const msg = {
+    to: email, // Change to your recipient
+    from: 'sunnysideupplanner@gmail.com', // Change to your verified sender
+    subject: 'SSU Password Reset',
+    text: 'EmailVar',
+    html: 'To reset your password, please input this code: ' + String(randomCode),
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+      var ret = {error: error, code: randomCode, id: _id};
+      res.status(200).json(ret);
+    })
+    .catch((error) => {
+      console.error(error)
+      error = "400"
+      var ret = {error: error, code: randomCode, id: _id};
+      res.status(200).json(ret);
+    })
+});
+
+//Password Reset (2nd part: change password)
+app.post('/api/reset-password', async (req, res) =>
+{
+  //incoming: email
+  //outcoming: error
+  var error = '';
+  const {email, password_new} = req.body;
+  const db = client.db("COP4331");
+  // var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOne({ email: email });
+  if(results == null){
+    error = 'Invalid userId';
+    var ret = {error: error};
+    res.status(500).json(ret);
+    return;
+  }
+  try
+  {
+    //const result1 = await db.collection('users').find({ email: email }).toArray();//testing
+    //console.log("BEFORE: "+result1[0].password);//testing
+    await db.collection("users").findOneAndUpdate({email: email}, {"$set":{password: password_new}});
+    //db.collection("users").findOneAndUpdate({email: email}, {"$set":{password: password_new}});
+  }
+  catch(e)
+  {
+    error = e.toString();
+    var ret = {error: error};
+    res.status(500).json(ret);
+  }
+  //const result2 = await db.collection('users').find({ email: email }).toArray();//testing
+  //console.log("AFTER: "+result2[0].password);//testing
+  var ret = {error: error};
+  res.status(200).json(ret);
+  
+});
+
+
 
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
