@@ -4,6 +4,55 @@ import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions} from 'rea
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 
+const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
+    // checking for password complexity 
+    // 1 lowercase, 1 uppercase, 1 special, 1 num, length >= 8
+    function isPasswordValidFunc(password) {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        let flag = regex.test(password);
+        setIsPasswordValid(flag);
+        return flag;
+    }
+    
+    const onSignInPressed = () => {
+        console.warn("Sign in");
+    }
+    const onRegisterPressed = async () => {
+        // checks for valid password complexity first
+        if (!isPasswordValidFunc(password))
+        {
+            setIsPassCompFormSlid(true);
+            console.warn("invalid password")
+            return;
+        }
+        else
+        {
+            setIsPassCompFormSlid(false);
+            const response = await fetch(buildPath('/api/register'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ firstName, lastName, email, password })
+            });
+            const data = await response.json();
+            // prints to console for now (inspect element to see console)
+            if (data.error === '') 
+            {
+                console.warn('good register');
+            } 
+            else 
+            {
+                console.error(data.error);
+            }
+        }
+    }
+
+    
+
+
 const ConfirmEmailScreen = () => {
     const {height} = useWindowDimensions();
 
