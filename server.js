@@ -127,47 +127,6 @@ app.post('/api/register', async(req,res)=>{
     var ret = {error: error};
     res.status(200).json(ret);
   })
-  
-app.post('/api/addContact', async(req, res) => {
-  // incoming: userId, name, email, phone
-  // outgoing: error
-  let error = '';
-  const {_id, name, email, phone} = req.body;
-
-  if (!name || !email || !phone)
-  {
-    error = "All fields are required to add a contact";
-    let ret = {error: error};
-    res.status(400).json(ret);
-    return;
-  } 
-
-  const db = client.db("COP4331");
-  let o_id = new ObjectId(_id);
-  const results = await db.collection('users').findOne({_id: o_id});
-  console.log(results);
-  if (results == null)
-  {
-    error = "Invalid userId";
-    let ret = {error: error};
-    res.status(400).json(ret);
-    return;
-  }
-
-  const newContact = {userId: _id, name: name, email: email, phone: phone};
-
-  try 
-  {
-    db.collection("contacts").insertOne(newContact);
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
-  let ret = {error: error};
-  res.status(400).json(ret);
-})
 
 app.post('/api/addPermNote', async(req,res)=>{
 
