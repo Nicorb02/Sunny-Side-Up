@@ -47,12 +47,13 @@ app.post('/api/login', async (req, res) =>
     id = results[0]._id;
     fn = results[0].firstName;
     ln = results[0].lastName;
+    events = results[0].events;
     }
     else
     {
         error = 'Invalid email or password';
     }
-  var ret = { _id:id, firstName:fn, lastName:ln, error:error};
+  var ret = { _id:id, firstName:fn, lastName:ln, events:events, error:error};
   res.status(200).json(ret);
 });
 
@@ -92,7 +93,10 @@ app.post('/api/register', async(req,res)=>{
   
     var error = '';
     const {firstName, lastName, email, password} = req.body;
-
+    eventsA = []
+    contactsA = []
+    todoA = []
+    notesA = []
     // check if any fields are empty
     if (!firstName || !lastName || !email || !password) {
         error = 'All fields are required';
@@ -100,10 +104,17 @@ app.post('/api/register', async(req,res)=>{
         res.status(400).json(ret);
         return;
     }
-    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password};
+    const db = client.db("COP4331");
+    const userCheck = await db.collection("users").findOne({email:email});
+    if (userCheck != null){
+      error = 'Email taken';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+    const newUser = {firstName:firstName, lastName:lastName, email:email, password:password, events:eventsA, contacts:contactsA, todo:todoA, notes:notesA};
     try
     {
-      const db = client.db("COP4331");
       db.collection("users").insertOne(newUser);
     }
     catch(e)
@@ -173,34 +184,13 @@ app.post('/api/addPermNote', async(req,res)=>{
   }
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  const results = await db.collection('users').findOne({ _id: o_id });
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{events:{title:title, content:content}}});
   if(results == null){
     error = 'Invalid userId';
     var ret = {error: error};
     res.status(400).json(ret);
     return;
   }
-
-  const dupeCheck = await db.collection('permNotes').findOne({_id: o_id, title:title})
-
-  if (dupeCheck != null)
-  {
-    error = 'Title already used, please use another title.';
-    var ret = {error: error};
-    res.status(400).json(ret);
-    return;
-  }
-
-  const newPermNote = {userId:_id, title:title, content:content};
-  try
-  {
-    db.collection("permNotes").insertOne(newPermNote);
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
   var ret = {error: error};
   res.status(200).json(ret);
 })
@@ -223,22 +213,13 @@ app.post('/api/delPermNote', async(req,res)=>{
 
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  const results = await db.collection('users').findOne({ _id: o_id });
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title}}});
   if(results == null){
     error = 'Invalid userId';
     var ret = {error: error};
     res.status(400).json(ret);
     return;
   }
-  try
-  {
-    db.collection("permNotes").deleteOne({userId:_id, title:title});
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
   var ret = {error: error};
   res.status(200).json(ret);
 })
@@ -252,25 +233,13 @@ app.post('/api/searchPermNote', async(req,res)=>{
   const {_id, title} = req.body;
 
   // check if any fields are empty
-  if (!title){
-      error = 'Please add a title';
-      var ret = {error: error};
-      res.status(400).json(ret);
-      return;
-  }
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  const result = await db.collection('users').findOne({ _id: o_id });
-  if(result == null){
-    error = 'Invalid userId';
-    var ret = {error: error};
-    res.status(400).json(ret);
-    return;
-  }
-  const results = await db.collection('permNotes').find({userId:_id, title:new RegExp(title)}).toArray();
-  console.log(results);
-
-  var ret = {error: error, results:results};
+  const result = await db.collection('users').findOne({ _id: o_id});
+  const allNotesResults = result.events;
+  console.log(allNotesResults)
+  const searchedNotesResults = allNotesResults.filter(allNotesResults => allNotesResults.title.includes(title));
+  var ret = {error: error, results:searchedNotesResults};
   res.status(200).json(ret);
 })
 
@@ -292,40 +261,11 @@ app.post('/api/editPermNote', async(req,res)=>{
 
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  const results = await db.collection('users').findOne({ _id: o_id });
-  if(results == null){
-    error = 'Invalid userId';
-    var ret = {error: error};
-    res.status(400).json(ret);
-    return;
-  }
-  try
-  {
-    db.collection("permNotes").findOneAndUpdate({userId:_id, title:title}, 
-                                                {"$set":{content:content}});
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
+  await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title}}});
+  await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{events:{title:title, content:content}}});
   var ret = {error: error};
   res.status(200).json(ret);
 })
-
-//Get Current time
-app.post('/api/current-time', async (req, res, next) =>{
-  //var error = '';
-  const { } = req.body;
-  var date_ob = new Date();
-  var day = ("0" + date_ob.getDate()).slice(-2);
-  var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-  var year = date_ob.getFullYear();
-   
-  var ret = {year: year, month: month, day: day};
-  res.status(200).json(ret);
-});
-
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production')
