@@ -114,7 +114,7 @@ app.post('/api/register', async(req,res)=>{
     var ret = {error: error};
     res.status(200).json(ret);
   })
-  
+
 app.post('/api/addContact', async(req, res) => {
   // incoming: userId, name, email, phone
   // outgoing: error
