@@ -41,8 +41,8 @@ const RegisterScreen = ({navigation}) => {
     }
     
     const onSignInPressed = () => {
-        // navigation.navigate('Login')
-        setModalVisible(!modalVisible)
+        navigation.navigate('Login')
+
     }
     const handleRegister = async () => {
         // checks for valid password complexity first

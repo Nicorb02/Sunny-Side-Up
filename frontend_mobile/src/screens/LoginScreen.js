@@ -3,7 +3,7 @@ import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions} from 'rea
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
-import axios from 'axios';
+
 
 
 const LoginScreen = ({navigation}) => {
@@ -29,6 +29,7 @@ const LoginScreen = ({navigation}) => {
           if (data.error == '') 
           {
             console.warn('good login');
+            navigation.navigate('NavBar')
           }
           else 
           {
