@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View, Dimensions, Image } from 'react-native';
+import { Text, View, Dimensions, Image, StyleSheet } from 'react-native';
 
 import ScheduleScreen from "./ScheduleScreen";
 import NotesScreen from "./NotesScreen";
@@ -25,7 +25,7 @@ const NavBar = ({ navigation }) => {
             backgroundColor: '#fff',
             borderRadius: 10,
             height: 90, 
-            paddingBottom: 25
+            paddingBottom: 15
           }
         }}
       >
@@ -36,13 +36,11 @@ const NavBar = ({ navigation }) => {
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
                   <Image  source={require('../../assets/home.png')} 
                   resizeMode='contain'
-                  style={{
-                      width: 30,
-                      height: 30,
-                      margin: 5
-                  }} 
-                  />
-                <Text style={{color: focused ? '#e94d0b' : '#343434', fontSize: 12}}>Home</Text>
+                  style={[
+                    styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
+                ]} 
+                />
+                <Text style={{color: focused ? '#e94d0b' : '#fff', fontSize: 12}}>Home</Text>
               </View>
             ),
           }}
@@ -55,49 +53,11 @@ const NavBar = ({ navigation }) => {
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
                   <Image  source={require('../../assets/notes.png')} 
                   resizeMode='contain'
-                  style={{
-                      width: 30,
-                      height: 30,
-                      margin: 5 
-                  }} 
-                  />
-                <Text style={{color: focused ? '#e94d0b' : '#343434', fontSize: 12}}>Notes</Text>
-              </View>
-            ),
-          }}
-        />
-         <Tab.Screen name='To do' 
-          component={NotesScreen} 
-          options={{
-            tabBarIcon: ({focused}) => (
-              <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                 <Image  source={require('../../assets/todo.png')} 
-                  resizeMode='contain'
-                  style={{
-                      width: 30,
-                      height: 30,
-                      margin: 5
-                  }} 
-                  />
-                <Text style={{color: focused ? '#e94d0b' : '#343434', fontSize: 12}}>To Do</Text>
-              </View>
-            ),
-          }}
-        />
-         <Tab.Screen name='Contacts' 
-          component={NotesScreen} 
-          options={{
-            tabBarIcon: ({focused}) => (
-              <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Image  source={require('../../assets/contacts.png')} 
-                  resizeMode='contain'
-                  style={{
-                      width: 30,
-                      height: 30,
-                      margin: 5
-                  }} 
-                  />
-                <Text style={{color: focused ? '#e94d0b' : '#343434', fontSize: 12}}>Contacts</Text>
+                  style={[
+                    styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
+                ]} 
+                />
+                <Text style={{color: focused ? '#e94d0b' : '#fff', fontSize: 12}}>Notes</Text>
               </View>
             ),
           }}
@@ -110,21 +70,62 @@ const NavBar = ({ navigation }) => {
               <View style={{alignItems: 'center', justifyContent: 'center',}}>
                   <Image  source={require('../../assets/profile.png')} 
                   resizeMode='contain'
-                  style={{
-                      width: 30,
-                      height: 30,
-                      margin: 5
-                  }} 
+                  style={[
+                      styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
+                  ]} 
                   />
-                <Text style={{color: focused ? '#e94d0b' : '#343434', fontSize: 12}}>Profile</Text>
+                <Text style={{color: focused ? '#e94d0b' : '#fff', fontSize: 12}}>Profile</Text>
               </View>
             ),
           }}
         />
+         <Tab.Screen name='To do' 
+          component={NotesScreen} 
+          options={{
+            tabBarIcon: ({focused}) => (
+              <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                 <Image  source={require('../../assets/todo.png')} 
+                  resizeMode='contain'
+                  style={[
+                    styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
+                ]} 
+                />
+                <Text style={{color: focused ? '#e94d0b' : '#fff', fontSize: 12}}>To Do</Text>
+              </View>
+            ),
+          }}
+        />
+         <Tab.Screen name='Contacts' 
+          component={NotesScreen} 
+          options={{
+            tabBarIcon: ({focused}) => (
+              <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Image  source={require('../../assets/contacts.png')} 
+                  resizeMode='contain'
+                  style={[
+                    styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
+                ]} 
+                />
+                <Text style={{color: focused ? '#e94d0b' : '#fff', fontSize: 12}}>Contacts</Text>
+              </View>
+            ),
+          }}
+        />
+        
       </Tab.Navigator>
 
 
     )
 }
+
+const styles = StyleSheet.create({
+  image: {
+    width: 35,
+    height: 35,
+    margin: 5,
+    
+  }
+  
+})
 
 export default NavBar;

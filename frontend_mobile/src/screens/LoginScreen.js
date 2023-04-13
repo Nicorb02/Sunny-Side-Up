@@ -39,7 +39,6 @@ const LoginScreen = ({navigation}) => {
           // prints to console for now (inspect element to see console)
           if (data.error == '') 
           {
-            console.warn('good login');
             navigation.navigate('NavBar')
           }
           else 
