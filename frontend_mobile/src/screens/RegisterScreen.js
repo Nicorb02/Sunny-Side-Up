@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal} from 'react-native';
+import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
 
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
@@ -20,13 +20,16 @@ const RegisterScreen = ({navigation}) => {
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [isPasswordValid, setIsPasswordValid] = useState(true);
     const [isPassCompFormSlid, setIsPassCompFormSlid] = useState(false);
-    const app_name = 'ssu-testing'        // testing server
 
+    const [passwordVisibility, setPasswordVisibility] = useState(true)
+    
+    const app_name = 'ssu-testing'        // testing server
+    
     const buildPath = (route) =>
     {
         return 'https://' + app_name + '.herokuapp.com' + route;
     }
-
+    
     // checking for password complexity 
     // 1 lowercase, 1 uppercase, 1 special, 1 num, length >= 8
     function isPasswordValidFunc(password) {
@@ -35,7 +38,11 @@ const RegisterScreen = ({navigation}) => {
         setIsPasswordValid(flag);
         return flag;
     }
-
+    //Toggle password visibility
+    const toggleShowPassword = () => {
+        setPasswordVisibility(!passwordVisibility)
+    };
+    
     const onConfirmPressed = () => {
         console.warn("registered");
     }
@@ -139,7 +146,22 @@ const RegisterScreen = ({navigation}) => {
                     <CustomInput placeholder="First Name" value={firstName} setValue={setFirstName}/>
                     <CustomInput placeholder="Last Name" value={lastName} setValue={setLastName}/>
                     <CustomInput placeholder="Email" value={email} setValue={setEmail}/>
-                    <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={true}/>
+                    <View style={styles.container}>
+                        <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={passwordVisibility}/>
+                        <Pressable
+                        activeOpacity={0.8}
+                        style={styles.visibilityBtn}
+                        onPress={toggleShowPassword}>
+                        <Image
+                            source={
+                            passwordVisibility
+                                ? require('../../assets/show.png')
+                                : require('../../assets/hide.png')
+                            }
+                            style={{height: 25, width: 25, }}
+                        />
+                        </Pressable>
+                    </View>
                     </View>
                 <View style={{width: '100%', marginVertical: 100}}>
                     <CustomButton text="Register" onPress={handleEmailVer}/>
@@ -177,6 +199,19 @@ const styles = StyleSheet.create({
         marginTop: 50,
         color: '#343434'
     },
+    container: {
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+      },
+      visibilityBtn: {
+        position: 'absolute',
+        right: 9,
+        height: 25,
+        width: 25,
+        padding: 0,
+        marginTop: 21,
+      },
 });
 
 

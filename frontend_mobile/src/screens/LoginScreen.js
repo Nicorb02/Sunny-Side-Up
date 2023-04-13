@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal} from 'react-native';
+import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
@@ -15,6 +15,8 @@ const LoginScreen = ({navigation}) => {
     const [resetPasswordModal, setResetPasswordModal] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [newPasswordConfirmed, setNewPasswordConfirmed] = useState('')
+
+    const [passwordVisibility, setPasswordVisibility] = useState(true)
 
     // genereated code and code entered by user
     const [verCode, setVerCode] = useState('');
@@ -66,13 +68,18 @@ const LoginScreen = ({navigation}) => {
         setResetPasswordModal(true)
     }
     const closeResetPassword = () => {
+        setNewPassword('')
+        setNewPasswordConfirmed('')
         setResetPasswordModal(false)
     }
 
     const onRegisterPressed = () => {
         console.warn("register");
     }
-
+    //Toggle password visibility
+    const toggleShowPassword = () => {
+        setPasswordVisibility(!passwordVisibility)
+    };
     return(
         <View style={styles.root}>
 
@@ -83,7 +90,22 @@ const LoginScreen = ({navigation}) => {
                 />
                 <View style={{width: '100%', marginTop: 20}}>
                     <CustomInput placeholder="Email" value={email} setValue={setEmail}/>
-                    <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={true}/>
+                    <View>
+                        <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={passwordVisibility}/>
+                        <Pressable
+                        activeOpacity={0.8}
+                        style={styles.visibilityBtn}
+                        onPress={toggleShowPassword}>
+                        <Image
+                            source={
+                            passwordVisibility
+                                ? require('../../assets/show.png')
+                                : require('../../assets/hide.png')
+                            }
+                            style={{height: 25, width: 25, bottom: 8}}
+                        />
+                        </Pressable>
+                    </View>
                 </View>
                 <View style={{}}>
                     <CustomButton text="Forgot Password?" onPress={onForgotPasswordPressed} type="TERTIARY" />
@@ -122,8 +144,8 @@ const LoginScreen = ({navigation}) => {
                         <View style={styles.root}>
                             <Text style={styles.title}>Enter your new password</Text>
                             <View style={{width: '100%', marginTop: 20}}>
-                                <CustomInput placeholder="New Password" value={newPassword} setValue={setNewPassword}/>
-                                <CustomInput placeholder="Confirm Password" value={newPasswordConfirmed} setValue={setNewPasswordConfirmed}/>
+                                <CustomInput placeholder="New Password" value={newPassword} setValue={setNewPassword} secureTextEntry={true}/>
+                                <CustomInput placeholder="Confirm Password" value={newPasswordConfirmed} setValue={setNewPasswordConfirmed} secureTextEntry={true}/>
                                 </View>
                             <View style={{width: '100%', marginVertical: 100}}>
                                 <CustomButton text="Reset Password"/>
@@ -158,6 +180,14 @@ const styles = StyleSheet.create({
         marginTop: 50,
         color: '#343434'
     },
+    visibilityBtn: {
+        position: 'absolute',
+        right: 9,
+        height: 25,
+        width: 25,
+        padding: 0,
+        marginTop: 21,
+      },
 });
 
 
