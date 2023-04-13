@@ -153,8 +153,6 @@ const RegisterScreen = ({navigation}) => {
                         <CustomInput placeholder="Activation Code" value={enteredCode} setValue={setEnteredCode} />
                     </View>
                     <View style={{width: '100%', marginVertical: 100}}>
-                        <CustomButton text={verCode}/>
-                        
                         <CustomButton text="Confirm" onPress={handleSubmitCode}/>
                         <CustomButton text="Cancel" onPress={() => setModalVisible(!modalVisible)} type="TERTIARY"/>
                     </View>

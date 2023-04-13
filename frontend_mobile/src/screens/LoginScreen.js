@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal} from 'react-native';
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
@@ -10,6 +10,17 @@ const LoginScreen = ({navigation}) => {
     const {height} = useWindowDimensions();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [sendEmailModal, setSendEmailModal] = useState(false);
+    const [submitCodeModal, setSubmitCodeModal] = useState(false);
+    const [resetPasswordModal, setResetPasswordModal] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [newPasswordConfirmed, setNewPasswordConfirmed] = useState('')
+
+    // genereated code and code entered by user
+    const [verCode, setVerCode] = useState('');
+    const [enteredCode, setEnteredCode] = useState('');
+    const [validCode, setValidCode] = useState(true);
+
 
     const app_name = 'ssu-testing'        // testing server
 
@@ -39,7 +50,24 @@ const LoginScreen = ({navigation}) => {
     }
 
     const onForgotPasswordPressed = () => {
-        console.warn("forgot password");
+        setSendEmailModal(true);
+    }
+
+    const onReturnToSignInPressed = () => {
+        setSendEmailModal(false);
+    }
+
+    const openSubmitCode = () => {
+        setSubmitCodeModal(true)
+    }
+    const closeSubmitCode = () => {
+        setSubmitCodeModal(false)
+    }
+    const openResetPassword = () => {
+        setResetPasswordModal(true)
+    }
+    const closeResetPassword = () => {
+        setResetPasswordModal(false)
     }
 
     const onRegisterPressed = () => {
@@ -59,12 +87,54 @@ const LoginScreen = ({navigation}) => {
                     <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={true}/>
                 </View>
                 <View style={{}}>
-                    <CustomButton text="Forgot Password?" onPress={() => navigation.navigate('ForgotPassword')} type="TERTIARY" />
+                    <CustomButton text="Forgot Password?" onPress={onForgotPasswordPressed} type="TERTIARY" />
                 </View>
                 <View style={{width: '100%', marginVertical: 100}}>
                     <CustomButton text="Log In" onPress={onLoginPressed}/>
                     <CustomButton text="Dont have an account? Register" onPress={() => navigation.navigate('Register', {name: 'Register'})} type="TERTIARY"/>
                 </View>
+
+            <Modal animationType="slide" transparent={false} visible={sendEmailModal}>
+                <View style={styles.root}>
+                    <Text style={styles.title}>Reset your password</Text>
+                    <View style={{width: '100%', marginTop: 20}}>
+                        <CustomInput placeholder="Email" value={email} setValue={setEmail} />
+                        </View>
+                    <View style={{width: '100%', marginVertical: 100}}>
+                        <CustomButton text="Send" onPress={openSubmitCode}/>
+                        <CustomButton text="Back to Sign In" onPress={onReturnToSignInPressed} type="TERTIARY"/>
+                    </View>
+                </View>
+
+
+                <Modal animationType="none" transparent={false} visible={submitCodeModal}>
+                    <View style={styles.root}>
+                        <Text style={styles.title}>Reset your password</Text>
+                        <View style={{width: '100%', marginTop: 20}}>
+                            <CustomInput placeholder="Reset Code" value={enteredCode} setValue={setEnteredCode} />
+                            </View>
+                        <View style={{width: '100%', marginVertical: 100}}>
+                            <CustomButton text="Submit Code" onPress={openResetPassword}/>
+                            <CustomButton text="Cancel" onPress={closeSubmitCode} type="TERTIARY"/>
+                        </View>
+                    </View>
+
+                    <Modal animationType="none" transparent={false} visible={resetPasswordModal}>
+                        <View style={styles.root}>
+                            <Text style={styles.title}>Enter your new password</Text>
+                            <View style={{width: '100%', marginTop: 20}}>
+                                <CustomInput placeholder="New Password" value={newPassword} setValue={setNewPassword}/>
+                                <CustomInput placeholder="Confirm Password" value={newPasswordConfirmed} setValue={setNewPasswordConfirmed}/>
+                                </View>
+                            <View style={{width: '100%', marginVertical: 100}}>
+                                <CustomButton text="Reset Password"/>
+                                <CustomButton text="Cancel" onPress={closeResetPassword} type="TERTIARY"/>
+                            </View>
+                        </View>
+                    </Modal>
+                </Modal>
+            </Modal>
+
             
         </View>
     )
@@ -81,6 +151,13 @@ const styles = StyleSheet.create({
         maxWidth: 300,
         maxHeight: 200,
         marginVertical: 40,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginVertical: 10,
+        marginTop: 50,
+        color: '#343434'
     },
 });
 
