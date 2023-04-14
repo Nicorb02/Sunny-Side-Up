@@ -23,7 +23,9 @@ const LoginScreen = ({navigation}) => {
     const [enteredCode, setEnteredCode] = useState('');
     const [validCode, setValidCode] = useState(true);
 
-
+    const view = require('../../assets/view.png')
+    const hide = require('../../assets/hide.png')
+    
     const app_name = 'ssu-testing'        // testing server
 
     const buildPath = (route) =>
@@ -99,8 +101,8 @@ const LoginScreen = ({navigation}) => {
                         <Image
                             source={
                             passwordVisibility
-                                ? require('../../assets/show.png')
-                                : require('../../assets/hide.png')
+                                ? view
+                                : hide
                             }
                             style={{height: 25, width: 25, bottom: 8}}
                         />
@@ -155,8 +157,6 @@ const LoginScreen = ({navigation}) => {
                     </Modal>
                 </Modal>
             </Modal>
-
-            
         </View>
     )
 }

@@ -7,7 +7,7 @@ import NavBar from './src/screens/NavBar.js';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen.js'
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
+import ScheduleScreen from './src/screens/ScheduleScreen.js';
 const Stack = createNativeStackNavigator();
 
 
@@ -19,7 +19,7 @@ export default function App() {
 
     <NavigationContainer>
       {/* <SafeAreaView style={styles.root}> */}
-    <Stack.Navigator initialRouteName="LogIn">
+    <Stack.Navigator initialRouteName="NavBar">
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -29,6 +29,8 @@ export default function App() {
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}}/>
       <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} options={{headerShown: false}}/>
       <Stack.Screen name="NavBar" component={NavBar} options={{headerShown: false}}/>
+      <Stack.Screen name="ScheduleScreen" component={ScheduleScreen} options={{headerShown: false}}/>
+  
     </Stack.Navigator>
         {/* </SafeAreaView>  */}
   </NavigationContainer>

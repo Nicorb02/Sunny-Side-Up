@@ -6,6 +6,12 @@ import ScheduleScreen from "./ScheduleScreen";
 import NotesScreen from "./NotesScreen";
 import ProfileScreen from "./ProfileScreen";
 
+const home = require('../../assets/home.png')
+const profile = require('../../assets/profile.png')
+const contacts = require('../../assets/contacts.png')
+const todo = require('../../assets/todo.png')
+const notes = require('../../assets/notes.png')
+
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 const Tab = createBottomTabNavigator();
@@ -34,7 +40,7 @@ const NavBar = ({ navigation }) => {
           options={{ 
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Image  source={require('../../assets/home.png')} 
+                  <Image  source={home} 
                   resizeMode='contain'
                   style={[
                     styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
@@ -51,7 +57,7 @@ const NavBar = ({ navigation }) => {
           options={{
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Image  source={require('../../assets/notes.png')} 
+                  <Image source={notes} 
                   resizeMode='contain'
                   style={[
                     styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
@@ -68,7 +74,7 @@ const NavBar = ({ navigation }) => {
           options={{
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center',}}>
-                  <Image  source={require('../../assets/profile.png')} 
+                  <Image  source={profile} 
                   resizeMode='contain'
                   style={[
                       styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
@@ -84,7 +90,7 @@ const NavBar = ({ navigation }) => {
           options={{
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                 <Image  source={require('../../assets/todo.png')} 
+                 <Image  source={todo} 
                   resizeMode='contain'
                   style={[
                     styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
@@ -100,7 +106,7 @@ const NavBar = ({ navigation }) => {
           options={{
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Image  source={require('../../assets/contacts.png')} 
+                  <Image  source={contacts} 
                   resizeMode='contain'
                   style={[
                     styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}

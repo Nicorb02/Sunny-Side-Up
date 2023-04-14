@@ -21,6 +21,8 @@ const RegisterScreen = ({navigation}) => {
     const [isPasswordValid, setIsPasswordValid] = useState(true);
     const [isPassCompFormSlid, setIsPassCompFormSlid] = useState(false);
 
+    const view = require('../../assets/view.png')
+    const hide = require('../../assets/hide.png')
     const [passwordVisibility, setPasswordVisibility] = useState(true)
     
     const app_name = 'ssu-testing'        // testing server
@@ -155,8 +157,8 @@ const RegisterScreen = ({navigation}) => {
                         <Image
                             source={
                             passwordVisibility
-                                ? require('../../assets/show.png')
-                                : require('../../assets/hide.png')
+                                ? view
+                                : hide
                             }
                             style={{height: 25, width: 25, }}
                         />
