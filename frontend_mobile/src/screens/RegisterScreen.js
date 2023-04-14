@@ -108,6 +108,7 @@ const RegisterScreen = ({navigation}) => {
                 setIsPassCompFormSlid(false);
                 setVerCode(data.code);
                 setModalVisible(true);
+                console.log(data.code)
             }
             // didnt find valid email address
             else

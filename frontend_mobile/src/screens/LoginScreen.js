@@ -9,6 +9,7 @@ import CustomButton from '../components/CustomButton'
 const LoginScreen = ({navigation}) => {
     const {height} = useWindowDimensions();
     const [email, setEmail] = useState('');
+    const [resetPasswordEmail, setResetPasswordEmail] = useState('');
     const [password, setPassword] = useState('');
     const [sendEmailModal, setSendEmailModal] = useState(false);
     const [submitCodeModal, setSubmitCodeModal] = useState(false);
@@ -23,6 +24,8 @@ const LoginScreen = ({navigation}) => {
     const [enteredCode, setEnteredCode] = useState('');
     const [validCode, setValidCode] = useState(true);
 
+    const [isValidEmail, setIsValidEmail] = useState(true);
+    
     const view = require('../../assets/view.png')
     const hide = require('../../assets/hide.png')
     
@@ -59,10 +62,33 @@ const LoginScreen = ({navigation}) => {
     const onReturnToSignInPressed = () => {
         setSendEmailModal(false);
     }
-
-    const openSubmitCode = () => {
-        setSubmitCodeModal(true)
+    const body = JSON.stringify({email: resetPasswordEmail})
+    const openSubmitCode = async () => {
+        console.log(body)
+        // password is valid, check if email is valid
+        const response = await fetch(buildPath('/api/forgot-password'), {
+            method: 'POST',
+            headers : { 'Content-Type': 'application/json' },
+            body: JSON.stringify({email: resetPasswordEmail})
+        });
+        const data = await response.json();
+        
+        // found email, store the verification code
+        if (data.error == '')
+        {
+            setVerCode(data.code);
+            setSubmitCodeModal(true);
+            console.warn(data.code);
+        }
+        // didnt find valid email address
+        else
+        {
+            // email is invalid, display Invalid Alert
+            setIsValidEmail(false);
+            console.error(data.error);
+        }
     }
+
     const closeSubmitCode = () => {
         setSubmitCodeModal(false)
     }
@@ -121,7 +147,7 @@ const LoginScreen = ({navigation}) => {
                 <View style={styles.root}>
                     <Text style={styles.title}>Reset your password</Text>
                     <View style={{width: '100%', marginTop: 20}}>
-                        <CustomInput placeholder="Email" value={email} setValue={setEmail} />
+                        <CustomInput placeholder="Email" value={resetPasswordEmail} setValue={setResetPasswordEmail} />
                         </View>
                     <View style={{width: '100%', marginVertical: 100}}>
                         <CustomButton text="Send" onPress={openSubmitCode}/>
