@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
-
+import { TextInput } from 'react-native-paper';
 
 
 const LoginScreen = ({navigation}) => {
@@ -117,9 +117,26 @@ const LoginScreen = ({navigation}) => {
                 resizeMode="contain"
                 />
                 <View style={{width: '100%', marginTop: 20}}>
-                    <CustomInput placeholder="Email" value={email} setValue={setEmail}/>
+                <TextInput 
+                        style={styles.input} 
+                        mode="outlined" 
+                        label="Email" 
+                        value={email} 
+                        onChangeText={email => setEmail(email)}
+                        autoCapitalize={false}
+                    />
+
                     <View>
-                        <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={passwordVisibility}/>
+                    <TextInput 
+                        style={styles.input} 
+                        mode="outlined" 
+                        label="Password" 
+                        value={password} 
+                        onChangeText={password => setPassword(password)} 
+                        secureTextEntry={passwordVisibility}
+                        autoCapitalize={false}
+                        
+                    />
                         <Pressable
                         activeOpacity={0.8}
                         style={styles.visibilityBtn}
@@ -130,7 +147,7 @@ const LoginScreen = ({navigation}) => {
                                 ? view
                                 : hide
                             }
-                            style={{height: 25, width: 25, bottom: 8}}
+                            style={{height: 25, width: 25, }}
                         />
                         </Pressable>
                     </View>
@@ -214,6 +231,10 @@ const styles = StyleSheet.create({
         padding: 0,
         marginTop: 21,
       },
+      input: {
+        marginVertical: 5, 
+        backgroundColor: '#fff'
+    }
 });
 
 

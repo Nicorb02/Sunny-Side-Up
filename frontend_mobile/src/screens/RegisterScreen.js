@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
 
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
-
+import { TextInput } from 'react-native-paper';
 
 const RegisterScreen = ({navigation}) => {
     const {height} = useWindowDimensions();
@@ -146,11 +146,43 @@ const RegisterScreen = ({navigation}) => {
         <View style={styles.root}>
             <Text style={styles.title}>Create an Account</Text>
                 <View style={{width: '100%', marginTop: 20}}>
-                    <CustomInput placeholder="First Name" value={firstName} setValue={setFirstName}/>
-                    <CustomInput placeholder="Last Name" value={lastName} setValue={setLastName}/>
-                    <CustomInput placeholder="Email" value={email} setValue={setEmail}/>
-                    <View style={styles.container}>
-                        <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry={passwordVisibility}/>
+                
+                    <TextInput 
+                        style={styles.input} 
+                        mode="outlined" 
+                        label="First Name" 
+                        value={firstName} 
+                        onChangeText={firstName => setFirstName(firstName)}
+                        autoCapitalize={false}
+                    />
+                    <TextInput 
+                        style={styles.input} 
+                        mode="outlined" 
+                        label="Last Name" 
+                        value={lastName} 
+                        onChangeText={lastName => setLastName(lastName)}
+                        autoCapitalize={false}
+                    />
+                    <TextInput 
+                        style={styles.input} 
+                        mode="outlined" 
+                        label="Email" 
+                        value={email} 
+                        onChangeText={email => setEmail(email)}
+                        autoCapitalize={false}
+                    />
+
+                    <View>
+                    <TextInput 
+                        style={styles.input} 
+                        mode="outlined" 
+                        label="Password" 
+                        value={password} 
+                        onChangeText={password => setPassword(password)} 
+                        secureTextEntry={passwordVisibility}
+                        autoCapitalize={false}
+                        
+                    />
                         <Pressable
                         activeOpacity={0.8}
                         style={styles.visibilityBtn}
@@ -206,15 +238,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-      },
-      visibilityBtn: {
+    },
+    visibilityBtn: {
         position: 'absolute',
-        right: 9,
+        right: 10,
         height: 25,
         width: 25,
         padding: 0,
-        marginTop: 21,
-      },
+        marginTop: 23,
+    },
+    input: {
+        marginVertical: 5, 
+        backgroundColor: '#fff'
+    }
+      
 });
 
 
