@@ -10,6 +10,7 @@ import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DTPicker from "../components/DTPicker";
+import CreateEventScreen from "./CreateEventScreen";
 
 const ScheduleScreen = () => {
     const [selected, setSelected] = useState('');
@@ -104,7 +105,7 @@ const ScheduleScreen = () => {
                 endDate: e
             })
 
-            // setCreateEventModal(false)
+            setCreateEventModal(false)
             console.log(items)
         }
         else
@@ -202,7 +203,7 @@ const ScheduleScreen = () => {
             <ActionButtons onPressEvent={toggleCreateEventModal}/>
 
             <Modal animationType="none" transparent={false} visible={createEventModal}>
-                <View style={styles.root}>
+                {/* <View style={styles.root}>
                     <Text style={styles.title}>Create Event</Text>
                     <View style={{width: '100%', marginTop: 20}}>
                         <CustomInput placeholder="Event" value={eventTitle} setValue={setEventTitle}/>
@@ -243,9 +244,9 @@ const ScheduleScreen = () => {
                             setCreateEventModal(false)
                         }} type="TERTIARY"/>
                     </View>
-                </View>
+                </View> */}
 
-                {/* <CreateEventScreen onPress={addEvent}/> */}
+                <CreateEventScreen onPressAdd={addEvent} onPressCancel={() => {setCreateEventModal(false)}}/>
             </Modal>
         </SafeAreaView>
     );
