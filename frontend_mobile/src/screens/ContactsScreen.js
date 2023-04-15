@@ -6,6 +6,8 @@ import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import Icon from "react-native-vector-icons/Feather"
 
+import { TextInput } from "react-native-paper";
+
 const ContactsScreen = () => {
     const [contacts, setContacts] = useState([])
 
@@ -16,13 +18,47 @@ const ContactsScreen = () => {
     const [addContactModal, setAddContactModal] = useState(false)
     
     const addContact = () => {
-        contacts.push(
-            {
-                name: contactName,
-                phone: contactPhone,
-                email: contactEmail
-            }
-        )
+        if (!contactName || !contactEmail || !contactPhone)
+            console.warn('fill all fields')
+        else 
+        {
+            contacts.push(
+                {
+                    name: contactName,
+                    phone: contactPhone,
+                    email: contactEmail
+                }
+            )
+            setAddContactModal(false)
+        }
+    }
+
+    const renderContacts = () => {
+        if (contacts.length == 0)
+            return(
+                <View style={{alignItems: "center", justifyContent: "center", marginTop: 300}}>
+                    <Text>You have no contacts</Text>
+                </View>
+            )
+        else
+            return(
+                contacts.map(c => {
+                    return(
+                        <TouchableOpacity>
+                            <Card style={{margin: 10}}>
+                                <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
+                                    <Avatar.Text label={c.name[0]} size={50} style={{backgroundColor:'#ff9900'}}/>
+                                    <View>
+                                        <Text style={styles.item}>{c.name}</Text>
+                                        <Text style={styles.item}>{c.phone}</Text>
+                                        <Text style={styles.item}>{c.email}</Text>
+                                    </View>
+                                </View>
+                            </Card>
+                        </TouchableOpacity>
+                    )
+                })
+            )
     }
 
     const clearInput = () => {
@@ -47,38 +83,24 @@ const ContactsScreen = () => {
             </View>
             <ScrollView>
             {
-            contacts.map(c => {
-                return(
-                    <TouchableOpacity>
-                        <Card style={{margin: 10}}>
-                            <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
-                                <Avatar.Text label={c.name[0]} size={50} style={{backgroundColor:'#ff9900'}}/>
-                                <View>
-                                    <Text style={styles.item}>{c.name}</Text>
-                                    <Text style={styles.item}>{c.phone}</Text>
-                                    <Text style={styles.item}>{c.email}</Text>
-                                </View>
-                            </View>
-                        </Card>
-                    </TouchableOpacity>
-                )
-            })
-        }
+
+                renderContacts()
+                
+            }
         </ScrollView>
 
             <Modal animationType="slide" visible={addContactModal}>
                 <View style={styles.root}>
                     <Text style={styles.title}>Add New Contact</Text>
                     <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
-                        <View style={{width: '100%', marginTop: 20}}>
-                        <CustomInput placeholder="Name" value={contactName} setValue={setContactName}/>
-                        <CustomInput placeholder="Email" value={contactEmail} setValue={setContactEmail}/>
-                        <CustomInput placeholder="Phone" value={contactPhone} setValue={setContactPhone}/>
+                    <View style={{width: '100%', marginTop: 20}}>
+                        <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => setContactName(contactName)}/>
+                        <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={contactEmail => setContactEmail(contactEmail)}/>
+                        <TextInput style={styles.input} mode="outlined" label="Phone" value={contactPhone} onChangeText={contactPhone => setContactPhone(contactPhone)} />
                     </View>
                     <View style={{width: '100%', marginVertical: 100}}>
                         <CustomButton text="Add Contact" onPress={() => {
                             addContact() 
-                            setAddContactModal(false)
                         }}/>
                         <CustomButton text="Cancel" onPress={() =>{
                             setAddContactModal(false)
@@ -124,13 +146,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
 
     },
-    circle: {
-        // width: 60,
-        // height: 60,
-        // position: 'absolute',
-        // borderRadius: 50,
-
-    },
+    input: {
+        marginVertical: 5, 
+        backgroundColor: '#fff'
+    }
   });
 
 export default ContactsScreen;
