@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-import CircleButton from "../components/CircleButton";
+import Icon from "react-native-vector-icons/Feather"
 
 const ContactsScreen = () => {
     const [contacts, setContacts] = useState([])
@@ -14,14 +14,37 @@ const ContactsScreen = () => {
     const [contactEmail, setContactEmail] = useState('')
 
     const [addContactModal, setAddContactModal] = useState(false)
-    for (let i = 0; i < 10; i++)
-    {
+    
+    const addContact = () => {
         contacts.push(
-            {name: 'Person ' + i, email: "email" + i + "@gmail.com", phone: "100000000" + i}
+            {
+                name: contactName,
+                phone: contactPhone,
+                email: contactEmail
+            }
         )
+    }
+
+    const clearInput = () => {
+        setContactName('')
+        setContactEmail('')
+        setContactPhone('')
     }
     return(
         <SafeAreaView style={styles.container}>
+
+            <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
+                <Text style={styles.title}>Contacts</Text>
+                <View>
+                    <TouchableOpacity onPress={() => {
+                        clearInput()
+                        setAddContactModal(true)
+                    }}>
+                    <Icon name="plus"  size={45} color='#e94d0b'/>
+
+                    </TouchableOpacity>
+            </View>
+            </View>
             <ScrollView>
             {
             contacts.map(c => {
@@ -42,9 +65,6 @@ const ContactsScreen = () => {
             })
         }
         </ScrollView>
-        <CircleButton icon="plus" onPress={() => {
-            setAddContactModal(true)
-        }}/>
 
             <Modal animationType="slide" visible={addContactModal}>
                 <View style={styles.root}>
@@ -56,14 +76,8 @@ const ContactsScreen = () => {
                         <CustomInput placeholder="Phone" value={contactPhone} setValue={setContactPhone}/>
                     </View>
                     <View style={{width: '100%', marginVertical: 100}}>
-                        <CustomButton text="Add Event" onPress={() => {
-                            contacts.push(
-                                {
-                                    name: contactName,
-                                    phone: contactPhone,
-                                    email: contactEmail
-                                }
-                            )
+                        <CustomButton text="Add Contact" onPress={() => {
+                            addContact() 
                             setAddContactModal(false)
                         }}/>
                         <CustomButton text="Cancel" onPress={() =>{
@@ -79,7 +93,8 @@ const ContactsScreen = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 10,
+      padding: 5,
+      marginBottom: 50
 
     },
     item: {
@@ -92,10 +107,9 @@ const styles = StyleSheet.create({
         marginVertical: 50
     },
     title: {
-        fontSize: 24,
+        fontSize: 34,
         fontWeight: 'bold',
-        marginVertical: 10,
-        marginTop: 50,
+        margin: 15,
         color: '#343434'
     },
     dateContainer: {
@@ -109,7 +123,14 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
 
-    }   
+    },
+    circle: {
+        // width: 60,
+        // height: 60,
+        // position: 'absolute',
+        // borderRadius: 50,
+
+    },
   });
 
 export default ContactsScreen;

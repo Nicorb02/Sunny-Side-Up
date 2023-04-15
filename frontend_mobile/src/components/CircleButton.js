@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
         right: 25,
     },
     circle_plus: {
-        bottom: 75,
+        bottom: 20,
     },
     circle_other: {
-        bottom: 35,
+        bottom: -20,
     }
 
 })

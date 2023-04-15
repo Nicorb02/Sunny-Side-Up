@@ -20,6 +20,15 @@ const ScheduleScreen = () => {
             {title: 'test 1', description: 'description 1'},
             {title: 'test 2', description: 'description 2'},
             {title: 'test 3', description: 'description 3'},
+            {title: 'test 1', description: 'description 1'},
+            {title: 'test 2', description: 'description 2'},
+            {title: 'test 3', description: 'description 3'},
+            {title: 'test 1', description: 'description 1'},
+            {title: 'test 2', description: 'description 2'},
+            {title: 'test 3', description: 'description 3'},
+            {title: 'test 1', description: 'description 1'},
+            {title: 'test 2', description: 'description 2'},
+            {title: 'test 3', description: 'description 3'},
         ],
         '2023-04-16': [{title: 'test 4', description: 'description 4'}] 
     })
@@ -172,7 +181,7 @@ const ScheduleScreen = () => {
 
 
     return(
-        <SafeAreaView style={{flex:1, backgroundColor: '#ffffff'}}>
+        <SafeAreaView style={{flex:1, backgroundColor: '#ffffff', marginBottom: 50}}>
 
             <Agenda
                 // onDayPress={day => {
@@ -198,6 +207,7 @@ const ScheduleScreen = () => {
                 // loadItemsForMonth={loadItems}
                 selected={today}
                 renderItem={renderItem}
+
             />
 
             <ActionButtons onPressEvent={toggleCreateEventModal}/>
