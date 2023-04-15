@@ -15,7 +15,9 @@ const CircleButton = ({icon, main = false, onPress}) => {
             <TouchableOpacity
                 style={[styles.circle, main ? styles.circle_plus : styles.circle_other,{backgroundColor: main ? (focused ? '#fff' : '#e94d0b') : '#e94d0b'}]} 
                 onPress={() => {
-                    onPress()
+                    if (typeof onPress === 'function') onPress();
+
+
                     toggleFocus()
                 }}
 

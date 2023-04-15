@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { View, Animated } from "react-native";
 import CircleButton from "./CircleButton";
 
-const ActionButtons = () => {
+const ActionButtons = ({ onPressEvent, onPressHoliday}) => {
     const [items, setItems] = useState({});
     const [event] = useState(new Animated.Value(40));
     const [holiday] = useState(new Animated.Value(40));
@@ -40,13 +40,13 @@ const ActionButtons = () => {
 
     return(
         <View>
-            
+
             <Animated.View style={{bottom: event}}>
-                <CircleButton icon="calendar"/>    
+                <CircleButton icon="calendar" onPress={onPressEvent}/>    
             </Animated.View>
         
             <Animated.View style={{bottom: holiday}}>
-                <CircleButton icon="birthday-cake"/>
+                <CircleButton icon="birthday-cake" onPress={onPressHoliday}/>
             </Animated.View>
         
             <CircleButton icon="plus" main={true} onPress={() => {
