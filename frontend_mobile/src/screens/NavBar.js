@@ -5,7 +5,7 @@ import { Text, View, Dimensions, Image, StyleSheet } from 'react-native';
 import ScheduleScreen from "./ScheduleScreen";
 import NotesScreen from "./NotesScreen";
 import ProfileScreen from "./ProfileScreen";
-
+import ContactsScreen from "./ContactsScreen";
 const home = require('../../assets/home.png')
 const profile = require('../../assets/profile.png')
 const contacts = require('../../assets/contacts.png')
@@ -35,7 +35,7 @@ const NavBar = ({ navigation }) => {
           }
         }}
       >
-        <Tab.Screen name='Home Screen' 
+        <Tab.Screen name='Home' 
           component={ScheduleScreen} 
           options={{ 
             tabBarIcon: ({focused}) => (
@@ -102,11 +102,11 @@ const NavBar = ({ navigation }) => {
           }}
         />
          <Tab.Screen name='Contacts' 
-          component={NotesScreen} 
+          component={ContactsScreen} 
           options={{
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Image  source={contacts} 
+                  <Image source={contacts} 
                   resizeMode='contain'
                   style={[
                     styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
