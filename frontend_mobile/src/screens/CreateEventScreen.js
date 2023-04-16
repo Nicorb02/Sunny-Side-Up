@@ -3,6 +3,7 @@ import { View, Text, Modal, StyleSheet } from "react-native";
 import DTPicker from "../components/DTPicker";
 import CustomButton from "../components/CustomButton";
 import CustomInput from "../components/CustomInput";
+import { TextInput } from "react-native-paper";
 
 const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
 
@@ -58,9 +59,23 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
         <View style={styles.root}>
             <Text style={styles.title}>Create Event</Text>
             <View style={{width: '100%', marginTop: 20}}>
-                <CustomInput placeholder="Event" value={eventTitle} setValue={setEventTitle}/>
-                <CustomInput placeholder="Description" value={eventDescription} setValue={setEventDescription}/>
-            </View>
+                <TextInput 
+                    style={styles.input} 
+                    mode="outlined" 
+                    label="Event" 
+                    value={eventTitle} 
+                    onChangeText={eventTitle => setEventTitle(eventTitle)}
+                    autoCapitalize="none"
+                />
+                <TextInput 
+                    style={styles.input} 
+                    mode="outlined" 
+                    label="Description" 
+                    value={eventDescription} 
+                    onChangeText={eventDescription => setEventDescription(eventDescription)}
+                    autoCapitalize="none"
+                />                
+                </View>
             <View style={{width: '100%', marginTop: 30}}>
                 <View style={styles.dateContainer}>
                     <Text style={styles.text}>Start</Text>
@@ -110,7 +125,11 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
 
-    }   
+    },
+    input: {
+        marginVertical: 5, 
+        backgroundColor: '#fff'
+    }
 })
 
 export default CreateEventScreen;

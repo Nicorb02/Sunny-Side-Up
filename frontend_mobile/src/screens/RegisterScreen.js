@@ -153,7 +153,7 @@ const RegisterScreen = ({navigation}) => {
                         label="First Name" 
                         value={firstName} 
                         onChangeText={firstName => setFirstName(firstName)}
-                        autoCapitalize={false}
+                        autoCapitalize="none"
                     />
                     <TextInput 
                         style={styles.input} 
@@ -161,7 +161,7 @@ const RegisterScreen = ({navigation}) => {
                         label="Last Name" 
                         value={lastName} 
                         onChangeText={lastName => setLastName(lastName)}
-                        autoCapitalize={false}
+                        autoCapitalize="none"
                     />
                     <TextInput 
                         style={styles.input} 
@@ -169,7 +169,7 @@ const RegisterScreen = ({navigation}) => {
                         label="Email" 
                         value={email} 
                         onChangeText={email => setEmail(email)}
-                        autoCapitalize={false}
+                        autoCapitalize="none"
                     />
 
                     <View>
@@ -180,7 +180,7 @@ const RegisterScreen = ({navigation}) => {
                         value={password} 
                         onChangeText={password => setPassword(password)} 
                         secureTextEntry={passwordVisibility}
-                        autoCapitalize={false}
+                        autoCapitalize="none"
                         
                     />
                         <Pressable

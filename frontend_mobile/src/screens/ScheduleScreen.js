@@ -44,6 +44,9 @@ const ScheduleScreen = () => {
     const [eventTitle, setEventTitle] = useState('')
     const [eventDescription, setEventDescription] = useState('')
 
+    const toggleCreateHolidayModal = () => {
+        return
+    }
     const [createEventModal, setCreateEventModal] = useState(false)
 
     const toggleCreateEventModal = () => {
@@ -210,7 +213,7 @@ const ScheduleScreen = () => {
 
             />
 
-            <ActionButtons onPressEvent={toggleCreateEventModal}/>
+            <ActionButtons onPressEvent={toggleCreateEventModal} onPressHoliday={toggleCreateHolidayModal}/>
 
             <Modal animationType="none" transparent={false} visible={createEventModal}>
                 {/* <View style={styles.root}>

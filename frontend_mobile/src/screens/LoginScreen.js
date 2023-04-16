@@ -123,7 +123,7 @@ const LoginScreen = ({navigation}) => {
                         label="Email" 
                         value={email} 
                         onChangeText={email => setEmail(email)}
-                        autoCapitalize={false}
+                        autoCapitalize="none"
                     />
 
                     <View>
@@ -134,7 +134,7 @@ const LoginScreen = ({navigation}) => {
                         value={password} 
                         onChangeText={password => setPassword(password)} 
                         secureTextEntry={passwordVisibility}
-                        autoCapitalize={false}
+                        autoCapitalize="none"
                         
                     />
                         <Pressable
