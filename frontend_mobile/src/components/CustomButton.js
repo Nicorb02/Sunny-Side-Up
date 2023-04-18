@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
     },
     container_TERTIARY: {
     },
+    container_DELETE: {
+        borderColor: 'red',
+        borderWidth: 2,
+    },
     text: {
         fontFamily: "Arial",
         fontWeight: 'bold',
@@ -41,6 +45,10 @@ const styles = StyleSheet.create({
     },
     text_SECONDARY: {
         color: '#FF9900',
+
+    },
+    text_DELETE: {
+        color: 'red',
 
     }
     
