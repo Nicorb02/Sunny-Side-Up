@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Avatar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, FlatList } from "react-native";
@@ -26,6 +26,8 @@ const ContactsScreen = () => {
         {id: 13, name: "Person", phone: "1234567890", email: "person@email.com"},
     ])
 
+    const [firstTimeInvoke, setFirstTimeInvoke] = useState(true)
+    
     const [contactName, setContactName] = useState('')
     const [contactPhone, setContactPhone] = useState('')
     const [contactEmail, setContactEmail] = useState('')
@@ -35,12 +37,19 @@ const ContactsScreen = () => {
     const [contactEmailError, setContactEmailError] = useState(false)
     const [inputValid, setInputValid] = useState(false)
     
-    const [editItem, setEditItem] = useState(null);
+    const [editItem, setEditItem] = useState({id: null});
 
     const [addContactModal, setAddContactModal] = useState(false)
     const [editContactModal, setEditContactModal] = useState(false)
+    
     let count = contacts.length
 
+    const [errorText, setErrorText] = useState('')
+
+    const fillAllError = "Please fill all fields."
+    const phoneError = "Please enter a valid phone number."
+    const emailError = "Please enter a valid email."
+    
     const addContact = () => {
         contacts.push(
             {
@@ -73,10 +82,45 @@ const ContactsScreen = () => {
     }
 
     const checkInputValidity = () => {
-        console.log(contactName)
-        console.log(contactEmail)
-        console.log(contactPhone)
+        checkNameValidity(contactName)
+        checkPhoneValidity(contactPhone)
+        checkEmailValidity(contactEmail)
 
+        console.log(contactNameError)
+        console.log(contactPhoneError)
+        console.log(contactEmailError)
+        if (!contactNameError && !contactPhoneError && !contactEmailError)
+        {
+            setInputValid(true)
+
+        }
+        else
+        {
+            
+            setInputValid(false)
+
+            if (contactNameError) 
+            {
+                setErrorText(fillAllError)
+                return
+            }
+            else if (contactPhoneError)    
+            {
+                setErrorText(phoneError)
+                return
+            }
+            else if (contactEmailError)
+            {
+
+                setErrorText(emailError)
+
+            }
+
+            
+
+
+        }
+        
         // const contactNameEmpty = contactName.length === 0;
         // const contactPhoneEmpty = contactPhone.length === 0;
         // const contactNameEmpty = contactName.length === 0;
@@ -98,9 +142,8 @@ const ContactsScreen = () => {
                     <Avatar.Text label={item.name[0]} size={50} style={{backgroundColor:'#ff9900'}}/>
                     <View>
                         <Text style={styles.item}>{item.name}</Text>
-                        <Text style={styles.item}>{item.phone}</Text>
+                        <Text style={styles.item}>({item.phone.slice(0, 3)})-{item.phone.slice(3, 6)}-{item.phone.slice(6, 10)}</Text>
                         <Text style={styles.item}>{item.email}</Text>
-                        <Text style={styles.item}>{item.id}</Text>
                     </View>
                 </View>
             </Card>
@@ -113,6 +156,7 @@ const ContactsScreen = () => {
     };
 
     const editContact = () => {
+        console.log(inputValid)
         setContacts((prevData) =>
         prevData.map((item) =>
         item.id === editItem.id
@@ -120,22 +164,62 @@ const ContactsScreen = () => {
           : item
         )
         );
-        setEditContactModal(false);
+        // setEditContactModal(false);
     };  
+
+    const checkPhoneValidity = (contactPhone) => {
+        if (contactPhone.length != 10)
+            setContactPhoneError(true)
+        else
+            setContactPhoneError(false)
+    }
+
+    const checkNameValidity = (contactName) => {
+        if (!contactName)
+            setContactNameError(true)
+        else
+            setContactNameError(false)
+    }
+
+    const checkEmailValidity = (contactEmail) => {
+        if (!contactEmail || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)))
+            setContactEmailError(true)
+        else
+            setContactEmailError(false)
+    }
+
     
     const openEditModal = (item) => {
         setEditItem(item);
         setContactName(item.name)
         setContactEmail(item.email)
         setContactPhone(item.phone)
-        console.log(item)
-        // console.log(item.name)
-        // console.log(item.email)
-        // console.log(item.phone)
+        setErrorText('')
         setEditContactModal(true)
     }
 
-    
+    const openAddModal = () => {
+        clearInput()
+
+        setContactNameError(false)
+        setContactEmailError(false)
+        setContactPhoneError(false)
+        
+        setAddContactModal(true)
+    }
+
+    useEffect(() => {
+        if (firstTimeInvoke)
+            setFirstTimeInvoke(false)
+        else
+            checkInputValidity()
+
+        return () => {
+            setContactNameError(false)
+            setContactEmailError(false)
+            setContactPhoneError(false)
+        }
+      }, [contactName, contactPhone, contactEmail, editItem.id])
 
     return(
         <SafeAreaView style={styles.container}>
@@ -144,11 +228,9 @@ const ContactsScreen = () => {
                 <Text style={styles.title}>Contacts</Text>
                 <View>
                     <TouchableOpacity onPress={() => {
-                        clearInput()
-
-                        setAddContactModal(true)
+                        openAddModal()
                     }}>
-                    <Icon name="plus"  size={45} color='#e94d0b'/>
+                    <Icon name="plus" size={45} color='#e94d0b'/>
 
                     </TouchableOpacity>
             </View>
@@ -163,18 +245,20 @@ const ContactsScreen = () => {
 
             <Modal animationType="slide" visible={addContactModal}>
                 <View style={styles.root}>
+                    <View style={styles.content}>
                     <Text style={styles.title}>Add New Contact</Text>
                     <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
                     <View style={{width: '100%', marginTop: 20}}>
-                        <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => setContactName(contactName)} autoCapitalize="none" error={contactNameError}/>
-                        <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={contactEmail => setContactEmail(contactEmail)} autoCapitalize="none" error={contactEmailError}/>
+                        <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => {setContactName(contactName); console.log(contactName)}} autoCapitalize="none" error={contactNameError}/>
                         <TextInput style={styles.input} mode="outlined" label="Phone" value={contactPhone} onChangeText={contactPhone => setContactPhone(contactPhone)} autoCapitalize="none" error={contactPhoneError}/>
+                        <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={contactEmail => setContactEmail(contactEmail)} autoCapitalize="none" error={contactEmailError}/>
                     </View>
-                    <View style={{width: '100%', marginVertical: 100}}>
+                        </View>
+                    <View style={styles.buttons}>
                         <CustomButton text="Add Contact" onPress={() => {
                             // checkInputValidity()
                             // if (inputValid)
-                                addContact() 
+                            addContact() 
                         }}/>
                         <CustomButton text="Cancel" onPress={() =>{
                             setAddContactModal(false)
@@ -185,17 +269,34 @@ const ContactsScreen = () => {
 
             <Modal animationType="slide" visible={editContactModal}>
                 <View style={styles.root}>
-                    <Text style={styles.title}>Edit Contact</Text>
-                    <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
-                    <View style={{width: '100%', marginTop: 20}}>
-                        <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => setContactName(contactName)} autoCapitalize="none" error={contactNameError}/>
-                        <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={contactEmail => setContactEmail(contactEmail)} autoCapitalize="none" error={contactEmailError}/>
-                        <TextInput style={styles.input} mode="outlined" label="Phone" value={contactPhone} onChangeText={contactPhone => setContactPhone(contactPhone)} autoCapitalize="none" error={contactPhoneError}/>
+                    <View style={styles.content}>
+                        <Text style={styles.title}>Edit Contact</Text>
+                        <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
+                        <View style={{width: '100%', marginTop: 20}}>
+                            <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={(contactName) => {
+                                setContactName(contactName)
+                                
+                            }} 
+                            autoCapitalize="none" error={contactNameError}/>
+                            <TextInput style={styles.input} mode="outlined" label="Phone" value={contactPhone} onChangeText={(contactPhone) => {
+                                setContactPhone(contactPhone)
+                                
+                            }}
+                            autoCapitalize="none" error={contactPhoneError}/>
+                            <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={(contactEmail) => {
+                                setContactEmail(contactEmail)
+                                
+                            }} 
+                            autoCapitalize="none" error={contactEmailError}/>
+                        </View>
+                        <View style={{marginTop: 30, justifyContent: "center", alignItems: 'center', backgroundColor: '#fff', width: 300}}>
+                            <Text style={{color: 'red'}}>{errorText}</Text>
+                        </View>
                     </View>
-                    <View style={{width: '100%', marginVertical: 100}}>
+                    <View style={styles.buttons}>
                         <CustomButton text="Apply Changes" onPress={() => {
-                            // checkInputValidity()
-                            // if (inputValid)
+                            checkInputValidity()
+                            if (inputValid)
                             editContact()
                         }}/>
                             <CustomButton text="Delete Contact" onPress={() =>{
@@ -221,13 +322,17 @@ const styles = StyleSheet.create({
 
     },
     item: {
+        padding: 2,
         paddingLeft: 10,
         fontSize: 15,
     },
     root: {
-        alignItems: 'center',
-        padding: 10,
-        marginVertical: 50
+        // alignItems: 'center',
+        // padding: 10,
+        // marginVertical: 50
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: '100%'
     },
     title: {
         fontSize: 34,
@@ -250,6 +355,20 @@ const styles = StyleSheet.create({
     input: {
         marginVertical: 5, 
         backgroundColor: '#fff'
+    },
+    error: {
+        color: 'red'
+        
+    },
+    content: {
+        alignItems: 'center',
+        padding: 10,
+        marginVertical: 50
+    },
+    buttons: {
+        width: '100%', 
+        bottom: 5, 
+        padding: 10
     }
   });
 
