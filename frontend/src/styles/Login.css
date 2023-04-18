@@ -47,6 +47,7 @@
     text-align: center;
     transition: transform 0.4s ease-in-out 0.25s;
     transform: translateX(-100%);
+    
 }
 
 .register-form.slide-right {
@@ -173,6 +174,10 @@
 }
 
 .password-div{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 247px;
     height: 52px;
     background: rgba(102,16,242,0);
@@ -259,4 +264,112 @@
 
 .title-text-href{
     text-decoration: none;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    transform: translateY(-30%); 
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.invalid-alert-email {
+    position: absolute;
+    right: 12%;
+    transform: translateY(-25%);
+}
+
+.invalid-alert-code {
+    position: absolute;
+    right: 12%;
+    transform: translateY(35%);
+}
+
+.register-password-toggle {
+    position: absolute;
+    right: 10%;
+    transform: translateY(-25%); 
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.pass-comp-form {
+    height: 120px;
+    width: 250px;
+    background: #343434;
+    border-radius: 15px;
+    position: absolute;
+    top: -130px; 
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    transition: top 0.4s ease-in-out 0.25s;
+}
+
+.pass-comp-form.slide-down {
+    top: 10px;
+}
+
+.pass-comp-text {
+    font-weight: bold;
+    font-family: Oswald, sans-serif;
+    font-size: 14px;
+    text-align: justify;
+    margin-top: 5px;  
+    margin-bottom: 1rem;
+}
+
+.email-ver-form {
+    height: 120px;
+    width: 250px;
+    background: #343434;
+    border-radius: 15px;
+    position: absolute;
+    top: -130px; 
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    transition: top 0.4s ease-in-out 0.25s;
+}
+
+.email-ver-form.slide-down {
+    top: 10px;
+}
+
+.email-ver-text {
+    font-weight: bold;
+    font-family: Oswald, sans-serif;
+    font-size: 14px;
+    text-align: justify;
+}
+
+.email-ver-field {
+    width: 100px;
+    letter-spacing: 8px;
+    text-align: center;
+}
+
+.code-button {
+    background: #f7fff7;
+    border-style: none;
+    border-radius: 10px;
+    font-family: 'Abyssinica SIL';
+    font-weight: bold;
+    color: #343434;
+    height: 26px;
+    width: 63px;
+    margin-top: 2px;
+}
+
+.code-button:hover {
+    cursor: pointer;
 }
