@@ -41,7 +41,8 @@ const ContactsScreen = () => {
 
     const [addContactModal, setAddContactModal] = useState(false)
     const [editContactModal, setEditContactModal] = useState(false)
-    
+
+    const [submitEnabled, setSubmitEnabled] = useState(false)
     let count = contacts.length
 
     const [errorText, setErrorText] = useState('')
@@ -81,10 +82,14 @@ const ContactsScreen = () => {
         setContactPhone('')
     }
 
-    const checkInputValidity = () => {
+    const refreshInputValidity = () => {
         checkNameValidity(contactName)
         checkPhoneValidity(contactPhone)
         checkEmailValidity(contactEmail)
+    }
+
+    const checkInputValidity = () => {
+
 
         console.log(contactNameError)
         console.log(contactPhoneError)
@@ -92,7 +97,7 @@ const ContactsScreen = () => {
         if (!contactNameError && !contactPhoneError && !contactEmailError)
         {
             setInputValid(true)
-
+            setErrorText('')
         }
         else
         {
@@ -111,26 +116,14 @@ const ContactsScreen = () => {
             }
             else if (contactEmailError)
             {
-
                 setErrorText(emailError)
-
             }
-
-            
-
-
         }
-        
-        // const contactNameEmpty = contactName.length === 0;
-        // const contactPhoneEmpty = contactPhone.length === 0;
-        // const contactNameEmpty = contactName.length === 0;
-
-        // const isInputValid = !contactNameEmpty && /** */
-
-        // setInputValid(isInputValid);
-        // setContactNameError(contactNameEmpty);
-        // setContactPhoneError(contactPhoneEmpty);
-        // setContactEmailError(contactNameEmpty);
+    }
+    
+    const determineSubmitEnabled = () => {
+        const allInputsValid = isNameValid(contactName) && isEmailValid(contactEmail) && isPhoneValid(contactPhone);
+        setSubmitEnabled(allInputsValid)
     }
 
     const renderItems = ({ item }) => (
@@ -164,30 +157,41 @@ const ContactsScreen = () => {
           : item
         )
         );
-        // setEditContactModal(false);
+        setEditContactModal(false);
     };  
 
     const checkPhoneValidity = (contactPhone) => {
-        if (contactPhone.length != 10)
+        if (!isPhoneValid(contactPhone))
             setContactPhoneError(true)
         else
             setContactPhoneError(false)
     }
 
     const checkNameValidity = (contactName) => {
-        if (!contactName)
+        if (!isNameValid(contactName))
             setContactNameError(true)
         else
             setContactNameError(false)
     }
 
     const checkEmailValidity = (contactEmail) => {
-        if (!contactEmail || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)))
+        if (!isEmailValid(contactEmail))
             setContactEmailError(true)
         else
             setContactEmailError(false)
     }
 
+    const isNameValid = (contactName) => {
+        return !!contactName
+    }
+
+    const isPhoneValid = (contactPhone) => {
+        return contactPhone.length === 10
+    }
+    
+    const isEmailValid = (contactEmail) => {
+        return (!!contactEmail && (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)))
+    }
     
     const openEditModal = (item) => {
         setEditItem(item);
@@ -199,27 +203,36 @@ const ContactsScreen = () => {
     }
 
     const openAddModal = () => {
-        clearInput()
-
-        setContactNameError(false)
-        setContactEmailError(false)
-        setContactPhoneError(false)
-        
         setAddContactModal(true)
     }
 
     useEffect(() => {
+        determineSubmitEnabled()
+
         if (firstTimeInvoke)
             setFirstTimeInvoke(false)
         else
-            checkInputValidity()
+            refreshInputValidity()
 
-        return () => {
+      }, [contactName, contactPhone, contactEmail, editItem.id])
+
+      // reset everything when modals are closed
+      useEffect(() => {
+        if (!editContactModal && !addContactModal)
+        {
+            setFirstTimeInvoke(true)
             setContactNameError(false)
             setContactEmailError(false)
             setContactPhoneError(false)
+            clearInput()
+            setErrorText('')
+            setSubmitEnabled(false)
         }
-      }, [contactName, contactPhone, contactEmail, editItem.id])
+      }, [editContactModal, addContactModal])
+
+      useEffect(() => {
+          checkInputValidity()
+      }, [contactEmailError, contactNameError, contactPhoneError])
 
     return(
         <SafeAreaView style={styles.container}>
@@ -246,19 +259,20 @@ const ContactsScreen = () => {
             <Modal animationType="slide" visible={addContactModal}>
                 <View style={styles.root}>
                     <View style={styles.content}>
-                    <Text style={styles.title}>Add New Contact</Text>
-                    <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
-                    <View style={{width: '100%', marginTop: 20}}>
-                        <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => {setContactName(contactName); console.log(contactName)}} autoCapitalize="none" error={contactNameError}/>
-                        <TextInput style={styles.input} mode="outlined" label="Phone" value={contactPhone} onChangeText={contactPhone => setContactPhone(contactPhone)} autoCapitalize="none" error={contactPhoneError}/>
-                        <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={contactEmail => setContactEmail(contactEmail)} autoCapitalize="none" error={contactEmailError}/>
-                    </View>
+                        <Text style={styles.title}>Add New Contact</Text>
+                        <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
+                        <View style={{width: '100%', marginTop: 20}}>
+                            <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => setContactName(contactName)} autoCapitalize="none" error={contactNameError}/>
+                            <TextInput style={styles.input} mode="outlined" label="Phone" value={contactPhone} onChangeText={contactPhone => setContactPhone(contactPhone)} autoCapitalize="none" error={contactPhoneError}/>
+                            <TextInput style={styles.input} mode="outlined" label="Email" value={contactEmail} onChangeText={contactEmail => setContactEmail(contactEmail)} autoCapitalize="none" error={contactEmailError}/>
                         </View>
+                        <View style={{marginTop: 30, justifyContent: "center", alignItems: 'center', backgroundColor: '#fff', width: 300}}>
+                            <Text style={{color: 'red'}}>{errorText}</Text>
+                        </View>
+                    </View>
                     <View style={styles.buttons}>
-                        <CustomButton text="Add Contact" onPress={() => {
-                            // checkInputValidity()
-                            // if (inputValid)
-                            addContact() 
+                        <CustomButton text="Add Contact" disabled={!submitEnabled} onPress={() => {
+                                addContact() 
                         }}/>
                         <CustomButton text="Cancel" onPress={() =>{
                             setAddContactModal(false)
@@ -294,9 +308,7 @@ const ContactsScreen = () => {
                         </View>
                     </View>
                     <View style={styles.buttons}>
-                        <CustomButton text="Apply Changes" onPress={() => {
-                            checkInputValidity()
-                            if (inputValid)
+                        <CustomButton text="Apply Changes" disabled={!submitEnabled} onPress={() => {
                             editContact()
                         }}/>
                             <CustomButton text="Delete Contact" onPress={() =>{
