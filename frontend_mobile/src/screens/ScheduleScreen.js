@@ -11,7 +11,8 @@ import CustomButton from "../components/CustomButton";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DTPicker from "../components/DTPicker";
 import CreateEventScreen from "./CreateEventScreen";
-
+import EventItem from "../components/EventItem";
+import Day from "react-native-calendars/src/calendar/day";
 const ScheduleScreen = () => {
     const [selected, setSelected] = useState('');
     
@@ -33,9 +34,7 @@ const ScheduleScreen = () => {
         '2023-04-16': [{title: 'test 4', description: 'description 4'}] 
     })
 
-    const [event] = useState(new Animated.Value(40));
-    const [holiday] = useState(new Animated.Value(40));
-    
+
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     
@@ -125,74 +124,51 @@ const ScheduleScreen = () => {
     }
 
     const loadItems = (day) => {
-        const items = items || {};
-    
-        setTimeout(() => {
+
+      setTimeout(() => {
           for (let i = -15; i < 85; i++) {
-            const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-            const strTime = timeToString(time);
-    
-            if (!items[strTime]) {
-              items[strTime] = [];
-              
-              const numItems = Math.floor(Math.random() * 3 + 1);
-              for (let j = 0; j < numItems; j++) {
-                // items[strTime].push({
-                //   title: 'Item for ' + strTime + ' #' + j,
-                //   content: 'Content for ' + strTime,
-                //   height: Math.max(50, Math.floor(Math.random() * 150)),
-                //   day: strTime
-                // });
-            }
-            }
+              const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+              const strTime = timeToString(time);
+
+              if (!items[strTime]) {
+                  items[strTime] = [];
+              }
           }
-          if (!items['2017-06-02'])
-            items['2017-06-02'] = []
-          items['2017-06-02'].push({
-            title: 'Custom Added Item',
-            description: '2017-06-02'
-        })
-          
           const newItems = {};
           Object.keys(items).forEach(key => {
-            newItems[key] = items[key];
+              newItems[key] = items[key];
           });
-          setItems(newItems)
-        }, 1000);
-      }
-      
+          setItems(newItems);
+      }, 1000);
+  }
+
       const renderItem = (item) => {
           return(
-              <TouchableOpacity style={{
-              marginRight: 10,
-              marginTop: 17}}>
-                  <Card style={{backgroundColor:'#fff'}}>
-                      <Card.Content>    
-                          <View>
-                              <Text>
-                                  {item.title}
-                              </Text>
-                              <Text>
-                                  {item.description}
-                              </Text>
-                          </View>
-                      </Card.Content>
-                  </Card>
-              </TouchableOpacity>
+              <EventItem title={item.title} description={item.description} />
           )
       }
 
+      const markMonth = (selectedMonth) => {
+         // Create a new date object for the selected month
+        const date = new Date(selectedMonth);
+
+        // Get the number of days in the selected month
+        const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
+        // Loop through each day of the month and add it to the array
+        for (let i = 1; i <= daysInMonth; i++) {
+          // Format the date as "year-month-day"
+          const dateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+
+          items[dateString] = []
+
+        }
+      }
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#ffffff', marginBottom: 50}}>
 
             <Agenda
-                // onDayPress={day => {
-                //     setSelected(day.dateString);
-                // }}
-                // markedDates={{
-                //     [selected]: {selected: true, disableTouchEvent: true, selectedDotColor: 'orange'}
-                // }}
                 theme={{
                     backgroundColor: '#ffffff',
                     calendarBackground: '#ffffff',
@@ -205,10 +181,12 @@ const ScheduleScreen = () => {
                     dotColor: '#ff9900',
                     
                 }}
-
                 items={items}
-                // loadItemsForMonth={loadItems}
-                selected={today}
+                loadItemsForMonth={loadItems}
+                selected={timeToString(date)}
+                refreshControl={null}
+                showClosingKnob={true}
+                refreshing={false}
                 renderItem={renderItem}
 
             />
@@ -216,51 +194,9 @@ const ScheduleScreen = () => {
             <ActionButtons onPressEvent={toggleCreateEventModal} onPressHoliday={toggleCreateHolidayModal}/>
 
             <Modal animationType="none" transparent={false} visible={createEventModal}>
-                {/* <View style={styles.root}>
-                    <Text style={styles.title}>Create Event</Text>
-                    <View style={{width: '100%', marginTop: 20}}>
-                        <CustomInput placeholder="Event" value={eventTitle} setValue={setEventTitle}/>
-                        <CustomInput placeholder="Description" value={eventDescription} setValue={setEventDescription}/>
-                    </View>
-                    <View style={{width: '100%', marginTop: 30}}>
-                        <View style={styles.dateContainer}>
-                            <Text style={styles.text}>Start</Text>
-                            <DTPicker value={eventStartDate} onChange={changeStartDate}/>
-                        </View>
-                        <View style={styles.dateContainer}>
-                            <Text style={styles.text}>End</Text>
-                            <DTPicker value={eventEndDate} onChange={changeEndDate}/>
-                        </View>
-                    </View>
-                    <View style={{width: '100%', marginVertical: 100}}>
-                        <CustomButton text="Add Event" onPress={() => {
-                            if (eventTitle && eventDescription)
-                            {
-                                if (!items[timeToString(eventStartDate)])
-                                    items[timeToString(eventStartDate)] = []
-
-                                items[timeToString(eventStartDate)].push({
-                                    title: eventTitle,
-                                    description: eventDescription,
-                                    startDate: eventStartDate,
-                                    endDate: eventEndDate
-                                })
-
-                                setCreateEventModal(false)
-                                console.log(items)
-                            }
-                            else
-                            console.warn("fill all fields")
-                        }}/>
-                        <CustomButton text="Cancel" onPress={() =>{
-
-                            setCreateEventModal(false)
-                        }} type="TERTIARY"/>
-                    </View>
-                </View> */}
-
                 <CreateEventScreen onPressAdd={addEvent} onPressCancel={() => {setCreateEventModal(false)}}/>
             </Modal>
+
         </SafeAreaView>
     );
 }   
