@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import {View, Text, StyleSheet, Pressable} from 'react-native'
 
-const CustomButton = ( {onPress, text, type = "PRIMARY"} ) => {
+const CustomButton = ( {onPress, text, type = "PRIMARY", disabled = false} ) => {
     
         return (     
-        <Pressable onPress={onPress} style={[styles.container, styles[`container_${type}`]]}>
+        <Pressable onPress={onPress} disabled={disabled} style={[styles.container, styles[`container_${type}`], disabled && styles.disabledButton]}>
             <Text style={[styles.text, styles[`text_${type}`]]}>{text}</Text>
         </Pressable>
         );
@@ -50,7 +50,10 @@ const styles = StyleSheet.create({
     text_DELETE: {
         color: 'red',
 
-    }
+    }, 
+    disabledButton: {
+        opacity: 0.5
+    },
     
 });
 
