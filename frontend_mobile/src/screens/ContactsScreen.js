@@ -38,7 +38,7 @@ const ContactsScreen = () => {
     const [inputValid, setInputValid] = useState(false)
     
     const [editItem, setEditItem] = useState({id: null});
-
+    
     const [addContactModal, setAddContactModal] = useState(false)
     const [editContactModal, setEditContactModal] = useState(false)
 
@@ -331,7 +331,6 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 5,
       marginBottom: 50
-
     },
     item: {
         padding: 2,
@@ -339,9 +338,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     root: {
-        // alignItems: 'center',
-        // padding: 10,
-        // marginVertical: 50
         flexDirection: "column",
         justifyContent: "space-between",
         height: '100%'
