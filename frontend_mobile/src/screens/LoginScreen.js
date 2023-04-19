@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable, SafeAreaView} from 'react-native';
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 import { TextInput } from 'react-native-paper';
+
 
 
 const LoginScreen = ({navigation}) => {
@@ -109,15 +110,15 @@ const LoginScreen = ({navigation}) => {
         setPasswordVisibility(!passwordVisibility)
     };
     return(
-        <View style={styles.root}>
+        <SafeAreaView style={styles.root}>
 
-            <Image 
-                source={Logo} 
-                style={[styles.logo, {height: height * 0.25}]}
-                resizeMode="contain"
+                <Image 
+                    source={Logo} 
+                    style={[styles.logo, {height: height * 0.25}]}
+                    resizeMode="contain"
                 />
-                <View style={{width: '100%', marginTop: 20}}>
-                <TextInput 
+                <View style={{width: '100%', padding: 10}}>
+                    <TextInput 
                         style={styles.input} 
                         mode="outlined" 
                         label="Email" 
@@ -126,89 +127,101 @@ const LoginScreen = ({navigation}) => {
                         autoCapitalize="none"
                     />
 
-                    <View>
-                    <TextInput 
-                        style={styles.input} 
-                        mode="outlined" 
-                        label="Password" 
-                        value={password} 
-                        onChangeText={password => setPassword(password)} 
-                        secureTextEntry={passwordVisibility}
-                        autoCapitalize="none"
-                        
-                    />
-                        <Pressable
-                        activeOpacity={0.8}
-                        style={styles.visibilityBtn}
-                        onPress={toggleShowPassword}>
-                        <Image
-                            source={
-                            passwordVisibility
-                                ? view
-                                : hide
-                            }
-                            style={{height: 25, width: 25, }}
+                    <View style={{}}>
+                        <TextInput 
+                            style={styles.input} 
+                            mode="outlined" 
+                            label="Password" 
+                            value={password} 
+                            onChangeText={password => setPassword(password)} 
+                            secureTextEntry={passwordVisibility}
+                            autoCapitalize="none"
+                            
+                            
                         />
-                        </Pressable>
+                            <Pressable
+                            activeOpacity={0.8}
+                            style={styles.visibilityBtn}
+                            onPress={toggleShowPassword}>
+                            <Image
+                                source={
+                                passwordVisibility
+                                    ? view
+                                    : hide
+                                }
+                                style={{height: 25, width: 25}}
+                            />
+                            </Pressable>
+                    </View>
+                    <View style={{}}>
+                        <CustomButton text="Forgot Password?" onPress={onForgotPasswordPressed} type="TERTIARY" />
                     </View>
                 </View>
-                <View style={{}}>
-                    <CustomButton text="Forgot Password?" onPress={onForgotPasswordPressed} type="TERTIARY" />
-                </View>
-                <View style={{width: '100%', marginVertical: 100}}>
+                <View style={{width: '100%', bottom: 0, padding: 10}}>
                     <CustomButton text="Log In" onPress={onLoginPressed}/>
                     <CustomButton text="Dont have an account? Register" onPress={() => navigation.navigate('Register', {name: 'Register'})} type="TERTIARY"/>
                 </View>
 
+
+
+
             <Modal animationType="slide" transparent={false} visible={sendEmailModal}>
                 <View style={styles.root}>
-                    <Text style={styles.title}>Reset your password</Text>
-                    <View style={{width: '100%', marginTop: 20}}>
-                        <CustomInput placeholder="Email" value={resetPasswordEmail} setValue={setResetPasswordEmail} />
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.title}>Reset your password</Text>
+                        <View style={{width: '100%', marginVertical: 50}}>
+                            <CustomInput placeholder="Email" value={resetPasswordEmail} setValue={setResetPasswordEmail} />
+                            </View>
+                        <View style={{width: '100%', marginBottom: 0}}>
+                            <CustomButton text="Send" onPress={openSubmitCode}/>
+                            <CustomButton text="Back to Sign In" onPress={onReturnToSignInPressed} type="TERTIARY"/>
                         </View>
-                    <View style={{width: '100%', marginVertical: 100}}>
-                        <CustomButton text="Send" onPress={openSubmitCode}/>
-                        <CustomButton text="Back to Sign In" onPress={onReturnToSignInPressed} type="TERTIARY"/>
                     </View>
                 </View>
 
 
                 <Modal animationType="none" transparent={false} visible={submitCodeModal}>
                     <View style={styles.root}>
+                        <View style={styles.modalContainer}>
                         <Text style={styles.title}>Reset your password</Text>
-                        <View style={{width: '100%', marginTop: 20}}>
+                        <View style={{width: '100%', marginVertical: 50}}>
                             <CustomInput placeholder="Reset Code" value={enteredCode} setValue={setEnteredCode} />
                             </View>
-                        <View style={{width: '100%', marginVertical: 100}}>
+                        <View style={{width: '100%', marginBottom: 0}}>
                             <CustomButton text="Submit Code" onPress={openResetPassword}/>
                             <CustomButton text="Cancel" onPress={closeSubmitCode} type="TERTIARY"/>
                         </View>
+                            </View>
                     </View>
 
                     <Modal animationType="none" transparent={false} visible={resetPasswordModal}>
                         <View style={styles.root}>
-                            <Text style={styles.title}>Enter your new password</Text>
-                            <View style={{width: '100%', marginTop: 20}}>
-                                <CustomInput placeholder="New Password" value={newPassword} setValue={setNewPassword} secureTextEntry={true}/>
-                                <CustomInput placeholder="Confirm Password" value={newPasswordConfirmed} setValue={setNewPasswordConfirmed} secureTextEntry={true}/>
+                            <View style={styles.modalContainer}>
+                                <Text style={styles.title}>Enter your new password</Text>
+                                <View style={{width: '100%', marginVertical: 50}}>
+                                    <CustomInput placeholder="New Password" value={newPassword} setValue={setNewPassword} secureTextEntry={true}/>
+                                    <CustomInput placeholder="Confirm Password" value={newPasswordConfirmed} setValue={setNewPasswordConfirmed} secureTextEntry={true}/>
+                                    </View>
+                                <View style={{width: '100%', marginBottom: 0}}>
+                                    <CustomButton text="Reset Password"/>
+                                    <CustomButton text="Cancel" onPress={closeResetPassword} type="TERTIARY"/>
                                 </View>
-                            <View style={{width: '100%', marginVertical: 100}}>
-                                <CustomButton text="Reset Password"/>
-                                <CustomButton text="Cancel" onPress={closeResetPassword} type="TERTIARY"/>
                             </View>
                         </View>
                     </Modal>
                 </Modal>
             </Modal>
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
-        padding: 10,
-        marginVertical: 50
+        height: '100%',
+        backgroundColor: '#fff',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     logo: {
         width: '70%',
@@ -225,16 +238,28 @@ const styles = StyleSheet.create({
     },
     visibilityBtn: {
         position: 'absolute',
-        right: 9,
+        right: 10,
+        top: 24,
+
+        // right: 9,
         height: 25,
         width: 25,
         padding: 0,
-        marginTop: 21,
+        // marginTop: 10,
+        // marginRight: 
       },
       input: {
+          
         marginVertical: 5, 
-        backgroundColor: '#fff'
-    }
+        backgroundColor: '#fff',
+        width: '100%'
+    },
+    modalContainer: {
+        width:'100%', 
+        padding: 10, 
+        alignItems: 'center', 
+        marginVertical: 20
+}
 });
 
 
