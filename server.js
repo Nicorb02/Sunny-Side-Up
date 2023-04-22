@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.set('port', (process.env.PORT || 8080));
- // hello
+
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
