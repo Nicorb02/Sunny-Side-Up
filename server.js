@@ -19,7 +19,8 @@ const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
 var ObjectId = require('mongodb').ObjectId; 
 
-const sgMail = require('@sendgrid/mail')
+const sgMail = require('@sendgrid/mail');
+const { title } = require('process');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 app.use((req, res, next) =>
@@ -47,13 +48,12 @@ app.post('/api/login', async (req, res) =>
     id = results[0]._id;
     fn = results[0].firstName;
     ln = results[0].lastName;
-    events = results[0].events;
     }
     else
     {
         error = 'Invalid email or password';
     }
-  var ret = { _id:id, firstName:fn, lastName:ln, events:events, error:error};
+  var ret = { _id:id, firstName:fn, lastName:ln, error:error};
   res.status(200).json(ret);
 });
 
@@ -128,7 +128,7 @@ app.post('/api/register', async(req,res)=>{
     res.status(200).json(ret);
   })
 
-app.post('/api/addPermNote', async(req,res)=>{
+app.post('/api/addNote', async(req,res)=>{
 
   // incoming: id(of user), title, content
   // outgoing: error (if applicable)
@@ -145,7 +145,7 @@ app.post('/api/addPermNote', async(req,res)=>{
   }
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{events:{title:title, content:content}}});
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{notes:{title:title, content:content}}});
   if(results == null){
     error = 'Invalid userId';
     var ret = {error: error};
@@ -156,9 +156,9 @@ app.post('/api/addPermNote', async(req,res)=>{
   res.status(200).json(ret);
 })
 
-app.post('/api/delPermNote', async(req,res)=>{
+app.post('/api/delNote', async(req,res)=>{
 
-  // incoming: id(of user), title, content
+  // incoming: id(of user), title
   // outgoing: error (if applicable)
 
   var error = '';
@@ -174,9 +174,9 @@ app.post('/api/delPermNote', async(req,res)=>{
 
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title}}});
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{title:title}}});
   if(results == null){
-    error = 'Invalid userId';
+    error = 'No Note Found';
     var ret = {error: error};
     res.status(400).json(ret);
     return;
@@ -185,32 +185,60 @@ app.post('/api/delPermNote', async(req,res)=>{
   res.status(200).json(ret);
 })
 
-app.post('/api/searchPermNote', async(req,res)=>{
+app.post('/api/searchNote', async(req,res)=>{
 
   // incoming: id(of user), title, content
-  // outgoing: error (if applicable)
+  // outgoing: error (if applicable), array of notes that match criteria
 
   var error = '';
   const {_id, title} = req.body;
 
-  // check if any fields are empty
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
   const result = await db.collection('users').findOne({ _id: o_id});
-  const allNotesResults = result.events;
+  const allNotesResults = result.notes;
   console.log(allNotesResults)
   const searchedNotesResults = allNotesResults.filter(allNotesResults => allNotesResults.title.includes(title));
   var ret = {error: error, results:searchedNotesResults};
   res.status(200).json(ret);
 })
 
-app.post('/api/editPermNote', async(req,res)=>{
+app.post('/api/editNote', async(req,res)=>{
 
   // incoming: id(of user), title, content
   // outgoing: error (if applicable)
 
   var error = '';
-  const {_id, title, content} = req.body;
+  const {_id, prevTitle, newTitle, newContent} = req.body;
+
+  // check if any fields are empty
+  if (!newTitle){
+    error = 'Please add a title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  //
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "notes.title":prevTitle}, {$set:{"notes.$.title":newTitle, "notes.$.content":newContent}});
+  if(results == null){
+    error = 'No Note Found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/addEvent', async(req,res)=>{
+
+  // incoming: id(of user), title, content(optional), startTime, endTime
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title, content, startTime, endTime} = req.body;
 
   // check if any fields are empty
   if (!title){
@@ -219,14 +247,110 @@ app.post('/api/editPermNote', async(req,res)=>{
       res.status(400).json(ret);
       return;
   }
+  if (!startTime){
+    error = 'Please add a starting time';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  if (!endTime){
+    error = 'Please add a ending time';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
 
+  // Connect to database and get User ID
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
-  await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title}}});
-  await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{events:{title:title, content:content}}});
+
+  // Find user and push new event
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{events:{title:title, content:content,startTime:startTime, endTime:endTime}}});
+  if(results == null){
+    error = 'Not Not added, no user id found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
   var ret = {error: error};
   res.status(200).json(ret);
 })
+
+app.post('/api/searchEvent', async(req,res)=>{
+
+  // incoming: id(of user), searchTitle firstOfMonth, lastOfMonth
+  // outgoing: error (if applicable), array of events that match the criteria
+
+  var error = '';
+  const {_id, searchTitle, firstOfMonth, lastOfMonth} = req.body;
+
+  // Connect to database and get userId
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+
+  // Find the array of all events
+  const result = await db.collection('users').findOne({ _id: o_id});
+  const allEventsResults = result.events;
+
+  // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the firstOfMonth and lastOfMonth 
+  const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && firstOfMonth  <= allEventsResults.startTime && allEventsResults.endTime <= lastOfMonth));
+  
+  // Return filtered events
+  var ret = {error: error, results:searchedEventsResults};
+  res.status(200).json(ret);
+})
+
+app.post('/api/editEvent', async(req, res)=>{
+  // incoming: id (of user), prevTitle, newTitle, newContent, newStartDate, newEndDate 
+  // outgoing: error ()
+
+  // Get user input 
+  var error = '';
+  const {_id, prevTitle, newTitle, newContent, prevStartTime, newStartTime, newEndTime} = req.body;
+
+  // Connect to database and get user Id
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+
+  // Pull event where title = prevTitle and startTIme == prevStartTime
+  await db.collection('users').findOneAndUpdate({_id: o_id, "events.title":prevTitle, "events.startTime":prevStartTime}, {$set:{"events.$.title":newTitle, "events.$.content":newContent, "events.$.startTime":newStartTime, "events.$.endTime":newEndTime}});
+
+  // return error if applicable
+  var ret = {error:error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/delEvent', async(req,res)=>{
+
+  // incoming: id(of user), title,
+  // outgoing: error (if applicable)
+
+  var error = '';
+  const {_id, title, startTime} = req.body;
+
+  // check if any fields are empty
+  if (!title)
+  {
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return
+  }
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:startTime}}});
+  console.log(results);
+  if(results == null){
+    error = 'No event found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+
 
 //Get Current time
 app.post('/api/current-time', async (req, res, next) =>{
