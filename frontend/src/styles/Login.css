@@ -235,12 +235,12 @@
 
 .title-div{
     display: flex;
-    height: 46px;
+    flex-direction: column;
+    height: 200px;
     width: 400px;
     background: transparent;
     z-index: 100;
     margin: auto;
-    margin-bottom: auto;
     border-radius: 10px;
     justify-content: center;
     align-items: center;
@@ -251,9 +251,15 @@
     z-index: 100;
     font-family: Soap;
     font-size: 45px;
-    height: 46px;
+    height: 10px;
     color: #e94d0b;
     text-decoration: none;
+}
+
+.planner-text {
+    font-size: 18px;
+    font-family: Soap;
+    color: #e94d0b;
 }
 
 .title-text:hover{

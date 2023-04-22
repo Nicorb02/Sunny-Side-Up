@@ -4,11 +4,9 @@ import '../styles/SideBar.css';
 
 function SideBar() {
   return (
-    <>
     <div className = "navBar">
       
     </div>
-    </>
   )
 }
 
