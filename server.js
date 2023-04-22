@@ -21,6 +21,7 @@ var ObjectId = require('mongodb').ObjectId;
 
 const sgMail = require('@sendgrid/mail');
 const { title } = require('process');
+const { start } = require('repl');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 app.use((req, res, next) =>
@@ -43,17 +44,28 @@ app.post('/api/login', async (req, res) =>
   var id = -1;
   var fn = '';
   var ln = '';
+  var ret;
   if( results.length > 0 )
     {
     id = results[0]._id;
     fn = results[0].firstName;
     ln = results[0].lastName;
+
+    try
+      {
+        const token = require("./createJWT.js");
+        tk = token.createToken( fn, ln, id);
+        ret = {id:id, jwsToken:tk}
+      }
+      catch(e)
+      {
+        ret = {error:e.message};
+      }
     }
-    else
+  else
     {
-        error = 'Invalid email or password';
+      ret = {error:'Invalid email or password'};
     }
-  var ret = { _id:id, firstName:fn, lastName:ln, error:error};
   res.status(200).json(ret);
 });
 
@@ -130,11 +142,27 @@ app.post('/api/register', async(req,res)=>{
 
 app.post('/api/addNote', async(req,res)=>{
 
-  // incoming: id(of user), title, content
+  // incoming: id(of user), title, content, jwtToken
   // outgoing: error (if applicable)
 
   var error = '';
-  const {_id, title, content} = req.body;
+  const {_id, title, content, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // check if any fields are empty
   if (!title){
@@ -143,26 +171,61 @@ app.post('/api/addNote', async(req,res)=>{
       res.status(400).json(ret);
       return;
   }
+
+  // Connect to db and get id
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
+
+  // push the new note object into the notes array
   const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{notes:{title:title, content:content}}});
+
+  // If results == null, no user found for that id, so no changes made.
   if(results == null){
     error = 'Invalid userId';
     var ret = {error: error};
     res.status(400).json(ret);
     return;
   }
-  var ret = {error: error};
+
+  // refresh the jwt
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  // return error and refreshedToken
+  var ret = { error: error, jwtToken: refreshedToken };
   res.status(200).json(ret);
 })
 
 app.post('/api/delNote', async(req,res)=>{
 
-  // incoming: id(of user), title
+  // incoming: id(of user), title, jwtToken
   // outgoing: error (if applicable)
 
   var error = '';
-  const {_id, title} = req.body;
+  const {_id, title, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // check if any fields are empty
   if (!title){
@@ -181,35 +244,93 @@ app.post('/api/delNote', async(req,res)=>{
     res.status(400).json(ret);
     return;
   }
-  var ret = {error: error};
+
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
 app.post('/api/searchNote', async(req,res)=>{
 
-  // incoming: id(of user), title, content
+  // incoming: id(of user), title, content, jwtToken
   // outgoing: error (if applicable), array of notes that match criteria
 
   var error = '';
-  const {_id, title} = req.body;
+  const {_id, title, jwtToken} = req.body;
 
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  // connect to database and get id
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
+
+  // search for all notes that match citeria 
   const result = await db.collection('users').findOne({ _id: o_id});
   const allNotesResults = result.notes;
   console.log(allNotesResults)
   const searchedNotesResults = allNotesResults.filter(allNotesResults => allNotesResults.title.includes(title));
-  var ret = {error: error, results:searchedNotesResults};
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  var ret = {error: error, results:searchedNotesResults, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
 app.post('/api/editNote', async(req,res)=>{
 
-  // incoming: id(of user), title, content
+  // incoming: id(of user), prevTitle, newTitle, newContent, jwtToken
   // outgoing: error (if applicable)
 
   var error = '';
-  const {_id, prevTitle, newTitle, newContent} = req.body;
+  const {_id, prevTitle, newTitle, newContent, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // check if any fields are empty
   if (!newTitle){
@@ -218,7 +339,7 @@ app.post('/api/editNote', async(req,res)=>{
     res.status(400).json(ret);
     return;
   }
-  //
+  // edit note
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
   const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "notes.title":prevTitle}, {$set:{"notes.$.title":newTitle, "notes.$.content":newContent}});
@@ -228,17 +349,45 @@ app.post('/api/editNote', async(req,res)=>{
     res.status(400).json(ret);
     return;
   }
-  var ret = {error: error};
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
 app.post('/api/addEvent', async(req,res)=>{
 
-  // incoming: id(of user), title, content(optional), startTime, endTime
+  // incoming: id(of user), title, startTime, endTime, jwtToken
   // outgoing: error (if applicable)
 
   var error = '';
-  const {_id, title, content, startTime, endTime} = req.body;
+  const {_id, title, startTime, endTime, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // check if any fields are empty
   if (!title){
@@ -260,73 +409,220 @@ app.post('/api/addEvent', async(req,res)=>{
     return;
   }
 
+  const dateStartTime = new Date(startTime)
+  const dateEndTime = new Date(endTime)
+
   // Connect to database and get User ID
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
 
   // Find user and push new event
-  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{events:{title:title, content:content,startTime:startTime, endTime:endTime}}});
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{events:{title:title, startTime:dateStartTime, endTime:dateEndTime, isHoliday:0}}});
   if(results == null){
     error = 'Not Not added, no user id found';
     var ret = {error: error};
     res.status(400).json(ret);
     return;
   }
-  var ret = {error: error};
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
-app.post('/api/searchEvent', async(req,res)=>{
+app.post('/api/searchMonthlyEvent', async(req,res)=>{
 
-  // incoming: id(of user), searchTitle firstOfMonth, lastOfMonth
+  // incoming: id(of user), searchTitle firstOfMonth, lastOfMonth, jwtToken
   // outgoing: error (if applicable), array of events that match the criteria
 
   var error = '';
-  const {_id, searchTitle, firstOfMonth, lastOfMonth} = req.body;
+  const {_id, searchTitle, firstOfMonth, lastOfMonth, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // Connect to database and get userId
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
+
+  const dateFirstOfMonth = new Date(firstOfMonth)
+  const dateLastOfMonth = new Date(lastOfMonth)
 
   // Find the array of all events
   const result = await db.collection('users').findOne({ _id: o_id});
   const allEventsResults = result.events;
 
   // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the firstOfMonth and lastOfMonth 
-  const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && firstOfMonth  <= allEventsResults.startTime && allEventsResults.endTime <= lastOfMonth));
+  const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateFirstOfMonth  <= allEventsResults.startTime && allEventsResults.endTime <= dateLastOfMonth));
+  
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
   
   // Return filtered events
-  var ret = {error: error, results:searchedEventsResults};
+  var ret = {error: error, results:searchedEventsResults, jwtToken: refreshedToken};
+  res.status(200).json(ret);
+})
+
+app.post('/api/searchDailyEvent', async(req,res)=>{
+
+  // incoming: id(of user), searchTitle firstOfMonth, lastOfMonth, jwtToken
+  // outgoing: error (if applicable), array of events that match the criteria
+
+  var error = '';
+  const {_id, searchTitle, beginningOfDay, endOfDay, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  // Connect to database and get userId
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+
+  const dateBeginningOfDay = new Date(beginningOfDay)
+  const dateEndOfDay = new Date(endOfDay)
+
+  // Find the array of all events
+  const result = await db.collection('users').findOne({ _id: o_id});
+  const allEventsResults = result.events;
+
+  // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the firstOfMonth and lastOfMonth 
+  const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateBeginningOfDay <= allEventsResults.startTime && allEventsResults.endTime <= endOfDay));
+  
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+  
+  // Return filtered events
+  var ret = {error: error, results:searchedEventsResults, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
 app.post('/api/editEvent', async(req, res)=>{
-  // incoming: id (of user), prevTitle, newTitle, newContent, newStartDate, newEndDate 
+  // incoming: id (of user), prevTitle, newTitle, prevStartDate, newStartDate, newEndDate, jwtToken
   // outgoing: error ()
 
   // Get user input 
   var error = '';
-  const {_id, prevTitle, newTitle, newContent, prevStartTime, newStartTime, newEndTime} = req.body;
+  const {_id, prevTitle, newTitle, prevStartTime, newStartTime, newEndTime, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // Connect to database and get user Id
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
 
+  const datePrevStartTime = new Date(prevStartTime)
+  const dateNewStartTime = new Date(newStartTime)
+  const dateNewEndTime = new Date(newEndTime)
+
+  
   // Pull event where title = prevTitle and startTIme == prevStartTime
-  await db.collection('users').findOneAndUpdate({_id: o_id, "events.title":prevTitle, "events.startTime":prevStartTime}, {$set:{"events.$.title":newTitle, "events.$.content":newContent, "events.$.startTime":newStartTime, "events.$.endTime":newEndTime}});
+  await db.collection('users').findOneAndUpdate({_id: o_id, "events.title":prevTitle, "events.startTime":datePrevStartTime}, {$set:{"events.$.title":newTitle, "events.$.startTime":dateNewStartTime, "events.$.endTime":dateNewEndTime}});
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // return error if applicable
-  var ret = {error:error};
+  var ret = {error:error, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
 app.post('/api/delEvent', async(req,res)=>{
 
-  // incoming: id(of user), title,
+  // incoming: id(of user), title, jwtToken
   // outgoing: error (if applicable)
 
   var error = '';
-  const {_id, title, startTime} = req.body;
+  const {_id, title, startTime, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+    if( token.isExpired(jwtToken))
+    {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   // check if any fields are empty
   if (!title)
@@ -336,17 +632,33 @@ app.post('/api/delEvent', async(req,res)=>{
       res.status(400).json(ret);
       return
   }
+
+  // connect to database and get userid
   const db = client.db("COP4331");
   var o_id = new ObjectId(_id);
+
+  // pull events that match criteria
   const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:startTime}}});
-  console.log(results);
   if(results == null){
     error = 'No event found';
     var ret = {error: error};
     res.status(400).json(ret);
     return;
   }
-  var ret = {error: error};
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+  // return 
+  var ret = {error: error, jwtToken: refreshedToken};
   res.status(200).json(ret);
 })
 
