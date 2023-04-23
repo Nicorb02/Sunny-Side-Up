@@ -263,6 +263,7 @@ async function handleRegister() {
                 <a href="https://github.com/Nicorb02/Large-Project/tree/master" className='title-text-href'>
                     <p className="title-text">Sunny Side Up</p>
                 </a>
+                    <span className='planner-text'>Planner</span>
             </div>
         </div>
         {/* end of title div*/}
