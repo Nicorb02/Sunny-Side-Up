@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         bottom: 20,
     },
     circle_other: {
-        bottom: -20,
+        bottom: 20,
     }
 
 })
