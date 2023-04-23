@@ -351,7 +351,6 @@ app.post('/api/delEvent', async(req,res)=>{
 })
 
 
-
 //Get Current time
 app.post('/api/current-time', async (req, res, next) =>{
   //var error = '';
@@ -444,6 +443,99 @@ app.post('/api/reset-password', async (req, res) =>
 });
 
 
+app.post('/api/addContact', async(req, res) => {
+  // incoming: userId, name, email, phone
+  // outgoing: error
+  let error = '';
+  const {_id, name, email, phone} = req.body;
+  if (!name || !email || !phone)
+  {
+    error = "All fields are required to add a contact";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  } 
+  const db = client.db("COP4331");
+  let o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOneAndUpdate({_id: o_id}, {$push:{contacts: {name: name, email: email, phone: phone}}});
+  if (results == null)
+  {
+    error = "Invalid userId";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  let ret = {error: error};
+  res.status(200).json(ret);
+})
+
+// case sensitive
+app.post('/api/searchContact', async(req, res) => {
+  // incoming: id, name
+  // outgoing: error
+  let error = '';
+  const {_id, name} = req.body;
+
+  const db = client.db("COP4331")
+  let o_id = new ObjectId(_id);
+
+  const result = await db.collection('users').findOne({ _id: o_id});
+  const contactsFound = result.contacts;
+  console.log(contactsFound);
+
+  const searchResults = contactsFound.filter(contactsFound => contactsFound.name.includes(name));
+  let ret = {error: error, results: searchResults};
+  res.status(200).json(ret);
+})
+
+app.post('/api/editContact', async(req, res) => {
+  // incoming: user id, name, email, phone
+  // outgoing: error
+
+  let error = "";
+  const {_id, name, email, phone} = req.body;
+
+  if (!name || !email || !phone)
+  {
+    error = "Please add contact details";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull: {contacts: {name: name}}});
+  await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push: {contacts: {name: name, email: email, phone: phone,}}});
+  var ret = {error: error};
+  res.status(200).json(ret);
+})
+
+app.post('/api/deleteContact', async(req, res) => {
+  // incoming: user id, contact name
+  // outgoing: error
+  let error = '';
+  const {_id, name} = req.body;
+  if (!name)
+  {
+    error: "Please input the contact to delete";
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  const db = client.db("COP4331");
+  let o_id = new ObjectId(_id);
+  const results = await db.collection('users').findOneAndUpdate({_id: o_id}, {$pull:{contacts: {name: name}}});
+  if (results == null)
+  {
+    error = 'Invalid user id';
+    let ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+  let ret = {error: error};
+  res.status(200).json(ret);
+})
 
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
 // Server static assets if in production
