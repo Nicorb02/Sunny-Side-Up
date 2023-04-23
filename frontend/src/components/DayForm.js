@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import DatePick from './DatePick';
 import '../styles/DayForm.css'
 import LeftArrow from '../styles/assets/LeftArrow';
 import RightArrow from '../styles/assets/RightArrow';
@@ -9,10 +8,14 @@ import ContactsIcon from '../styles/assets/ContactsIcon';
 import ListIcon from '../styles/assets/ListIcon';
 import AddIcon from '../styles/assets/AddIcon';
 
-const DayForm = ({ date, setDate}) =>
+const DayForm = ({ date, setDate, setDisplayAddEvent}) =>
 {
     const [weekday, setWeekday] = useState("");
     const [day, setDay] = useState("");
+
+    function toggleDisplayAddEvent () {
+        setDisplayAddEvent(true);
+    }
   
     useEffect(() => {
       setWeekday(date.toLocaleString("en-US", { weekday: "long" }));
@@ -37,7 +40,7 @@ const DayForm = ({ date, setDate}) =>
 
     // delete events api when click trash
 
-    const items = [
+    const events = [
         { id: 1, text1: 'Something', text2: '9:30 PM' },
         { id: 2, text1: 'Something Else', text2: '5:00 AM' },
         { id: 3, text1: 'test', text2: '10:30 PM' },
@@ -62,17 +65,15 @@ const DayForm = ({ date, setDate}) =>
                 </div>
                 <div className='events-container'>
                     <div className='events-list'>
-                        {items.map((item) => (
-                          <li className='event-item' key={item.id}>
+                        {events.map((event) => (
+                          <li className='event-item' key={event.id}>
                             <div className='trash-icon'> <Trash /> </div>
-                            <p className='event-title'>{item.text1}</p>
-                            <p className='event-time'>{item.text2}</p>
+                            <p className='event-title'>{event.text1}</p>
+                            <p className='event-time'>{event.text2}</p>
                           </li>
                         ))}
                     </div>
-                    <div className='add-event-button'> <AddIcon /> </div>
-                    {/* <DatePick date={date}/>
-                    <span></span> {date.toLocaleString()} */}
+                    <div className='add-event-button' onClick={toggleDisplayAddEvent}> <AddIcon /> </div>
                 </div>
             </div>
             <div className='buttons-container'>
