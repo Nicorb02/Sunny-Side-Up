@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Image, Modal } from "react-native";
 import { Agenda } from 'react-native-calendars';
 import { Card } from "react-native-paper";
@@ -15,24 +15,26 @@ import EventItem from "../components/EventItem";
 import Day from "react-native-calendars/src/calendar/day";
 const ScheduleScreen = () => {
     const [selected, setSelected] = useState('');
-    
-    const [items, setItems] = useState({
-        '2023-04-15': [
-            {title: 'test 1', description: 'description 1'},
-            {title: 'test 2', description: 'description 2'},
-            {title: 'test 3', description: 'description 3'},
-            {title: 'test 1', description: 'description 1'},
-            {title: 'test 2', description: 'description 2'},
-            {title: 'test 3', description: 'description 3'},
-            {title: 'test 1', description: 'description 1'},
-            {title: 'test 2', description: 'description 2'},
-            {title: 'test 3', description: 'description 3'},
-            {title: 'test 1', description: 'description 1'},
-            {title: 'test 2', description: 'description 2'},
-            {title: 'test 3', description: 'description 3'},
-        ],
-        '2023-04-16': [{title: 'test 4', description: 'description 4'}] 
-    })
+  
+    const [refresh, setRefresh] = useState(false)
+    const [items, setItems] = useState({})
+    const [savedItems, setSavedItems] = useState({
+      '2023-04-23': [
+          {title: 'test 1', description: 'description 1'},
+          {title: 'test 2', description: 'description 2'},
+          {title: 'test 3', description: 'description 3'},
+          {title: 'test 1', description: 'description 1'},
+          {title: 'test 2', description: 'description 2'},
+          {title: 'test 3', description: 'description 3'},
+          {title: 'test 1', description: 'description 1'},
+          {title: 'test 2', description: 'description 2'},
+          {title: 'test 3', description: 'description 3'},
+          {title: 'test 1', description: 'description 1'},
+          {title: 'test 2', description: 'description 2'},
+          {title: 'test 3', description: 'description 3'},
+      ],
+      '2023-04-24': [{title: 'test 4', description: 'description 4'}] 
+  })
 
 
     const [date, setDate] = useState(new Date())
@@ -124,7 +126,6 @@ const ScheduleScreen = () => {
     }
 
     const loadItems = (day) => {
-
       setTimeout(() => {
           for (let i = -15; i < 85; i++) {
               const time = day.timestamp + i * 24 * 60 * 60 * 1000;
@@ -138,6 +139,10 @@ const ScheduleScreen = () => {
           Object.keys(items).forEach(key => {
               newItems[key] = items[key];
           });
+          Object.keys(savedItems).forEach(key => {
+              newItems[key] = savedItems[key];
+          });
+
           setItems(newItems);
       }, 1000);
   }
@@ -164,7 +169,7 @@ const ScheduleScreen = () => {
 
         }
       }
-
+      
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#ffffff', marginBottom: 50}}>
 
@@ -179,7 +184,6 @@ const ScheduleScreen = () => {
                     dayTextColor: '#2d4150',
                     textDisabledColor: '#b6c1cd',
                     dotColor: '#ff9900',
-                    
                 }}
                 items={items}
                 loadItemsForMonth={loadItems}
@@ -191,8 +195,8 @@ const ScheduleScreen = () => {
 
             />
 
-            <ActionButtons onPressEvent={toggleCreateEventModal} onPressHoliday={toggleCreateHolidayModal}/>
-
+            {/* <ActionButtons onPressEvent={toggleCreateEventModal} onPressHoliday={toggleCreateHolidayModal}/> */}
+            <CircleButton icon="plus" onPress={toggleCreateEventModal}/>
             <Modal animationType="none" transparent={false} visible={createEventModal}>
                 <CreateEventScreen onPressAdd={addEvent} onPressCancel={() => {setCreateEventModal(false)}}/>
             </Modal>
