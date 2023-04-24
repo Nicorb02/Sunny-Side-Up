@@ -5,6 +5,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, FlatList }
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import Icon from "react-native-vector-icons/Feather"
+import { Swipeable } from "react-native-gesture-handler";
 
 import { TextInput } from "react-native-paper";
 
@@ -127,20 +128,40 @@ const ContactsScreen = () => {
     }
 
     const renderItems = ({ item }) => (
+        <Swipeable
+    renderRightActions={() => (
+    <TouchableOpacity
+    style={styles.deleteButton}
+    onPress={() => deleteContact(item.id)}
+    >
+    <Icon name="trash-2" size={30} color="#fff"/>
+    </TouchableOpacity>
+    )}
+>
         <TouchableOpacity onPress={() => {
             openEditModal(item)
         }}>
-            <Card style={{margin: 10}}>
+            <Card style={{margin: 10, backgroundColor: '#fff', borderRadius: 0}}>
                 <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
-                    <Avatar.Text label={item.name[0]} size={50} style={{backgroundColor:'#ff9900'}}/>
-                    <View>
-                        <Text style={styles.item}>{item.name}</Text>
-                        <Text style={styles.item}>({item.phone.slice(0, 3)})-{item.phone.slice(3, 6)}-{item.phone.slice(6, 10)}</Text>
-                        <Text style={styles.item}>{item.email}</Text>
+                    <Avatar.Text label={item.name[0]} size={60} style={{backgroundColor:'#ff9900'}}/>
+                    <View style={{marginLeft: 20}}>
+                        <View style={{flexDirection: "row"}}>
+                            <Icon name="user" size={20} color="#343434"/>
+                            <Text style={[styles.item, {fontWeight:"bold"}]}>{item.name}</Text>
+                        </View>
+                        <View style={{flexDirection: "row"}}>
+                            <Icon name="phone" size={20} color="#343434"/>
+                            <Text style={styles.item}>({item.phone.slice(0, 3)})-{item.phone.slice(3, 6)}-{item.phone.slice(6, 10)}</Text>
+                        </View>
+                        <View style={{flexDirection: "row"}}>
+                            <Icon name="mail" size={20} color="#343434"/>
+                            <Text style={styles.item}>{item.email}</Text>
+                        </View>
                     </View>
                 </View>
             </Card>
         </TouchableOpacity>
+        </Swipeable>
     );
 
     const deleteContact = (id) => {
@@ -311,9 +332,9 @@ const ContactsScreen = () => {
                         <CustomButton text="Apply Changes" disabled={!submitEnabled} onPress={() => {
                             editContact()
                         }}/>
-                            <CustomButton text="Delete Contact" onPress={() =>{
+                            {/* <CustomButton text="Delete Contact" onPress={() =>{
                                 deleteContact(editItem.id)
-                            }} type="DELETE"/>
+                            }} type="DELETE"/> */}
                         <CustomButton text="Cancel" onPress={() =>{
                             setEditContactModal(false)
                         }} type="TERTIARY"/>
@@ -377,7 +398,14 @@ const styles = StyleSheet.create({
         width: '100%', 
         bottom: 5, 
         padding: 10
-    }
+    },
+    deleteButton: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        width: 100,
+      },
   });
 
 export default ContactsScreen;
