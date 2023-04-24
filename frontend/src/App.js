@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import LandingPage from './pages/LandingPage';
 import Resources from './components/Resources';
 import PlannerPage from './pages/PlannerPage';
+import TestingPage from './pages/TestingPage';
 import About from './components/About';
 
 
@@ -16,7 +17,7 @@ function App() {
         <Route path="/Resources" element={<Resources />} />
         <Route path="/PlannerPage" element={<PlannerPage />} />
         <Route path="/About" element={<About />} />
-
+        <Route path="/TestingPage" element={<TestingPage />} />
       </Routes>
     </BrowserRouter>
   );
