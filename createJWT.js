@@ -11,11 +11,11 @@ _createToken = function (id, fn, ln, error)
     let ret;
     try
     {
-        const user = {_id:id, firstName:fn, lastName:ln, error:error};
+        const user = {id:id, firstName:fn, lastName:ln, error:error};
 
-        const accessToken= jwt.sign(user,process.env.ACCESS_TOKEN_SECRET);
+        const accessToken = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET);
         
-        ret = {accessToken:accessToken, id:id, fn:fn, ln:ln, error:error};
+        ret = {accessToken:accessToken, id:id, firstName:fn, lastName:ln, error:error};
     }
     catch(e)
     {

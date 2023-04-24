@@ -28,6 +28,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 // import apis from apis file
 var api = require('./apis.js');
 api.setApp(app, client);
+console.log("server loaded");
 
 app.use((req, res, next) =>
 {

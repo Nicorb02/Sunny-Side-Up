@@ -1,8 +1,14 @@
-require('express');
 require('mongodb');
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+app.use(bodyParser.json());
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+let ObjectId = require('mongodb').ObjectId;
 
+console.log("api loaded")
 
 exports.setApp = function (app, client)
 {
@@ -28,6 +34,7 @@ exports.setApp = function (app, client)
 
         try
         {
+            console.log("creating token");
             const token = require("./createJWT.js");
             ret = token.createToken(id, fn, ln, error);
         }
@@ -415,7 +422,6 @@ exports.setApp = function (app, client)
     {
         console.log(e.message);
     }
-
     var ret = {error: error, jwtToken: refreshedToken};
     res.status(200).json(ret);
     })
@@ -480,9 +486,9 @@ exports.setApp = function (app, client)
     // outgoing: error (if applicable), array of events that match the criteria
 
     var error = '';
-    const {_id, searchTitle, beginningOfDay, endOfDay, jwtToken} = req.body;
-
+    const {_id, searchTitle, date, jwtToken} = req.body;
     // Ensure the jwt is not expired
+
     var token = require('./createJWT.js');
     try
     {
@@ -502,16 +508,18 @@ exports.setApp = function (app, client)
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
 
-    const dateBeginningOfDay = new Date(beginningOfDay)
-    const dateEndOfDay = new Date(endOfDay)
+    const dateBeginningOfDay = new Date(date);
+    dateBeginningOfDay.setHours(0,0,0,0);
+    const dateEndOfDay = new Date(date);
+    dateEndOfDay.setHours(23,59,59,999);
 
     // Find the array of all events
     const result = await db.collection('users').findOne({ _id: o_id});
     const allEventsResults = result.events;
-
-    // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the firstOfMonth and lastOfMonth 
-    const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateBeginningOfDay <= allEventsResults.startTime && allEventsResults.endTime <= endOfDay));
-    
+    console.log(allEventsResults);
+    // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the beginning and end of day
+    const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateBeginningOfDay <= allEventsResults.startTime && dateEndOfDay >= allEventsResults.startTime));
+    console.log(searchedEventsResults);
     // refresh token
     var refreshedToken = null;
     try

@@ -8,10 +8,52 @@ import ContactsIcon from '../styles/assets/ContactsIcon';
 import ListIcon from '../styles/assets/ListIcon';
 import AddIcon from '../styles/assets/AddIcon';
 
-const DayForm = ({ date, setDate, setDisplayAddEvent}) =>
+const DayForm = ({ date, setDate, setDisplayAddEvent, reloadEvents }) =>
 {
+    // import buildPath and local storage functions
+    let bp = require('./Path.js');
+    var storage = require('../tokenStorage.js');
+
+    // retrieve user data and current jswt from local storage
+    const userData = JSON.parse(localStorage.getItem('user_data'));
+    const _id = userData.id;
+    const jwtToken = storage.retrieveToken();
+
+    // reads all the events corresponding to a date
+    // automatically calls when date changes
+    const [events, setEvents] = useState([]);
+    useEffect(() => {
+        async function handleReadEvents() {
+          const response = await fetch(bp.buildPath('/api/searchDailyEvent'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ _id, searchTitle: '', date, jwtToken }),
+          });
+    
+          const data = await response.json();
+    
+          // sorts the events into a readable format for mapping later in the jsx
+          const sortedEvents = data.results
+            .map((event) => ({
+              id: event._id,
+              title: event.title,
+              startTime: new Date(event.startTime).toISOString()
+            }))
+            .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+            .map((event) => ({
+                ...event,
+                startTime: new Date(event.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+              }));
+          setEvents(sortedEvents);
+        }
+        
+        handleReadEvents();
+      }, [date, reloadEvents]);
+
+      
     const [weekday, setWeekday] = useState("");
     const [day, setDay] = useState("");
+
 
     function toggleDisplayAddEvent () {
         setDisplayAddEvent(true);
@@ -34,19 +76,9 @@ const DayForm = ({ date, setDate, setDisplayAddEvent}) =>
         setDate(prevDate);
     };
 
-    // create event api, take name, time, use { date } (the current day)
-
     // read events api and make list based on { date }
 
     // delete events api when click trash
-
-    const events = [
-        { id: 1, text1: 'Something', text2: '9:30 PM' },
-        { id: 2, text1: 'Something Else', text2: '5:00 AM' },
-        { id: 3, text1: 'test', text2: '10:30 PM' },
-        { id: 4, text1: 'COP4331', text2: '6:00 PM' },
-        { id: 5, text1: 'Presentation', text2: '5:30 PM' },
-      ];
 
     return (
         <div className='form'>
@@ -68,8 +100,8 @@ const DayForm = ({ date, setDate, setDisplayAddEvent}) =>
                         {events.map((event) => (
                           <li className='event-item' key={event.id}>
                             <div className='trash-icon'> <Trash /> </div>
-                            <p className='event-title'>{event.text1}</p>
-                            <p className='event-time'>{event.text2}</p>
+                            <p className='event-title'>{event.title}</p>
+                            <p className='event-time'>{event.startTime}</p>
                           </li>
                         ))}
                     </div>

@@ -7,12 +7,14 @@ import AddEvent from '../components/AddEvent';
 const PlannerPage = () => {
     const [displayAddEvent, setDisplayAddEvent] = useState(false);
     const [date, setDate] = useState(new Date());
+    const [reloadEvents, toggleReloadEvents] = useState(false);
 
     return (
         <div className='page'>
             <DayForm 
                 date={date} setDate={setDate} 
                 setDisplayAddEvent={setDisplayAddEvent} 
+                reloadEvents={reloadEvents}
             />
             <CalendarCom 
                 date={date} 
@@ -22,6 +24,8 @@ const PlannerPage = () => {
                 <AddEvent 
                     setDisplayAddEvent={setDisplayAddEvent}
                     date={date}
+                    toggleReloadEvents={toggleReloadEvents}
+                    reloadEvents={reloadEvents}
                 />
             </div>
         </div>

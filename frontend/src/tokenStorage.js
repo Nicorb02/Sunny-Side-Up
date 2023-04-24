@@ -3,6 +3,7 @@ exports.storeToken = function ( tok )
     try
     {
         localStorage.setItem('token_data', tok.accessToken);
+        console.log(tok.accessToken);
     }
     catch(e)
     {

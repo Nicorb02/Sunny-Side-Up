@@ -65,6 +65,7 @@ function Login() {
       if (data.error == '') 
       {
         console.log('good login');
+        console.log(data);
         // store the token locally
         storage.storeToken(data);
 
