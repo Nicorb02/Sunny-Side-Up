@@ -1,5 +1,5 @@
 require('mongodb');
-
+const jwt = require("jsonwebtoken");
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -50,6 +50,19 @@ exports.setApp = function (app, client)
     }
     res.status(200).json(ret);
     });
+
+    app.post('/api/logout', (req, res) => {
+        const { jwtToken } = req.body;
+      
+        // Expire the JWT by setting the expiration date to a date in the past
+        const expiredDate = new Date();
+        expiredDate.setDate(expiredDate.getDate() - 1);
+      
+        const expiredToken = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: '1s', notBefore: expiredDate.getTime() / 1000 });
+      
+        // Send the expired token back to the client
+        res.status(200).json({ expiredToken });
+      });
 
     app.post('/api/emailVer', async(req,res)=>{
     // incoming: email address
@@ -592,7 +605,7 @@ exports.setApp = function (app, client)
 
     // incoming: id(of user), title, jwtToken
     // outgoing: error (if applicable)
-
+    console.log("1")
     var error = '';
     const {_id, title, startTime, jwtToken} = req.body;
 
@@ -600,8 +613,11 @@ exports.setApp = function (app, client)
     var token = require('./createJWT.js');
     try
     {
+        console.log("2")
+
         if( token.isExpired(jwtToken))
         {
+            console.log("3")
         var r = {error:'The JWT is no longer valid', jwtToken: ''};
         res.status(200).json(r);
         return;
@@ -609,12 +625,14 @@ exports.setApp = function (app, client)
     }
     catch(e)
     {
+        console.log("4")
         console.log(e.message);
     }
-
+    console.log("5")
     // check if any fields are empty
     if (!title)
-    {
+    {   
+        console.log("6")
         error = 'Please add a title';
         var ret = {error: error};
         res.status(400).json(ret);
@@ -624,27 +642,31 @@ exports.setApp = function (app, client)
     // connect to database and get userid
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-
+    console.log("7")
     // pull events that match criteria
     const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:startTime}}});
     if(results == null){
+        console.log("8")
         error = 'No event found';
         var ret = {error: error};
         res.status(400).json(ret);
         return;
     }
-
+    console.log("9")
     // refresh token
     var refreshedToken = null;
     try
     {
+        console.log("10")
         refreshedToken = token.refresh(jwtToken);
     }
     catch(e)
     {
+        console.log("11")
         console.log(e.message);
     }
 
+    console.log("12")
     // return 
     var ret = {error: error, jwtToken: refreshedToken};
     res.status(200).json(ret);

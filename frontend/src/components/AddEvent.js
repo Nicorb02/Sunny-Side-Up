@@ -33,7 +33,7 @@ const AddEvent = ({ setDisplayAddEvent, date, toggleReloadEvents, reloadEvents }
             setTitle('');
             setTime('12:00');
             // store refreshed jswt
-            //storage.storeToken(data);
+            // storage.storeToken(data);
         }
         else
         {
