@@ -10,7 +10,7 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
     const [eventStartDate, setEventStartDate] = useState(new Date())
     const [eventEndDate, setEventEndDate] = useState(new Date())
     const [eventTitle, setEventTitle] = useState('')
-    const [eventDescription, setEventDescription] = useState('')
+
 
     const changeStartDate = (event, selectedDate) => {
         if (event.type === 'dismissed') {
@@ -66,15 +66,7 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
                     value={eventTitle} 
                     onChangeText={eventTitle => setEventTitle(eventTitle)}
                     autoCapitalize="none"
-                />
-                <TextInput 
-                    style={styles.input} 
-                    mode="outlined" 
-                    label="Description" 
-                    value={eventDescription} 
-                    onChangeText={eventDescription => setEventDescription(eventDescription)}
-                    autoCapitalize="none"
-                />                
+                />           
                 </View>
             <View style={{width: '100%', marginTop: 30}}>
                 <View style={styles.dateContainer}>
@@ -88,7 +80,7 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
             </View>
             <View style={{width: '100%', marginVertical: 100}}>
                 <CustomButton text="Add Event" onPress={() => {
-                    onPressAdd(eventTitle, eventDescription, eventStartDate, eventEndDate)
+                    onPressAdd(eventTitle, eventStartDate, eventEndDate)
                     
                 }}/>
                 <CustomButton text="Cancel" onPress={() =>{
