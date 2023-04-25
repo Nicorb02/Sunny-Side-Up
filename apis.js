@@ -624,9 +624,10 @@ exports.setApp = function (app, client)
     // connect to database and get userid
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
+    dateStartTime = new Date(startTime)
 
     // pull events that match criteria
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:startTime}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:dateStartTime}}});
     if(results == null){
         error = 'No event found';
         var ret = {error: error};
