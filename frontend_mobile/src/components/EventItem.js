@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { Card } from "react-native-paper";
 
-const EventItem = ({ title, description, onPress }) => {
+const EventItem = ({ title, id, onPress }) => {
     return(
         <TouchableOpacity 
         style={{marginRight: 10, marginTop: 17}}
@@ -17,7 +17,7 @@ const EventItem = ({ title, description, onPress }) => {
                                 {title}
                             </Text>
                             <Text>
-                                {description}
+                                {id}
                             </Text>
                         </View>
                     </Card.Content>
