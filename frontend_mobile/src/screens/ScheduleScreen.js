@@ -4,7 +4,7 @@ import { Agenda } from 'react-native-calendars';
 import { Card } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CircleButton from "../components/CircleButton";
-import Icon from "react-native-vector-icons/FontAwesome"
+import Icon from "react-native-vector-icons/MaterialIcons"
 import ActionButtons from "../components/ActionButtons";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
@@ -247,6 +247,18 @@ const ScheduleScreen = () => {
       }, [editItem])
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#ffffff', marginBottom: 50}}>
+          <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
+                <Text style={styles.header}>Agenda</Text>
+                <View>
+                    <TouchableOpacity onPress={() => {
+                    }}>
+                      <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
+                        <Icon name="logout" size={35} color="red"/>
+                        <Text style={{color: 'red'}}>Logout</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
             <Agenda
                 theme={{
                     backgroundColor: '#ffffff',
@@ -348,7 +360,13 @@ const styles = StyleSheet.create({
     input: {
       marginVertical: 5, 
       backgroundColor: '#fff'
-  }
+  },
+  header: {
+    fontSize: 34,
+    fontWeight: 'bold',
+    margin: 15,
+    color: '#343434'
+},
 })
 
 export default ScheduleScreen;

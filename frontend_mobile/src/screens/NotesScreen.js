@@ -131,7 +131,7 @@ const NotesScreen = () => {
                     <Icon name="plus" size={45} color='#e94d0b'/>
 
                     </TouchableOpacity>
-            </View>
+                </View>
             </View>
 
             {
