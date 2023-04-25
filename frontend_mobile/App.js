@@ -19,7 +19,7 @@ export default function App() {
 
     <NavigationContainer>
       {/* <SafeAreaView style={styles.root}> */}
-    <Stack.Navigator initialRouteName="LogIn">
+    <Stack.Navigator initialRouteName="NavBar">
       <Stack.Screen
         name="Login"
         component={LoginScreen}

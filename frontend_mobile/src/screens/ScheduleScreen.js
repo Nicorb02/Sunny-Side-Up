@@ -140,7 +140,8 @@ const ScheduleScreen = () => {
           items[sString].push({
               title: t,
               startDate: s,
-              endDate: e
+              endDate: e,
+              isHoliday: false
           })
 
           setCreateEventModal(false)
@@ -200,7 +201,7 @@ const ScheduleScreen = () => {
         
         console.log(item.title)
           return(
-              <EventItem title={item.title} id={item.id} onPress={() => {
+              <EventItem title={item.title} id={item.id} isHoliday={item.isHoliday} startDate={item.startDate} onPress={() => {
 
                 openEditModal(item)
               }}/>
@@ -211,18 +212,18 @@ const ScheduleScreen = () => {
       const getItemsFromServer = async (startDate, endDate) => {
         try {
           const data = [  
-            {id: 1, name: 1, title: 'test 1', startDate: new Date(), endDate: new Date()},
-            {id: 3, name: 3, title: 'test 3', startDate: new Date(), endDate: new Date()},
-            {id: 4, name: 4, title: 'test 4', startDate: new Date(), endDate: new Date()},
-            {id: 5, name: 5, title: 'test 5', startDate: new Date(), endDate: new Date()},
-            {id: 6, name: 6, title: 'test 6', startDate: new Date(), endDate: new Date()},
-            {id: 7, name: 7, title: 'test 7', startDate: new Date(), endDate: new Date()},
-            {id: 8, name: 8, title: 'test 8', startDate: new Date(), endDate: new Date()},
-            {id: 9, name: 9, title: 'test 9', startDate: new Date(), endDate: new Date()},
-            {id: 10, name: 10, title: 'test 10', startDate: new Date(), endDate: new Date()},
-            {id: 11, name: 11, title: 'test 11', startDate: new Date(), endDate: new Date()},
-            {id: 12, name: 12, title: 'test 12', startDate: new Date(), endDate: new Date()},
-            {id: 13, name: 13, title: 'test 13', startDate: new Date(), endDate: new Date()}
+            {id: 1, name: 1, title: 'test 1', startDate: new Date(), endDate: new Date(), isHoliday: true},
+            {id: 3, name: 3, title: 'test 3', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 4, name: 4, title: 'test 4', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 5, name: 5, title: 'test 5', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 6, name: 6, title: 'test 6', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 7, name: 7, title: 'test 7', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 8, name: 8, title: 'test 8', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 9, name: 9, title: 'test 9', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 10, name: 10, title: 'test 10', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 11, name: 11, title: 'test 11', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 12, name: 12, title: 'test 12', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 13, name: 13, title: 'test 13', startDate: new Date(), endDate: new Date(), isHoliday: false}
         ]
         return data
         } catch(e) {
