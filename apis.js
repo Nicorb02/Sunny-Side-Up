@@ -1,5 +1,5 @@
 require('mongodb');
-
+const jwt = require("jsonwebtoken");
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -516,10 +516,8 @@ exports.setApp = function (app, client)
     // Find the array of all events
     const result = await db.collection('users').findOne({ _id: o_id});
     const allEventsResults = result.events;
-    console.log(allEventsResults);
     // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the beginning and end of day
     const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateBeginningOfDay <= allEventsResults.startTime && dateEndOfDay >= allEventsResults.startTime));
-    console.log(searchedEventsResults);
     // refresh token
     var refreshedToken = null;
     try
@@ -589,10 +587,8 @@ exports.setApp = function (app, client)
     })
 
     app.post('/api/delEvent', async(req,res)=>{
-
     // incoming: id(of user), title, jwtToken
     // outgoing: error (if applicable)
-
     var error = '';
     const {_id, title, startTime, jwtToken} = req.body;
 
@@ -600,11 +596,12 @@ exports.setApp = function (app, client)
     var token = require('./createJWT.js');
     try
     {
+
         if( token.isExpired(jwtToken))
         {
-        var r = {error:'The JWT is no longer valid', jwtToken: ''};
-        res.status(200).json(r);
-        return;
+            var r = {error:'The JWT is no longer valid', jwtToken: ''};
+            res.status(200).json(r);
+            return;
         }
     }
     catch(e)
@@ -614,7 +611,7 @@ exports.setApp = function (app, client)
 
     // check if any fields are empty
     if (!title)
-    {
+    {   
         error = 'Please add a title';
         var ret = {error: error};
         res.status(400).json(ret);
@@ -624,16 +621,17 @@ exports.setApp = function (app, client)
     // connect to database and get userid
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
+    const dateStartTime = new Date(startTime)
 
     // pull events that match criteria
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:startTime}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:dateStartTime}}});
     if(results == null){
+
         error = 'No event found';
         var ret = {error: error};
         res.status(400).json(ret);
         return;
     }
-
     // refresh token
     var refreshedToken = null;
     try

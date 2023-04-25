@@ -13,7 +13,8 @@ const PlannerPage = () => {
         <div className='page'>
             <DayForm 
                 date={date} setDate={setDate} 
-                setDisplayAddEvent={setDisplayAddEvent} 
+                setDisplayAddEvent={setDisplayAddEvent}
+                toggleReloadEvents={toggleReloadEvents} 
                 reloadEvents={reloadEvents}
             />
             <CalendarCom 
