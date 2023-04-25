@@ -794,7 +794,6 @@ app.post('/api/searchContact', async(req, res) => {
 
   const result = await db.collection('users').findOne({ _id: o_id});
   const contactsFound = result.contacts;
-  console.log(contactsFound);
 
   const searchResults = contactsFound.filter(contactsFound => contactsFound.name.includes(name));
   let ret = {error: error, results: searchResults};
