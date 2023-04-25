@@ -120,9 +120,9 @@
     border-bottom: 0.5px solid rgba(247, 255, 247, 0.5);
   }
 
+
   .event-item:hover {
     background: #ff9900;
-    cursor: pointer;
   }
 
   .event-item .trash-icon {
@@ -141,6 +141,15 @@
     font-size: 17px;
     font-weight: bold;
     display: inline-block;
+    cursor: pointer;
+  }
+
+  .event-title:active {
+    text-decoration: underline;
+  }
+
+  .event-title:active {
+    text-decoration: underline;
   }
   
   .event-time {

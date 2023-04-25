@@ -104,8 +104,6 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
     function prepareDelEvent () {
         const dateString = date.toISOString().substr(0, 10);
         let timeString = eventTime;
-        console.log(title);
-        console.log(eventTime)
         let [hours, minutes, ampm] = timeString.match(/(\d{1,2}):(\d{2})\s?([AP]M)/).slice(1);
         hours = (ampm === 'PM' && hours !== '12') ? String(Number(hours) + 12) : hours;
         hours = (ampm === 'AM' && hours === '12') ? '00' : hours;
@@ -127,7 +125,7 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
         });
 
         const data = await response.json();
-        if (date.error === '')
+        if (data.error === '')
         {
             console.log("good delete");
             toggleReload();
@@ -145,15 +143,9 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
     const [eventTime, setEventTime] = useState('');
 
     const handleItemClick = (event) => {
-        if (selectedEventId === event.id) {
-            setSelectedEventId(null);
-            setTitle('');
-            setEventTime('');
-        } else {
-            setSelectedEventId(event.id);
-            setTitle(event.title);
-            setEventTime(event.startTime);
-        }
+        setSelectedEventId(event.id);
+        setTitle(event.title);
+        setEventTime(event.startTime);
     };
 
 
@@ -176,9 +168,9 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
                 <div className='events-container'>
                     <div className='events-list'>
                         {events.map((event) => (
-                          <li className='event-item' key={event.id} onClick={() => handleItemClick(event)}>
+                          <li className='event-item' key={event.id}>
                             <div className={selectedEventId === event.id ? 'trash-icon' : 'trash-icon-hidden'} onClick={prepareDelEvent}> <Trash /> </div>
-                            <p className='event-title'>{event.title}</p>
+                            <p className='event-title' onClick={() => handleItemClick(event)}>{event.title}</p>
                             <p className='event-time'>{event.startTime}</p>
                           </li>
                         ))}
