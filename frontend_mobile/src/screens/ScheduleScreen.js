@@ -13,7 +13,6 @@ import DTPicker from "../components/DTPicker";
 import CreateEventScreen from "./CreateEventScreen";
 import EventItem from "../components/EventItem";
 import Day from "react-native-calendars/src/calendar/day";
-import EditEventScreen from "./EditEventScreen";
 import { TextInput } from "react-native-paper";
 const ScheduleScreen = () => {
     const [selected, setSelected] = useState('');
