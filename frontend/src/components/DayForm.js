@@ -113,6 +113,9 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
         const estDate = new Date(workingDate);
         const utcString = estDate.toISOString();
         setStartTime(utcString);
+
+        console.log(date.toISOString())
+        console.log(startTime);
         
         handleDelEvent();
     }
