@@ -87,10 +87,13 @@ exports.setApp = function (app, client)
     
         var error = '';
         const {firstName, lastName, email, password} = req.body;
-        eventsA = []
+
+        // add the holidays on registering
+        eventsA = addHolidays();
         contactsA = []
         todoA = []
         notesA = []
+
         // check if any fields are empty
         if (!firstName || !lastName || !email || !password) {
             error = 'All fields are required';
@@ -120,7 +123,7 @@ exports.setApp = function (app, client)
         {
         error = e.toString();
         }
-    
+
         var ret = {error: error};
         res.status(200).json(ret);
     })
@@ -425,6 +428,45 @@ exports.setApp = function (app, client)
     var ret = {error: error, jwtToken: refreshedToken};
     res.status(200).json(ret);
     })
+
+    // returns an array of holidays: the 5 federal holidays with fixed dates
+    function addHolidays()
+    {
+        return [{title: "Juneteenth", startTime: new Date(2020, 5, 19, 0), endTime: new Date(2020, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2020, 6, 4, 0), endTime: new Date(2020, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2020, 10, 11, 0), endTime: new Date(2020, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2020, 11, 25, 0), endTime: new Date(2020, 11, 26, 0), isHoliday: true},
+                {title: "New Years Day", startTime: new Date(2021, 0, 1, 0), endTime: new Date(2021, 0, 2, 0), isHoliday: true},
+                {title: "Juneteenth", startTime: new Date(2021, 5, 19, 0), endTime: new Date(2021, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2021, 6, 4, 0), endTime: new Date(2021, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2021, 10, 11, 0), endTime: new Date(2021, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2021, 11, 25, 0), endTime: new Date(2021, 11, 26, 0), isHoliday: true},
+                {title: "New Years Day", startTime: new Date(2022, 0, 1, 0), endTime: new Date(2022, 0, 2, 0), isHoliday: true},
+                {title: "Juneteenth", startTime: new Date(2022, 5, 19, 0), endTime: new Date(2022, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2022, 6, 4, 0), endTime: new Date(2022, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2022, 10, 11, 0), endTime: new Date(2022, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2022, 11, 25, 0), endTime: new Date(2022, 11, 26, 0), isHoliday: true},
+                {title: "New Years Day", startTime: new Date(2023, 0, 1, 0), endTime: new Date(2023, 0, 2, 0), isHoliday: true},
+                {title: "Juneteenth", startTime: new Date(2023, 5, 19, 0), endTime: new Date(2023, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2023, 6, 4, 0), endTime: new Date(2023, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2023, 10, 11, 0), endTime: new Date(2023, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2023, 11, 25, 0), endTime: new Date(2023, 11, 26, 0), isHoliday: true},
+                {title: "New Years Day", startTime: new Date(2024, 0, 1, 0), endTime: new Date(2024, 0, 2, 0), isHoliday: true},
+                {title: "Juneteenth", startTime: new Date(2024, 5, 19, 0), endTime: new Date(2024, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2024, 6, 4, 0), endTime: new Date(2024, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2024, 10, 11, 0), endTime: new Date(2024, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2024, 11, 25, 0), endTime: new Date(2024, 11, 26, 0), isHoliday: true},
+                {title: "New Years Day", startTime: new Date(2025, 0, 1, 0), endTime: new Date(2025, 0, 2, 0), isHoliday: true},
+                {title: "Juneteenth", startTime: new Date(2025, 5, 19, 0), endTime: new Date(2025, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2025, 6, 4, 0), endTime: new Date(2025, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2025, 10, 11, 0), endTime: new Date(2025, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2025, 11, 25, 0), endTime: new Date(2025, 11, 26, 0), isHoliday: true},
+                {title: "New Years Day", startTime: new Date(2026, 0, 1, 0), endTime: new Date(2026, 0, 2, 0), isHoliday: true},
+                {title: "Juneteenth", startTime: new Date(2026, 5, 19, 0), endTime: new Date(2026, 5, 20, 0), isHoliday: true},
+                {title: "Independence Day", startTime: new Date(2026, 6, 4, 0), endTime: new Date(2026, 6, 5, 0), isHoliday: true},
+                {title: "Veterans Day", startTime: new Date(2026, 10, 11, 0), endTime: new Date(2026, 10, 12, 0), isHoliday: true},
+                {title: "Christmas Day", startTime: new Date(2026, 11, 25, 0), endTime: new Date(2026, 11, 26, 0), isHoliday: true}];
+    }
 
     app.post('/api/searchMonthlyEvent', async(req,res)=>{
 
