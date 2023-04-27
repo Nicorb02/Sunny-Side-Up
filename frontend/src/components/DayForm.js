@@ -51,7 +51,8 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
             .map((event) => ({
               id: event._id,
               title: event.title,
-              startTime: new Date(event.startTime).toISOString()
+              startTime: new Date(event.startTime).toISOString(),
+              isHoliday: event.isHoliday
             }))
             .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
             .map((event) => ({
@@ -171,10 +172,10 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
                 <div className='events-container'>
                     <div className='events-list'>
                         {events.map((event) => (
-                          <li className='event-item' key={event.id}>
+                          <li className={event.isHoliday ? 'event-item holiday' : 'event-item' }key={event.id}>
                             <div className={selectedEventId === event.id ? 'trash-icon' : 'trash-icon-hidden'} onClick={prepareDelEvent}> <Trash /> </div>
                             <p className='event-title' onClick={() => handleItemClick(event)}>{event.title}</p>
-                            <p className='event-time'>{event.startTime}</p>
+                            {event.isHoliday ? <p className='event-time'>Holiday</p> : <p className='event-time'>{event.startTime}</p>}
                           </li>
                         ))}
                     </div>
