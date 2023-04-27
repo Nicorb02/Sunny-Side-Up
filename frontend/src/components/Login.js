@@ -11,7 +11,6 @@ import InvalidAlert from '../styles/assets/InvalidAlert';
 function Login() {
   // "email" is the variable name, "setEmail" is the function we invoke later in the html to set the email value
   // since email is a string, useState('') is just an empty string
-  // reference line 90 for using "setEmail"
   // user credentials
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +32,9 @@ function Login() {
   // since showPassword is a boolean, useState(false) initialize it as false
   const [showPassword, setShowPassword] = useState(false);
 
+  // for navigation to planner page
+  const navigate = useNavigate();
+
   // toggle password visibility
   function toggleShowPassword() {
     setShowPassword(!showPassword);
@@ -46,26 +48,14 @@ function Login() {
     return flag;
   }
 
-  // for local and prod testing build paths (connects us to the backend)
-  // const app_name = 'ssu-planner'     // prod server
-  const app_name = 'ssu-testing'        // testing server
-  function buildPath(route)
-  {
-    // check if we are on a server
-    if (process.env.NODE_ENV === 'production')
-    {
-        return 'https://' + app_name + '.herokuapp.com' + route;
-    }
-    // else, we are working locally
-    else
-    {
-        return 'http://localhost:8080' + route;
-    }
-  }
+  // import build path function from path.js
+  let bp = require('./Path.js');
+  // import local storage function to keep user info and json web token locally
+  var storage = require('../tokenStorage.js');
 
   // connects to login api
-async function handleLogin() {
-    const response = await fetch(buildPath('/api/login'), {
+  async function handleLogin() {
+    const response = await fetch(bp.buildPath('/api/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -75,7 +65,20 @@ async function handleLogin() {
       if (data.error == '') 
       {
         console.log('good login');
-        //useNavigate("/LandingPage");
+        console.log(data);
+        // store the token locally
+        storage.storeToken(data);
+
+        let id = data.id;
+        let firstName = data.fn;
+        let lastName = data.ln;
+        
+        // format user info and store locally
+        let user = {id:id, firstName:firstName, lastName:lastName}
+        localStorage.setItem('user_data', JSON.stringify(user));
+
+        // good login so go to planner page
+        navigate("/PlannerPage");
       }
       else 
       {
@@ -93,7 +96,7 @@ async function handleLogin() {
     else 
     {
         // password is valid, check if email is valid
-        const response = await fetch(buildPath('/api/emailVer'), {
+        const response = await fetch(bp.buildPath('/api/emailVer'), {
             method: 'POST',
             headers : { 'Content-Type': 'application/json' },
             body: JSON.stringify({email})
@@ -116,11 +119,11 @@ async function handleLogin() {
             console.error(data.error);
         }
     }
-}
+  }
 
-// check for a valid verification code 
-function handleSubmitCode() 
-{
+  // check for a valid verification code 
+  function handleSubmitCode() 
+  {
     // checks for entered code to match generated code
     if (enteredCode == verCode) {
         // true so call register api and hide form for code input
@@ -133,11 +136,11 @@ function handleSubmitCode()
         setValidCode(false);
         console.error('Invalid code, try again');
     }
-}
+  }
 
-// connects to register api
-async function handleRegister() {
-    const response = await fetch(buildPath('/api/register'), {
+  // connects to register api
+  async function handleRegister() {
+    const response = await fetch(bp.buildPath('/api/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, password })
@@ -152,14 +155,7 @@ async function handleRegister() {
     {
         console.error(data.error);
     }
-}
-
-  let navigate = useNavigate(); 
-  const routeChange = () =>{ 
-    let path = `/LandingPage`; 
-    navigate(path);
   }
-
   
   // jsx ("html") of the login and register forms
   return (
@@ -188,7 +184,7 @@ async function handleRegister() {
                 </button>
             </section>
             <section className="login-form-bottom">
-                <button className="login-button" onClick={event => {handleLogin(); routeChange(); }}>Login</button>
+                <button className="login-button" onClick={handleLogin}>Login</button>
                 <p className="register-prompt">Don't have an account?</p>
                 {/* start animation to go to register form, hide login form */}
                 <a href="#" className="go-register-button" onClick={() => { setIsLoginFormSlid(true); setIsRegisterFormSlid(true);}}>Register</a>
@@ -202,6 +198,7 @@ async function handleRegister() {
                 <p className="pass-comp-text">
                     1 Lowercase <br />
                     1 Uppercase <br />
+                    1 Number <br />
                     1 Special Character <br />
                     Minimum Length 8
                 </p>
@@ -263,6 +260,7 @@ async function handleRegister() {
                 <a href="https://github.com/Nicorb02/Large-Project/tree/master" className='title-text-href'>
                     <p className="title-text">Sunny Side Up</p>
                 </a>
+                    <span className='planner-text'>Planner</span>
             </div>
         </div>
         {/* end of title div*/}
