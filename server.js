@@ -443,6 +443,349 @@ app.post('/api/reset-password', async (req, res) =>
   
 });
 
+//add a todo 
+app.post('/api/addToDo', async(req,res)=>{
+  //incoming: id, title, jwtToken
+  //outcoming: error, jwtToken 
+  var error = '';
+  const {_id, title, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+      if( token.isExpired(jwtToken))
+      {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+      }
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  if(!title){
+    error = 'Please add a title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{todos:{title:title, complete: 0}}});
+
+  if(results == null){
+    error = 'Not added, no user id found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+      refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+  
+  var ret = {error: error, jwtToken: refreshedToken};
+  res.status(200).json(ret);
+});
+
+//Delete a todo 
+app.post('/api/delToDo', async(req,res)=>{
+  //incoming: id, title, jwtToken
+  //outcoming: error, jwtToken
+  var error = '';
+  const {_id, title, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+      if( token.isExpired(jwtToken))
+      {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+      }
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  if(!title){
+    error = 'Please add a title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull :{todos:{title:title}}});
+
+  if(results == null){
+    error = 'Not deleted, no user id found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+      refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
+  res.status(200).json(ret);
+});
+
+//edit a todo (mark it as complete)
+app.post('/api/completeToDo', async(req,res)=>{
+  //incoming: id, title, jwtToken
+  //outcoming: error, jwtToken
+  var error = '';
+  const {_id, title, jwtToken} = req.body;
+
+// Ensure the jwt is not expired
+    var token = require('./createJWT.js');
+    try
+    {
+        if( token.isExpired(jwtToken))
+        {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+
+
+  if(!title){
+    error = 'Please add a title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todos.title":title}, {$set :{"todos.$.complete": 1}});
+
+  if(results == null){
+    error = 'Not edited, no user id found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+      refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
+  res.status(200).json(ret);
+});
+
+//edit a todo (mark it as incomplete)
+app.post('/api/incompleteToDo', async(req,res)=>{
+  //incoming: id, title, jwtToken
+  //outcoming: error, jwtToken
+  var error = '';
+  const {_id, title, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+      if( token.isExpired(jwtToken))
+      {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+      }
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+  
+  if(!title){
+    error = 'Please add a title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+  //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+
+  //const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$unset :{todos:{title:title, date:_date, complete: 0}}});
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todos.title":title}, {$set :{"todos.$.complete": 0}});
+  if(results == null){
+    error = 'Not edited, no user id found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+      refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
+  res.status(200).json(ret);
+});
+
+//edit a todo title
+app.post('/api/changeTitleToDo', async(req,res)=>{
+  //incoming: id, title, jwtToken
+  //outcoming: error, jwtToken
+  var error = '';
+  const {_id, prevTitle, newTitle, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+      if( token.isExpired(jwtToken))
+      {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+      }
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  if(!title){
+    error = 'Please add a title';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+
+  const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todos.title":prevTitle}, {$set :{"todos.$.title": newTitle}});
+  if(results == null){
+    error = 'Not edited, no user id found';
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+  // refresh token
+  var refreshedToken = null;
+  try
+  {
+      refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  var ret = {error: error, jwtToken: refreshedToken};
+  res.status(200).json(ret);
+});
+
+//find all todos for an user
+app.post('/api/readToDo', async(req,res)=>{
+  //incoming: id, jwtToken
+  //outcoming: all todo under the user, jwtToken
+  var error = '';
+  const {_id, jwtToken} = req.body;
+
+  // Ensure the jwt is not expired
+  var token = require('./createJWT.js');
+  try
+  {
+      if( token.isExpired(jwtToken))
+      {
+      var r = {error:'The JWT is no longer valid', jwtToken: ''};
+      res.status(200).json(r);
+      return;
+      }
+  }
+  catch(e)
+  {
+      console.log(e.message);
+  }
+
+  // Connect to database and get userId
+  const db = client.db("COP4331");
+  var o_id = new ObjectId(_id);
+
+  // Find the array of all todos
+  const result = await db.collection('users').findOne({ _id: o_id});
+  
+  try {
+    const allToDos = result.todos;
+
+    // refresh token
+    var refreshedToken = null;
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+
+    var ret = {error: error, results:allToDos, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  } catch (error) {
+    error = error;
+    var ret = {error: error};
+    res.status(400).json(ret);
+    return;
+  }
+
+});
 
 
 // ======= HEROKU DEPLOYMENT (DO NOT MODIFY) ========
