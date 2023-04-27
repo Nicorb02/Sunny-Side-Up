@@ -198,6 +198,7 @@ function Login() {
                 <p className="pass-comp-text">
                     1 Lowercase <br />
                     1 Uppercase <br />
+                    1 Number <br />
                     1 Special Character <br />
                     Minimum Length 8
                 </p>
