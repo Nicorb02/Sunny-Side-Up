@@ -911,7 +911,10 @@ app.post('/api/addToDo', async(req,res)=>{
     var o_id = new ObjectId(_id);
     //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
   
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{todos:{title:title, complete: 0}}});
+    const results = await db.collection('users').findOneAndUpdate(
+        { _id: o_id },
+        { $push: {todo: { $each: [{ title: title, complete: 0}], $position: 0 } } }
+      );
   
     if(results == null){
       error = 'Not added, no user id found';
@@ -969,7 +972,7 @@ app.post('/api/addToDo', async(req,res)=>{
     var o_id = new ObjectId(_id);
     //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
   
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull :{todos:{title:title}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull :{todo:{title:title}}});
   
     if(results == null){
       error = 'Not deleted, no user id found';
@@ -1028,7 +1031,7 @@ app.post('/api/addToDo', async(req,res)=>{
     var o_id = new ObjectId(_id);
     //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
   
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todos.title":title}, {$set :{"todos.$.complete": 1}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todo.title":title}, {$set :{"todo.$.complete": 1}});
   
     if(results == null){
       error = 'Not edited, no user id found';
@@ -1087,7 +1090,7 @@ app.post('/api/addToDo', async(req,res)=>{
     //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
   
     //const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$unset :{todos:{title:title, date:_date, complete: 0}}});
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todos.title":title}, {$set :{"todos.$.complete": 0}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todo.title":title}, {$set :{"todo.$.complete": 0}});
     if(results == null){
       error = 'Not edited, no user id found';
       var ret = {error: error};
@@ -1143,7 +1146,7 @@ app.post('/api/addToDo', async(req,res)=>{
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
   
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todos.title":prevTitle}, {$set :{"todos.$.title": newTitle}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todo.title":prevTitle}, {$set :{"todo.$.title": newTitle}});
     if(results == null){
       error = 'Not edited, no user id found';
       var ret = {error: error};
@@ -1197,7 +1200,7 @@ app.post('/api/addToDo', async(req,res)=>{
     const result = await db.collection('users').findOne({ _id: o_id});
     
     try {
-      const allToDos = result.todos;
+      const allToDos = result.todo;
   
       // refresh token
       var refreshedToken = null;
