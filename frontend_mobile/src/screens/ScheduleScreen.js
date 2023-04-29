@@ -152,22 +152,45 @@ const ScheduleScreen = ({ navigation }) => {
     setEditEventModal(false)
   }
 
-  const addEvent = (t, s, e) => {
-      const sString = timeToString(s)
-      if (t)
+  const addEvent = async (title, startTime) => {
+
+      const { userData, jwtToken } = await getUserDataAndToken();
+
+      if (title)
       {
-          if (!items[sString])
-              items[sString] = []
+          const response = await fetch(buildPath('/api/addEvent'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ _id: userData.id, title, startTime, endTime: '', jwtToken })
+          });
 
-          items[sString].push({
-              title: t,
-              startTime: s,
-              endDate: e,
-              isHoliday: false
-          })
+          const data = await response.json();
 
-          setCreateEventModal(false)
-          console.log(items)
+          if (data.error === '')
+          { 
+            console.log('add successful');
+            const dateString = timeToString(startTime)
+
+            const updatedEvents = {...items}; // create a copy of the original object
+            if (!updatedEvents[dateString])
+              updatedEvents[dateString] = []
+            updatedEvents[dateString].push(
+              {
+                _id: userData.id,
+                title,
+                startTime: startTime.toISOString(),
+                endTime: startTime.toISOString(),
+              }
+            )
+            setItems(updatedEvents)
+            setCreateEventModal(false);
+          }
+          else
+          {
+            console.log('failed');
+            console.log(eventTitle)
+            console.log(eventStartTime)
+          }
       }
       else
       console.warn("fill all fields")
@@ -253,7 +276,6 @@ const ScheduleScreen = ({ navigation }) => {
               }}/>
           )
       }
-      
       const getItemsFromServer = async (startTime, endDate) => {
         const { userData, jwtToken } = await getUserDataAndToken();
 
@@ -270,15 +292,6 @@ const ScheduleScreen = ({ navigation }) => {
           return []
         }
       }
-      
-      useEffect(() => {
-        console.log('items')
-        console.log(items[timeToString(new Date())])
-      }, [items[timeToString(new Date())]])
-
-      useEffect(() => {
-        console.log(editItem)
-      }, [editItem])
       
       const [fontsLoaded] = useFonts({
         SoapRegular,
@@ -322,6 +335,7 @@ const ScheduleScreen = ({ navigation }) => {
                 showClosingKnob={true}
                 refreshing={false}
                 renderItem={renderItem}
+                
             />
 
             {/* <ActionButtons onPressEvent={toggleCreateEventModal} onPressHoliday={toggleCreateHolidayModal}/> */}
