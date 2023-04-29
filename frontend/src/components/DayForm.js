@@ -10,7 +10,6 @@ import ListIcon from '../styles/assets/ListIcon';
 import AddIcon from '../styles/assets/AddIcon';
 import LogoutButton from '../styles/assets/LogoutButton';
 import ToDoIcon from '../styles/assets/ToDoIcon';
-import { Title } from '@mui/icons-material';
 
 const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reloadEvents, setDisplayToDo }) =>
 {
@@ -30,8 +29,6 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
         // go to login page then expire jswt
         navigate("/");
     }
-
-
 
     // reads all the events corresponding to a date
     // automatically calls when date changes
@@ -67,10 +64,8 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
         handleReadEvents();
       }, [date, reloadEvents]);
 
-      
     const [weekday, setWeekday] = useState("");
     const [day, setDay] = useState("");
-
 
     function toggleDisplayAddEvent () {
         setDisplayAddEvent(true);
@@ -101,9 +96,6 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
         if(reloadEvents) toggleReloadEvents(false)
         else toggleReloadEvents(true);
     }
-
-
-    // read events api and make list based on { date }
 
     // delete events api when click trash
     // format json parameters then call delEvent
