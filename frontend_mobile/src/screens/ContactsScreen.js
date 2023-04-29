@@ -60,17 +60,7 @@ const ContactsScreen = () => {
         return 'https://' + app_name + '.herokuapp.com' + route;
     }
 
-    const addContact = () => {
-        contacts.push(
-            {
-                id: count,
-                name: contactName,
-                phone: contactPhone,
-                email: contactEmail
-            })
-            setAddContactModal(false)   
-            count++
-    }
+    
 
     const displayContacts = () => {
         if (contacts.length == 0)
@@ -104,29 +94,6 @@ const ContactsScreen = () => {
     return colors[randomIndex];
     };
 
-    const getContactsFromServer = async () => {
-        try {
-          const data = [  
-            {id: 0, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 1, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 2, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 3, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 4, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 5, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 6, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 7, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 8, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 9, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 10, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 11, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 12, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 13, name: "Person", phone: "1234567890", email: "person@email.com"},
-        ]
-        return data
-        } catch(e) {
-            return []
-        }
-    }
 
     const checkInputValidity = () => {
 
@@ -171,7 +138,7 @@ const ContactsScreen = () => {
     renderRightActions={() => (
     <TouchableOpacity
     style={styles.deleteButton}
-    onPress={() => deleteContact(item.id)}
+    onPress={() => deleteContact(item.name)}
     >
     <Icon name="trash-2" size={30} color="#fff"/>
     </TouchableOpacity>
@@ -224,11 +191,46 @@ const ContactsScreen = () => {
         }
     }
 
-    const deleteContact = (id) => {
-        setContacts((prevData) => prevData.filter((item) => item.id !== id));
-        setEditContactModal(false);
+    const deleteContact = async (name) => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/deleteContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, name })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('delete successful')
+            loadItemsFromServer()
+        }
+        else
+        {
+            console.log('delete failed')
+        }
     };
 
+    const addContact = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/addContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, name: contactName, email: contactEmail, phone: contactPhone })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('add successful')
+            loadItemsFromServer()
+            setAddContactModal(false)   
+        }
+        else
+        {
+            console.log('add failed')
+        }
+    }
     const editContact = () => {
         console.log(inputValid)
         setContacts((prevData) =>
