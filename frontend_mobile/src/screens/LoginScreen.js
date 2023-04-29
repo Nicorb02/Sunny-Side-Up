@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable, SafeAreaView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
@@ -93,9 +93,26 @@ const LoginScreen = ({navigation}) => {
     const closeSubmitCode = () => {
         setSubmitCodeModal(false)
     }
+
     const openResetPassword = () => {
-        setResetPasswordModal(true)
+        console.log(resetPasswordModal)
+         // checks for entered code to match generated code
+         if (enteredCode == verCode) {
+            // true so call register api and hide form for code input
+            setResetPasswordModal(true)
+        } 
+        else 
+        {
+            // entered code is wrong
+            setValidCode(false);
+            console.error('Invalid code, try again');
+        }
     }
+
+    const handleResetPassword = () => {
+
+    }
+
     const closeResetPassword = () => {
         setNewPassword('')
         setNewPasswordConfirmed('')
@@ -109,7 +126,15 @@ const LoginScreen = ({navigation}) => {
     const toggleShowPassword = () => {
         setPasswordVisibility(!passwordVisibility)
     };
+
+    useEffect(() => {
+        if (submitCodeModal)
+        {
+            setSendEmailModal(false)
+        }
+    }, [ submitCodeModal ])
     return(
+        
         <SafeAreaView style={styles.root}>
 
                 <Image 
@@ -117,7 +142,12 @@ const LoginScreen = ({navigation}) => {
                     style={[styles.logo, {height: height * 0.25}]}
                     resizeMode="contain"
                 />
-                <View style={{width: '100%', padding: 10}}>
+                <KeyboardAvoidingView 
+            behavior="padding"
+            style={{ width: '100%', padding: 10 }}
+            keyboardVerticalOffset={64} // adjust this value as needed
+        >
+                {/* <View style={{width: '100%', padding: 10}}> */}
                     <TextInput 
                         style={styles.input} 
                         mode="outlined" 
@@ -136,8 +166,6 @@ const LoginScreen = ({navigation}) => {
                             onChangeText={password => setPassword(password)} 
                             secureTextEntry={passwordVisibility}
                             autoCapitalize="none"
-                            
-                            
                         />
                             <Pressable
                             activeOpacity={0.8}
@@ -156,8 +184,9 @@ const LoginScreen = ({navigation}) => {
                     <View style={{}}>
                         <CustomButton text="Forgot Password?" onPress={onForgotPasswordPressed} type="TERTIARY" />
                     </View>
-                </View>
-                <View style={{width: '100%', bottom: 0, padding: 10}}>
+                    </KeyboardAvoidingView>
+                {/* </View> */}
+                <View style={{width: '100%', padding: 10}}>
                     <CustomButton text="Log In" onPress={onLoginPressed}/>
                     <CustomButton text="Dont have an account? Register" onPress={() => navigation.navigate('Register', {name: 'Register'})} type="TERTIARY"/>
                 </View>
@@ -183,15 +212,15 @@ const LoginScreen = ({navigation}) => {
                 <Modal animationType="none" transparent={false} visible={submitCodeModal}>
                     <View style={styles.root}>
                         <View style={styles.modalContainer}>
-                        <Text style={styles.title}>Reset your password</Text>
-                        <View style={{width: '100%', marginVertical: 50}}>
-                            <CustomInput placeholder="Reset Code" value={enteredCode} setValue={setEnteredCode} />
+                            <Text style={styles.title}>Reset your password</Text>
+                            <View style={{width: '100%', marginVertical: 50}}>
+                                <CustomInput placeholder="Reset Code" value={enteredCode} setValue={setEnteredCode} />
+                                </View>
+                            <View style={{width: '100%', marginBottom: 0}}>
+                                <CustomButton text="Submit Code" onPress={openResetPassword}/>
+                                <CustomButton text="Cancel" onPress={closeSubmitCode} type="TERTIARY"/>
                             </View>
-                        <View style={{width: '100%', marginBottom: 0}}>
-                            <CustomButton text="Submit Code" onPress={openResetPassword}/>
-                            <CustomButton text="Cancel" onPress={closeSubmitCode} type="TERTIARY"/>
                         </View>
-                            </View>
                     </View>
 
                     <Modal animationType="none" transparent={false} visible={resetPasswordModal}>
@@ -203,7 +232,7 @@ const LoginScreen = ({navigation}) => {
                                     <CustomInput placeholder="Confirm Password" value={newPasswordConfirmed} setValue={setNewPasswordConfirmed} secureTextEntry={true}/>
                                     </View>
                                 <View style={{width: '100%', marginBottom: 0}}>
-                                    <CustomButton text="Reset Password"/>
+                                    <CustomButton text="Reset Password" onPress={handleResetPassword}/>
                                     <CustomButton text="Cancel" onPress={closeResetPassword} type="TERTIARY"/>
                                 </View>
                             </View>
@@ -212,6 +241,7 @@ const LoginScreen = ({navigation}) => {
                 </Modal>
             </Modal>
         </SafeAreaView>
+
     )
 }
 
@@ -219,9 +249,10 @@ const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
         height: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: '#f0e9b2',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flex: 1
     },
     logo: {
         width: '70%',
@@ -251,7 +282,7 @@ const styles = StyleSheet.create({
       input: {
           
         marginVertical: 5, 
-        backgroundColor: '#fff',
+        backgroundColor: '#f7fff7',
         width: '100%'
     },
     modalContainer: {

@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 import { TextInput } from 'react-native-paper';
+import { useFonts } from 'expo-font';
+
+import { SoapRegular } from '../../assets/fonts/expo-fonts';
 
 const RegisterScreen = ({navigation}) => {
+    
     const {height} = useWindowDimensions();
 
      // genereated code and code entered by user
@@ -141,19 +145,30 @@ const RegisterScreen = ({navigation}) => {
     
     const [fontsloaded, setFontsLoaded] = useState(false);
 
-
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+      });
+    
+      if (!fontsLoaded) {
+        return null;
+      }
         return (
-        <View style={styles.root}>
-            <Text style={styles.title}>Create an Account</Text>
-                <View style={{width: '100%', marginTop: 20}}>
+        <SafeAreaView style={styles.root}>
+            <View style={{width: '100%', alignItems: 'center', justifyContent: 'space-between'}}>
                 
+            <Text style={styles.title}>Create an Account</Text>
+                {/* <View style={{width: '100%', marginTop: 50, padding: 10}}> */}
+                <KeyboardAvoidingView 
+            behavior="padding"
+            style={{ width: '100%', padding: 10, marginTop: 50 }}
+            keyboardVerticalOffset={64} // adjust this value as needed
+        >
                     <TextInput 
                         style={styles.input} 
                         mode="outlined" 
                         label="First Name" 
                         value={firstName} 
                         onChangeText={firstName => setFirstName(firstName)}
-                        autoCapitalize="none"
                     />
                     <TextInput 
                         style={styles.input} 
@@ -161,7 +176,6 @@ const RegisterScreen = ({navigation}) => {
                         label="Last Name" 
                         value={lastName} 
                         onChangeText={lastName => setLastName(lastName)}
-                        autoCapitalize="none"
                     />
                     <TextInput 
                         style={styles.input} 
@@ -197,14 +211,17 @@ const RegisterScreen = ({navigation}) => {
                         />
                         </Pressable>
                     </View>
+                    {/* </View> */}
+                    </KeyboardAvoidingView> 
                     </View>
-                <View style={{width: '100%', marginVertical: 100}}>
+                <View style={{width: '100%', padding: 10}}>
                     <CustomButton text="Register" onPress={handleEmailVer}/>
                     <CustomButton text="Already have an account? Sign In" onPress={onSignInPressed} type="TERTIARY"/>
                 </View>
 
             <Modal animationType="slide" transparent={false} visible={modalVisible}>
                 <View style={styles.root}>
+                <View style={styles.modalContainer}>
                     <Text style={styles.title}>Confirm your email</Text>
                     <View style={{width: '100%', marginTop: 20}}>
                         <CustomInput placeholder="Activation Code" value={enteredCode} setValue={setEnteredCode} />
@@ -214,9 +231,10 @@ const RegisterScreen = ({navigation}) => {
                         <CustomButton text="Cancel" onPress={() => setModalVisible(!modalVisible)} type="TERTIARY"/>
                     </View>
                 </View>
+                </View>
             </Modal>
             
-        </View>
+        </SafeAreaView>
         );
    
 }
@@ -224,20 +242,30 @@ const RegisterScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
-        padding: 10,
-        marginVertical: 50,
+        height: '100%',
+        backgroundColor: '#f0e9b2',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+    },
+    modalContainer: {
+        width:'100%', 
+        padding: 10, 
+        alignItems: 'center', 
+        marginVertical: 20
+
     },
     title: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
+        fontFamily: 'SoapRegular',
         marginVertical: 10,
         marginTop: 50,
         color: '#343434'
     },
     container: {
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
+        borderRadius: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     visibilityBtn: {
         position: 'absolute',
@@ -249,7 +277,7 @@ const styles = StyleSheet.create({
     },
     input: {
         marginVertical: 5, 
-        backgroundColor: '#fff'
+        backgroundColor: '#f7fff7'
     }
       
 });
