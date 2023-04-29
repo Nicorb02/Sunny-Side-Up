@@ -9,7 +9,6 @@ import { TextInput } from "react-native-paper";
 const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
 
     const [eventStartDate, setEventStartDate] = useState(new Date())
-    const [eventEndDate, setEventEndDate] = useState(new Date())
     const [eventTitle, setEventTitle] = useState('')
 
 
@@ -34,28 +33,6 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
             setEventStartDate(selectedDate);
           }
     }
-    const changeEndDate = (event, selectedDate) => {
-        if (event.type === 'dismissed') {
-            console.log(
-              'picker was dismissed',
-              undefined,
-              [
-                {
-                  text: 'great',
-                },
-              ],
-              {cancelable: true},
-            );
-            return;
-          }
-      
-          if (event.type === 'neutralButtonPressed') {
-            setEventEndDate(new Date(0));
-          } else {
-            setEventEndDate(selectedDate);
-          }
-    }
-
     return(
         <SafeAreaView style={styles.root}>
             <Text style={styles.title}>Create Event</Text>
@@ -80,7 +57,7 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
             </View>
             <View style={{width: '100%', marginBottom: 0, padding: 10}}>
                 <CustomButton text="Add Event" onPress={() => {
-                    onPressAdd(eventTitle, eventStartDate, eventEndDate)
+                    onPressAdd(eventTitle, eventStartDate)
                     
                 }}/>
                 <CustomButton text="Cancel" onPress={() =>{

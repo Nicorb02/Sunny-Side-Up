@@ -6,20 +6,9 @@ import Icon from "react-native-vector-icons/Feather"
 import { Swipeable } from "react-native-gesture-handler";
 import { SoapRegular } from '../../assets/fonts/expo-fonts'
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const NotesScreen = () => {
-    const [notes, setNotes] = useState([
-        { id: 0, title: 'Notes', content: 'Content'},
-        { id: 1, title: 'Shopping list', content: 'shopping list content'},
-        { id: 2, title: 'discussion', content: 'discussion content'},
-        { id: 3, title: 'Another Note', content: 'this is a very long note description to mess that card upthis is a very long note description to mess that card up'},
-        { id: 4, title: 'Notes', content: 'Content'},
-        { id: 5, title: 'Shopping list', content: 'shopping list content'},
-        { id: 6, title: 'discussion', content: 'discussion content'},
-        { id: 7, title: 'Another Note', content: 'Another note content'},
-        { id: 8, title: 'Notes', content: 'Content'},
-        { id: 9, title: 'Shopping list', content: 'shopping list content'},
-        { id: 10, title: 'discussion', content: 'discussion content'},
-    ])
+    const [notes, setNotes] = useState([])
 
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
@@ -31,10 +20,63 @@ const NotesScreen = () => {
 
     let count = notes.length
 
+    const storage = require('../tokenStorage.js');
 
+    // retrieve user data and current jwt from local storage
+    const getUserDataAndToken = async () => {
+      const userDataString = await AsyncStorage.getItem('user_data');
+      const userData = JSON.parse(userDataString);
+      const jwtToken = await storage.retrieveToken();
+      
+      return { userData, jwtToken };
+    }
 
-    const deleteNote = (id) => {
-        setNotes((prevData) => prevData.filter((note) => note.id !== id));
+    const app_name = 'ssu-testing'        // testing server
+
+    const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
+    const loadItemsFromServer = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/searchNote'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title: '', content: '', jwtToken})
+        });
+
+        const data = await response.json();
+
+        if (data.error === '')
+        {
+            console.log('load success')
+            setNotes(data.results)
+        }
+        else
+        {
+            console.log('load fail')
+        }
+    }
+
+    const deleteNote = async (title) => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/delNote'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('delete successful')
+            loadItemsFromServer()
+        }
+        else
+        {
+            console.log('delete failed')
+        }
     };
     
     const editNote = () => {
@@ -48,15 +90,25 @@ const NotesScreen = () => {
         setEditNoteModal(false);
     }
 
-    const addNote = () => {
-        notes.push(
-            {
-                id: count,
-                title: title,
-                content: content,
-            })
-            setAddNoteModal(false)   
-            count++
+    const addNote = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/addNote'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title, content, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('add successful')
+            loadItemsFromServer()
+            setAddNoteModal(false)  
+        }
+        else
+        {
+            console.log('add failed')
+        }
     }
 
     const openAddModal = () => {
@@ -79,7 +131,7 @@ const NotesScreen = () => {
             )
         else
             return(
-                <FlatList data={notes} renderItem={renderItems} keyExtractor={(note) => note.id.toString()} />
+                <FlatList data={notes} renderItem={renderItems} keyExtractor={(note) => note.title} />
             )
     }
     
@@ -92,7 +144,7 @@ const NotesScreen = () => {
             renderRightActions={() => (
             <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => deleteNote(item.id)}
+            onPress={() => deleteNote(item.title)}
             >
             <Icon name="trash-2" size={30} color="#fff"/>
             </TouchableOpacity>
@@ -112,6 +164,10 @@ const NotesScreen = () => {
             </TouchableOpacity>
         </Swipeable>
     );
+
+    useEffect(() => {
+        loadItemsFromServer()
+    }, [])
     // reset everything when modals are closed
     useEffect(() => {
         if (!editNoteModal && !addNoteModal)

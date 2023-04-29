@@ -4,6 +4,7 @@ import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 import { TextInput } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -30,6 +31,8 @@ const LoginScreen = ({navigation}) => {
     const view = require('../../assets/view.png')
     const hide = require('../../assets/hide.png')
     
+    const storage = require('../tokenStorage.js');
+    
     const app_name = 'ssu-testing'        // testing server
 
     const buildPath = (route) =>
@@ -47,7 +50,21 @@ const LoginScreen = ({navigation}) => {
           // prints to console for now (inspect element to see console)
           if (data.error == '') 
           {
-            navigation.navigate('NavBar')
+            console.log('good login');
+            console.log(data);
+            // store the token locally
+            await storage.storeToken(data);
+      
+            const id = data.id;
+            const firstName = data.fn;
+            const lastName = data.ln;
+      
+            // format user info and store locally
+            const user = { id, firstName, lastName };
+            await AsyncStorage.setItem('user_data', JSON.stringify(user));
+      
+
+              navigation.navigate('NavBar')
           }
           else 
           {
