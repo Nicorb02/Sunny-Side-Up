@@ -3,6 +3,8 @@ import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, FlatList
 import  Icon  from "react-native-vector-icons/Feather";
 import { Swipeable } from "react-native-gesture-handler";
 import { Card, Checkbox } from "react-native-paper";
+import {SoapRegular} from '../../assets/fonts/expo-fonts'
+import { useFonts } from "expo-font";
 const TodoScreen = () => {
     const [todo, setTodo] = useState([
         {id: 0, title: 'task 1', date: new Date(), isComplete: true},
@@ -52,19 +54,25 @@ const TodoScreen = () => {
             )}
         >
             <TouchableOpacity onPress={() => {
-                openEditModal(item)
+
             }}>
-                <View style={{marginVertical: 5,borderRadius: 5, borderWidth: 0.3, borderColor: '#343434', backgroundColor: '#fff'}}>
+                <View style={{marginVertical: 5,borderRadius: 5, borderWidth: 0.3, borderColor: '#343434', backgroundColor: '#f7fff7'}}>
                     <View style={{flexDirection: 'row', alignItems:'center', justifyContent: "space-between", padding: 10}}>
 
                             <Text style={item.isComplete ? styles.strikeThrough : styles.title}>{item.title}</Text>
-                            <Checkbox.IOS
-                            status={item.isComplete ? 'checked' : 'unchecked'}
-                            onPress={() => {
-                                handleCheck(item.id)
-                            }}
-                            
-                            />
+                            {/* <View style={{borderWidth: 1, borderColor: 'red'}}> */}
+                                <Checkbox.IOS
+                                status={item.isComplete ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    handleCheck(item.id)
+                                }}
+                                borderColor='black'
+                                borderWidth={1}
+                                color='green'
+
+                                />
+
+                                {/* </View> */}
 
 
                     </View>
@@ -72,7 +80,14 @@ const TodoScreen = () => {
             </TouchableOpacity>
         </Swipeable>
     );
-
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+      });
+    
+    if (!fontsLoaded) {
+    return null;
+    }
+    
     return(
         <SafeAreaView style={styles.container}>
             <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
@@ -127,7 +142,8 @@ const styles = StyleSheet.create({
         padding: 5,
         marginBottom: 50,
         backgroundColor: '#fff',
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        flexDirection: "column",
     },
     item: {
         padding: 5,
@@ -138,7 +154,8 @@ const styles = StyleSheet.create({
         fontSize: 34,
         fontWeight: 'bold',
         margin: 15,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
     title: {
         fontSize: 20,
