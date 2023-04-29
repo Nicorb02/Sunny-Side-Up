@@ -1,0 +1,58 @@
+.add-task-container {
+    height: 175px;
+    width: 300px;
+    border: 0.5px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    background: #e94d0b;
+}
+
+.close-add-task {
+    position: absolute;
+    margin-top: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.task-name-container {
+    height: 50%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.task-name-input {
+    background: #f7fff7;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    width: 200px;
+    font-size: 16px;
+    text-align: center;
+    font-family: Oswald;
+}
+
+.add-task-button-container {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.add-newtask-button {
+    transform: translateY(20px);
+    background: #ff9900;
+    border: none;
+    height: 36px;
+    width: 70px;
+    color: #f7fff7;
+    font-family: 'Abyssinica SIL';
+    border-radius: 10px;
+}
+
+.add-newtask-button:hover {
+    background: transparent;
+    cursor: pointer;
+    border: 2px solid #ff9900;
+}
