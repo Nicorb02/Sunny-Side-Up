@@ -2,9 +2,10 @@ import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { Card } from "react-native-paper";
 
-const EventItem = ({ title, id, isHoliday, startDate, onPress }) => {
+const EventItem = ({ title, isHoliday, startTime, onPress }) => {
     const options = { hour: 'numeric', minute: 'numeric' };
-    const time = startDate.toLocaleTimeString([], options);
+    // const time = startTime.toLocaleTimeString([], options);
+
     if (isHoliday)
     {
         return(
@@ -17,7 +18,7 @@ const EventItem = ({ title, id, isHoliday, startDate, onPress }) => {
                                     {title}
                                 </Text>
                                 <Text>
-                                    {time}
+                                    {startTime}
                                 </Text>
                             </View>
                         </Card.Content>
@@ -40,7 +41,7 @@ const EventItem = ({ title, id, isHoliday, startDate, onPress }) => {
                                 {title}
                             </Text>
                             <Text>
-                                {time}
+                                {startTime}
                             </Text>
                         </View>
                     </Card.Content>

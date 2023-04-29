@@ -16,6 +16,7 @@ import Day from "react-native-calendars/src/calendar/day";
 import { TextInput } from "react-native-paper";
 import {SoapRegular} from '../../assets/fonts/expo-fonts'
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ScheduleScreen = ({ navigation }) => {
     const [selected, setSelected] = useState('');
@@ -29,12 +30,12 @@ const ScheduleScreen = ({ navigation }) => {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     
-    const [eventStartDate, setEventStartDate] = useState(new Date())
+    const [eventStartTime, setEventStartTime] = useState(new Date())
     const [eventEndDate, setEventEndDate] = useState(new Date())
     const [eventTitle, setEventTitle] = useState('')
 
 
-    const [editStartDate, setEditStartDate] = useState(new Date())
+    const [editStartTime, setEditStartTime] = useState(new Date())
     const [editEndDate, setEditEndDate] = useState(new Date())
     const [editTitle, setEditTitle] = useState('')
 
@@ -43,11 +44,29 @@ const ScheduleScreen = ({ navigation }) => {
     const [createEventModal, setCreateEventModal] = useState(false)
     const [editEventModal, setEditEventModal] = useState(false)
     
+    const storage = require('../tokenStorage.js');
+
+    // retrieve user data and current jwt from local storage
+    const getUserDataAndToken = async () => {
+      const userDataString = await AsyncStorage.getItem('user_data');
+      const userData = JSON.parse(userDataString);
+      const jwtToken = await storage.retrieveToken();
+      
+      return { userData, jwtToken };
+    }
+
+    const app_name = 'ssu-testing'        // testing server
+
+    const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
     const openEditModal = (item) => {
       setEditItem(item)
       setEditTitle(item.title)
 
-      setEditStartDate(item.startDate);
+      setEditStartTime(item.startTime);
       setEditEndDate(item.endDate)
 
       setEditEventModal(true)
@@ -67,7 +86,7 @@ const ScheduleScreen = ({ navigation }) => {
 
     
     
-    const changeStartDate = (event, selectedDate) => {
+    const changeStartTime = (event, selectedDate) => {
         if (event.type === 'dismissed') {
             console.log(
               'picker was dismissed',
@@ -83,9 +102,9 @@ const ScheduleScreen = ({ navigation }) => {
           }
       
           if (event.type === 'neutralButtonPressed') {
-            setEventStartDate(new Date(0));
+            setEventStartTime(new Date(0));
           } else {
-            setEventStartDate(selectedDate);
+            setEventStartTime(selectedDate);
           }
     }
     const changeEndDate = (event, selectedDate) => {
@@ -112,10 +131,10 @@ const ScheduleScreen = ({ navigation }) => {
 
     const editEvent = () => {
       const updatedEvents = {...items}; 
-      const eventToEdit = updatedEvents[timeToString(editItem.startDate)].find(event => event.id === editItem.id); 
-      if (eventToEdit.startDate == editStartDate) { 
+      const eventToEdit = updatedEvents[timeToString(editItem.startTime)].find(event => event.id === editItem.id); 
+      if (eventToEdit.startTime == editStartTime) { 
         eventToEdit.title = editTitle; 
-        eventToEdit.startDate = editStartDate; 
+        eventToEdit.startTime = editStartTime; 
         eventToEdit.endDate = editEndDate; 
       }
       
@@ -124,7 +143,7 @@ const ScheduleScreen = ({ navigation }) => {
   } 
 
   const deleteEvent = () => {
-    const dateString = timeToString(editItem.startDate)
+    const dateString = timeToString(editItem.startTime)
 
     const updatedEvents = {...items}; // create a copy of the original object
     updatedEvents[dateString] = updatedEvents[dateString].filter((event) => event.id !== editItem.id)
@@ -142,7 +161,7 @@ const ScheduleScreen = ({ navigation }) => {
 
           items[sString].push({
               title: t,
-              startDate: s,
+              startTime: s,
               endDate: e,
               isHoliday: false
           })
@@ -156,16 +175,22 @@ const ScheduleScreen = ({ navigation }) => {
     
     const transformArrayToItems = (arr) => {
       const itemsObject = {}
-        arr.forEach((item) => {
-          const dateString = timeToString(item.startDate)
-          
-          if (!itemsObject[dateString])
-          {
-            itemsObject[dateString] = []
-          }
-          
-          itemsObject[dateString].push(item)
-        })
+      
+      if (!arr)
+      {
+        return itemsObject
+      }
+      
+      arr.forEach((item) => {
+        const dateString = timeToString(item.startTime)
+        
+        if (!itemsObject[dateString])
+        {
+          itemsObject[dateString] = []
+        }
+        
+        itemsObject[dateString].push(item)
+      })
        
 
       return itemsObject
@@ -175,14 +200,17 @@ const ScheduleScreen = ({ navigation }) => {
       // setTimeout(() => {
         const pastDays = 15
         const futureDays = 85
-        
-        const startDate = new Date()
-        startDate.setDate(startDate.getDate() - pastDays)
+
+        const startTime = new Date()
+        startTime.setDate(startTime.getDate() - pastDays)
         
         const endDate = new Date()
         endDate.setDate(endDate.getDate() + futureDays)
         
-        const newItems = await getItemsFromServer(startDate, endDate);
+        console.log(startTime)
+        console.log(endDate)
+
+        const newItems = await getItemsFromServer(startTime, endDate);
         const transformedItems = transformArrayToItems(newItems);
 
         for (let i = -pastDays; i < futureDays; i++) {
@@ -199,48 +227,49 @@ const ScheduleScreen = ({ navigation }) => {
           // console.log(items[timeToString(new Date())])
       // }, 1000);
   }
+  const getTime = (dateString) => {
+    // extract the hours and minutes from the string
+    let time = '';
+    let hours = parseInt(dateString.substring(11, 13));
+    if (hours < 10) {
+    time += '0'; // add leading zero if necessary
+    }
+    time += hours + ':';
 
+    let minutes = parseInt(dateString.substring(14, 16));
+    if (minutes < 10) {
+    time += '0'; // add leading zero if necessary
+    }
+    time += minutes;
+    return time
+  }
       const renderItem = (item) => {
-        
+        const time = getTime(item.startTime)
         console.log(item.title)
           return(
-              <EventItem title={item.title} id={item.id} isHoliday={item.isHoliday} startDate={item.startDate} onPress={() => {
+              <EventItem title={item.title} id={item.id} isHoliday={item.isHoliday} startTime={time} onPress={() => {
 
                 openEditModal(item)
               }}/>
           )
       }
       
-      
-      const getItemsFromServer = async (startDate, endDate) => {
+      const getItemsFromServer = async (startTime, endDate) => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+
         try {
-          const data = [  
-            {id: 1, name: 1, title: 'test 1', startDate: new Date(), endDate: new Date(), isHoliday: true},
-            {id: 3, name: 3, title: 'test 3', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 4, name: 4, title: 'test 4', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 5, name: 5, title: 'test 5', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 6, name: 6, title: 'test 6', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 7, name: 7, title: 'test 7', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 8, name: 8, title: 'test 8', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 9, name: 9, title: 'test 9', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 10, name: 10, title: 'test 10', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 11, name: 11, title: 'test 11', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 12, name: 12, title: 'test 12', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 13, name: 13, title: 'test 13', startDate: new Date(), endDate: new Date(), isHoliday: false}
-        ]
-        return data
+          const response = await fetch(buildPath('/api/searchMonthlyEvent'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ _id: userData.id, searchTitle: '', firstOfMonth: startTime, lastOfMonth: endDate, jwtToken})
+          });
+          const data = await response.json();
+          console.log(data.results)
+          return data.results;
         } catch(e) {
           return []
         }
       }
-     
-      // useEffect(() => {
-      //   if (editComplete === true)
-      //   {
-          
-      //     setEditComplete(false)
-      //   }
-      // }, [editComplete])
       
       useEffect(() => {
         console.log('items')
@@ -318,7 +347,7 @@ const ScheduleScreen = ({ navigation }) => {
             <View style={{width: '100%', marginTop: 30}}>
                 <View style={styles.dateContainer}>
                     <Text style={styles.text}>Start</Text>
-                    <DTPicker value={editStartDate} onChange={changeStartDate}/>
+                    <DTPicker value={editStartTime} onChange={changeStartTime}/>
                 </View>
             </View>
                 </View>
@@ -335,7 +364,7 @@ const ScheduleScreen = ({ navigation }) => {
                 }} type="TERTIARY"/>
             </View>
         </SafeAreaView>
-        {/* <EditEventScreen title={editTitle} startDate={editStartDate} endDate={editEndDate} onPressCancel={()=> {
+        {/* <EditEventScreen title={editTitle} startTime={editstartTime} endDate={editEndDate} onPressCancel={()=> {
           setEditEventModal(false)}
           } onPressEdit={editEvent}/> */}
             </Modal>
