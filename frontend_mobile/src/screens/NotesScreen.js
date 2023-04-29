@@ -59,8 +59,24 @@ const NotesScreen = () => {
         }
     }
 
-    const deleteNote = (id) => {
-        
+    const deleteNote = async (title) => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/delNote'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('delete successful')
+            loadItemsFromServer()
+        }
+        else
+        {
+            console.log('delete failed')
+        }
     };
     
     const editNote = () => {
@@ -74,15 +90,25 @@ const NotesScreen = () => {
         setEditNoteModal(false);
     }
 
-    const addNote = () => {
-        notes.push(
-            {
-                id: count,
-                title: title,
-                content: content,
-            })
-            setAddNoteModal(false)   
-            count++
+    const addNote = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/addNote'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title, content, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('add successful')
+            loadItemsFromServer()
+            setAddNoteModal(false)  
+        }
+        else
+        {
+            console.log('add failed')
+        }
     }
 
     const openAddModal = () => {
@@ -118,7 +144,7 @@ const NotesScreen = () => {
             renderRightActions={() => (
             <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => deleteNote(item.id)}
+            onPress={() => deleteNote(item.title)}
             >
             <Icon name="trash-2" size={30} color="#fff"/>
             </TouchableOpacity>
