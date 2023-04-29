@@ -64,11 +64,6 @@ const ScheduleScreen = ({ navigation }) => {
 
     const openEditModal = (item) => {
       setEditItem(item)
-      setEditTitle(item.title)
-
-      setEditStartTime(item.startTime);
-      setEditEndDate(item.endDate)
-
       setEditEventModal(true)
   }
 
@@ -107,27 +102,7 @@ const ScheduleScreen = ({ navigation }) => {
             setEventStartTime(selectedDate);
           }
     }
-    const changeEndDate = (event, selectedDate) => {
-        if (event.type === 'dismissed') {
-            console.log(
-              'picker was dismissed',
-              undefined,
-              [
-                {
-                  text: 'great',
-                },
-              ],
-              {cancelable: true},
-            );
-            return;
-          }
-      
-          if (event.type === 'neutralButtonPressed') {
-            setEventEndDate(new Date(0));
-          } else {
-            setEventEndDate(selectedDate);
-          }
-    }
+    
 
     const editEvent = () => {
       const updatedEvents = {...items}; 
@@ -142,14 +117,32 @@ const ScheduleScreen = ({ navigation }) => {
       setEditEventModal(false);
   } 
 
-  const deleteEvent = () => {
-    const dateString = timeToString(editItem.startTime)
+  const deleteEvent = async () => {
+    const { userData, jwtToken } = await getUserDataAndToken();
+    const response = await fetch(buildPath('/api/delEvent'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({ _id: userData.id, title: editItem.title, startTime: editItem.startTime, jwtToken })
+    });
 
-    const updatedEvents = {...items}; // create a copy of the original object
-    updatedEvents[dateString] = updatedEvents[dateString].filter((event) => event.id !== editItem.id)
-    setItems(updatedEvents); // set the updated object to the state
+    const data = await response.json();
+    if (data.error === '')
+    {
+      console.log('success')
 
-    setEditEventModal(false)
+      // const dateString = timeToString(editItem.startTime)
+
+      // const updatedEvents = {...items}; // create a copy of the original object
+      // updatedEvents[dateString] = updatedEvents[dateString].filter((item) => !(item.startTime === editItem.startTime && item.title === editItem.title))
+      // setItems(updatedEvents); // set the updated object to the state
+
+      setEditEventModal(false)
+
+    }
+    else
+    {
+      console.log('failed');
+    }
   }
 
   const addEvent = async (title, startTime) => {
@@ -270,12 +263,13 @@ const ScheduleScreen = ({ navigation }) => {
         const time = getTime(item.startTime)
         console.log(item.title)
           return(
-              <EventItem title={item.title} id={item.id} isHoliday={item.isHoliday} startTime={time} onPress={() => {
+              <EventItem title={item.title} isHoliday={item.isHoliday} startTime={time} onPress={() => {
 
                 openEditModal(item)
               }}/>
           )
       }
+
       const getItemsFromServer = async (startTime, endDate) => {
         const { userData, jwtToken } = await getUserDataAndToken();
 
