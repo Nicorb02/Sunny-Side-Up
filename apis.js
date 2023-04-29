@@ -198,7 +198,7 @@ exports.setApp = function (app, client)
     // outgoing: error (if applicable)
 
     var error = '';
-    const {_id, _id:noteId, jwtToken} = req.body;
+    const {_id, itemId, jwtToken} = req.body;
 
     // Ensure the jwt is not expired
     var token = require('./createJWT.js');
@@ -226,7 +226,8 @@ exports.setApp = function (app, client)
 
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{_id:noteId}}});
+    const noteObjectId = new ObjectId(itemId);
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{_id:noteObjectId}}});
     if(results == null){
         error = 'No Note Found';
         var ret = {error: error};
