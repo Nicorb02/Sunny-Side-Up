@@ -198,7 +198,7 @@ exports.setApp = function (app, client)
     // outgoing: error (if applicable)
 
     var error = '';
-    const {_id, itemId, jwtToken} = req.body;
+    const {_id, _id:noteId, jwtToken} = req.body;
 
     // Ensure the jwt is not expired
     var token = require('./createJWT.js');
@@ -217,16 +217,16 @@ exports.setApp = function (app, client)
     }
 
     // check if any fields are empty
-    if (!itemId){
-        error = 'Please add an id';
-        var ret = {error: error};
-        res.status(400).json(ret);
-        return;
-    }
+    // if (!itemId){
+    //     error = 'Please add an id';
+    //     var ret = {error: error};
+    //     res.status(400).json(ret);
+    //     return;
+    // }
 
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{_id:itemId}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{_id:noteId}}});
     if(results == null){
         error = 'No Note Found';
         var ret = {error: error};
