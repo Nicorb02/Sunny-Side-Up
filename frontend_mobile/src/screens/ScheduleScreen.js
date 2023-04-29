@@ -14,7 +14,10 @@ import CreateEventScreen from "./CreateEventScreen";
 import EventItem from "../components/EventItem";
 import Day from "react-native-calendars/src/calendar/day";
 import { TextInput } from "react-native-paper";
-const ScheduleScreen = () => {
+import {SoapRegular} from '../../assets/fonts/expo-fonts'
+import { useFonts } from "expo-font";
+
+const ScheduleScreen = ({ navigation }) => {
     const [selected, setSelected] = useState('');
   
     const [refresh, setRefresh] = useState(false)
@@ -30,7 +33,7 @@ const ScheduleScreen = () => {
     const [eventEndDate, setEventEndDate] = useState(new Date())
     const [eventTitle, setEventTitle] = useState('')
 
-
+    
     const [editStartDate, setEditStartDate] = useState(new Date())
     const [editEndDate, setEditEndDate] = useState(new Date())
     const [editTitle, setEditTitle] = useState('')
@@ -211,21 +214,15 @@ const ScheduleScreen = () => {
       
       const getItemsFromServer = async (startDate, endDate) => {
         try {
-          const data = [  
-            {id: 1, name: 1, title: 'test 1', startDate: new Date(), endDate: new Date(), isHoliday: true},
-            {id: 3, name: 3, title: 'test 3', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 4, name: 4, title: 'test 4', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 5, name: 5, title: 'test 5', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 6, name: 6, title: 'test 6', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 7, name: 7, title: 'test 7', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 8, name: 8, title: 'test 8', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 9, name: 9, title: 'test 9', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 10, name: 10, title: 'test 10', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 11, name: 11, title: 'test 11', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 12, name: 12, title: 'test 12', startDate: new Date(), endDate: new Date(), isHoliday: false},
-            {id: 13, name: 13, title: 'test 13', startDate: new Date(), endDate: new Date(), isHoliday: false}
-        ]
-        return data
+          const response = await fetch(bp.buildPath('/api/searchMonthlyEvent'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ _id, searchTitle: '', date, jwtToken }),
+          });
+
+          const data = await response.json();
+          
+          return data
         } catch(e) {
           return []
         }
@@ -238,6 +235,7 @@ const ScheduleScreen = () => {
       //     setEditComplete(false)
       //   }
       // }, [editComplete])
+      
       useEffect(() => {
         console.log('items')
         console.log(items[timeToString(new Date())])
@@ -246,12 +244,21 @@ const ScheduleScreen = () => {
       useEffect(() => {
         console.log(editItem)
       }, [editItem])
+      
+      const [fontsLoaded] = useFonts({
+        SoapRegular,
+      });
+    
+      if (!fontsLoaded) {
+        return null;
+      }
     return(
-        <SafeAreaView style={{flex:1, backgroundColor: '#ffffff', marginBottom: 50}}>
+        <SafeAreaView style={{flex:1, backgroundColor: '#fff', marginBottom: 50}}>
           <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
-                <Text style={styles.header}>Agenda</Text>
+                <Text style={styles.header}>Home</Text>
                 <View>
                     <TouchableOpacity onPress={() => {
+                      navigation.navigate('Register', {name: 'Register'})
                     }}>
                       <View style={{flexDirection: "column", justifyContent: 'center', alignItems: 'center'}}>
                         <Icon name="logout" size={35} color="red"/>
@@ -262,8 +269,8 @@ const ScheduleScreen = () => {
             </View>
             <Agenda
                 theme={{
-                    backgroundColor: '#ffffff',
-                    calendarBackground: '#ffffff',
+                    backgroundColor: '#fff',
+                    calendarBackground: '#fff',
                     textSectionTitleColor: '#b6c1cd',
                     selectedDayBackgroundColor: '#ff9900',
                     selectedDayTextColor: '#ffffff',
@@ -289,8 +296,10 @@ const ScheduleScreen = () => {
             </Modal>
 
             <Modal animationType="slide" transparent={false} visible={editEventModal}>
-            <View style={styles.root}>
+            <SafeAreaView style={styles.root}>
+
             <Text style={styles.title}>Edit Event</Text>
+
             <View style={{width: '100%', marginTop: 20}}>
                 <TextInput 
                     style={styles.input} 
@@ -299,22 +308,18 @@ const ScheduleScreen = () => {
                     value={editTitle} 
                     onChangeText={editTitle => setEditTitle(editTitle)}
                     autoCapitalize="none"
-                />
-                </View>
+                    />
             <View style={{width: '100%', marginTop: 30}}>
                 <View style={styles.dateContainer}>
                     <Text style={styles.text}>Start</Text>
                     <DTPicker value={editStartDate} onChange={changeStartDate}/>
                 </View>
-                <View style={styles.dateContainer}>
-                    <Text style={styles.text}>End</Text>
-                    <DTPicker value={editEndDate} onChange={changeEndDate}/>
-                </View>
             </View>
-            <View style={{width: '100%', marginVertical: 100}}>
+                </View>
+
+            <View style={{width: '100%', marginBottom: 50}}>
                 <CustomButton text="Apply Changes" onPress={() => {
-                    editEvent()
-                    
+                  editEvent()
                 }}/>
                 <CustomButton text="Delete Event" type="DELETE" onPress={() => {
                     deleteEvent()
@@ -323,7 +328,7 @@ const ScheduleScreen = () => {
                   setEditEventModal(false)
                 }} type="TERTIARY"/>
             </View>
-        </View>
+        </SafeAreaView>
         {/* <EditEventScreen title={editTitle} startDate={editStartDate} endDate={editEndDate} onPressCancel={()=> {
           setEditEventModal(false)}
           } onPressEdit={editEvent}/> */}
@@ -337,14 +342,18 @@ const styles = StyleSheet.create({
     root: {
         alignItems: 'center',
         padding: 10,
-        marginVertical: 50
+        marginVertical: 50,
+        backgroundColor: '#fff',
+        justifyContent: 'space-between',
+        height: '100%'
+
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginVertical: 10,
         marginTop: 50,
-        color: '#343434'
+        color: '#343434',
     },
     dateContainer: {
         flexDirection:'row', 
@@ -366,7 +375,9 @@ const styles = StyleSheet.create({
     fontSize: 34,
     fontWeight: 'bold',
     margin: 15,
-    color: '#343434'
+    color: '#343434',
+    fontFamily: 'SoapRegular'
+
 },
 })
 
