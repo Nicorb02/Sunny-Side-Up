@@ -89,8 +89,24 @@ const TodoScreen = () => {
         }
     }
 
-    const deleteTask = async (id) => {
-        setTodo((prevData) => prevData.filter((item) => item.id !== id));
+    const deleteTask = async (title) => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/delToDo'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('delete successful')
+            loadItemsFromServer()
+        }
+        else
+        {
+            console.log('delete failed')
+        }
     }
 
     const handleCheck = (itemId) => {
@@ -105,7 +121,7 @@ const TodoScreen = () => {
             renderRightActions={() => (
             <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => deleteTask(item.id)}
+            onPress={() => deleteTask(item.title)}
             >
             <Icon name="trash-2" size={30} color="#fff"/>
             </TouchableOpacity>
