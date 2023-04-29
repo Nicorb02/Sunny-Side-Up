@@ -56,16 +56,16 @@
 }
 
 .task-item .delete-button {
-    display: none;
+    display: inline-block;
+    cursor: pointer;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     right: 5%;
 }
 
-.task-item:hover .delete-button {
-    display: inline-block;
-    cursor: pointer;
+.task-item .delete-button-hidden {
+    display: none;
 }
   
 
@@ -79,6 +79,7 @@
     top: 50%;
     transform: translateY(-40%);
     margin-left: 5%;
+    cursor: pointer;
 }
 
 .task-incomplete {
@@ -92,6 +93,7 @@
     top: 50%;
     transform: translateY(-40%);
     margin-left: 5%;
+    cursor: pointer;
 }
 
 .task-title-complete {
@@ -104,6 +106,7 @@
     font-weight: bold;
     text-decoration: line-through;
     text-decoration-color:rgba(247, 255, 247, 0.9);
+    cursor: pointer;
 }
 
 .task-title {
@@ -114,4 +117,20 @@
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
     font-weight: bold;
+    cursor: pointer;
+}
+
+.add-todo-component {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    z-index: 1;
+}
+
+.hide-todo-component {
+    display: none;
 }

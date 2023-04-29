@@ -9,6 +9,7 @@ const PlannerPage = () => {
     const [displayAddEvent, setDisplayAddEvent] = useState(false);
     const [displayToDo, setDisplayToDo] = useState(false);
     const [date, setDate] = useState(new Date());
+    console.log(date);
     const [reloadEvents, toggleReloadEvents] = useState(false);
 
     return (
