@@ -1,4 +1,5 @@
 require('mongodb');
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -165,7 +166,7 @@ exports.setApp = function (app, client)
     var o_id = new ObjectId(_id);
 
     // push the new note object into the notes array
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{notes:{title:title, content:content}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push:{notes:{_id:new ObjectId(), title:title, content:content}}});
 
     // If results == null, no user found for that id, so no changes made.
     if(results == null){
@@ -278,7 +279,6 @@ exports.setApp = function (app, client)
     // search for all notes that match citeria 
     const result = await db.collection('users').findOne({ _id: o_id});
     const allNotesResults = result.notes;
-    console.log(allNotesResults)
     const searchedNotesResults = allNotesResults.filter(allNotesResults => allNotesResults.title.includes(title));
 
     // refresh token
@@ -797,7 +797,7 @@ exports.setApp = function (app, client)
         } 
         const db = client.db("COP4331");
         let o_id = new ObjectId(_id);
-        const results = await db.collection('users').findOneAndUpdate({_id: o_id}, {$push:{contacts: {name: name, email: email, phone: phone}}});
+        const results = await db.collection('users').findOneAndUpdate({_id: o_id}, {$push:{contacts: {_id:new ObjectId(), name: name, email: email, phone: phone}}});
         if (results == null)
         {
           error = "Invalid userId";
@@ -833,7 +833,7 @@ exports.setApp = function (app, client)
         // outgoing: error
         
         let error = "";
-        const {_id, name, email, phone} = req.body;
+        const {_id, old_id,  name, email, phone} = req.body;
         
         if (!name || !email || !phone)
         {
@@ -846,7 +846,7 @@ exports.setApp = function (app, client)
         const db = client.db("COP4331");
         var o_id = new ObjectId(_id);
         await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull: {contacts: {name: name}}});
-        await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push: {contacts: {name: name, email: email, phone: phone,}}});
+        await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push: {contacts: {_id:new ObjectId(old_id), name: name, email: email, phone: phone}}});
         var ret = {error: error};
         res.status(200).json(ret);
     });
