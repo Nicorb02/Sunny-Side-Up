@@ -33,7 +33,7 @@ const ScheduleScreen = ({ navigation }) => {
     const [eventEndDate, setEventEndDate] = useState(new Date())
     const [eventTitle, setEventTitle] = useState('')
 
-    
+
     const [editStartDate, setEditStartDate] = useState(new Date())
     const [editEndDate, setEditEndDate] = useState(new Date())
     const [editTitle, setEditTitle] = useState('')
@@ -214,15 +214,21 @@ const ScheduleScreen = ({ navigation }) => {
       
       const getItemsFromServer = async (startDate, endDate) => {
         try {
-          const response = await fetch(bp.buildPath('/api/searchMonthlyEvent'), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ _id, searchTitle: '', date, jwtToken }),
-          });
-
-          const data = await response.json();
-          
-          return data
+          const data = [  
+            {id: 1, name: 1, title: 'test 1', startDate: new Date(), endDate: new Date(), isHoliday: true},
+            {id: 3, name: 3, title: 'test 3', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 4, name: 4, title: 'test 4', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 5, name: 5, title: 'test 5', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 6, name: 6, title: 'test 6', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 7, name: 7, title: 'test 7', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 8, name: 8, title: 'test 8', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 9, name: 9, title: 'test 9', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 10, name: 10, title: 'test 10', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 11, name: 11, title: 'test 11', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 12, name: 12, title: 'test 12', startDate: new Date(), endDate: new Date(), isHoliday: false},
+            {id: 13, name: 13, title: 'test 13', startDate: new Date(), endDate: new Date(), isHoliday: false}
+        ]
+        return data
         } catch(e) {
           return []
         }
