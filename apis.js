@@ -432,40 +432,40 @@ exports.setApp = function (app, client)
     // returns an array of holidays: the 5 federal holidays with fixed dates
     function addHolidays()
     {
-        return [{title: "Juneteenth", startTime: new Date(2020, 5, 19, 0), endTime: new Date(2020, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2020, 6, 4, 0), endTime: new Date(2020, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2020, 10, 11, 0), endTime: new Date(2020, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2020, 11, 25, 0), endTime: new Date(2020, 11, 26, 0), isHoliday: true},
-                {title: "New Years Day", startTime: new Date(2021, 0, 1, 0), endTime: new Date(2021, 0, 2, 0), isHoliday: true},
-                {title: "Juneteenth", startTime: new Date(2021, 5, 19, 0), endTime: new Date(2021, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2021, 6, 4, 0), endTime: new Date(2021, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2021, 10, 11, 0), endTime: new Date(2021, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2021, 11, 25, 0), endTime: new Date(2021, 11, 26, 0), isHoliday: true},
-                {title: "New Years Day", startTime: new Date(2022, 0, 1, 0), endTime: new Date(2022, 0, 2, 0), isHoliday: true},
-                {title: "Juneteenth", startTime: new Date(2022, 5, 19, 0), endTime: new Date(2022, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2022, 6, 4, 0), endTime: new Date(2022, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2022, 10, 11, 0), endTime: new Date(2022, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2022, 11, 25, 0), endTime: new Date(2022, 11, 26, 0), isHoliday: true},
-                {title: "New Years Day", startTime: new Date(2023, 0, 1, 0), endTime: new Date(2023, 0, 2, 0), isHoliday: true},
-                {title: "Juneteenth", startTime: new Date(2023, 5, 19, 0), endTime: new Date(2023, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2023, 6, 4, 0), endTime: new Date(2023, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2023, 10, 11, 0), endTime: new Date(2023, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2023, 11, 25, 0), endTime: new Date(2023, 11, 26, 0), isHoliday: true},
-                {title: "New Years Day", startTime: new Date(2024, 0, 1, 0), endTime: new Date(2024, 0, 2, 0), isHoliday: true},
-                {title: "Juneteenth", startTime: new Date(2024, 5, 19, 0), endTime: new Date(2024, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2024, 6, 4, 0), endTime: new Date(2024, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2024, 10, 11, 0), endTime: new Date(2024, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2024, 11, 25, 0), endTime: new Date(2024, 11, 26, 0), isHoliday: true},
-                {title: "New Years Day", startTime: new Date(2025, 0, 1, 0), endTime: new Date(2025, 0, 2, 0), isHoliday: true},
-                {title: "Juneteenth", startTime: new Date(2025, 5, 19, 0), endTime: new Date(2025, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2025, 6, 4, 0), endTime: new Date(2025, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2025, 10, 11, 0), endTime: new Date(2025, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2025, 11, 25, 0), endTime: new Date(2025, 11, 26, 0), isHoliday: true},
-                {title: "New Years Day", startTime: new Date(2026, 0, 1, 0), endTime: new Date(2026, 0, 2, 0), isHoliday: true},
-                {title: "Juneteenth", startTime: new Date(2026, 5, 19, 0), endTime: new Date(2026, 5, 20, 0), isHoliday: true},
-                {title: "Independence Day", startTime: new Date(2026, 6, 4, 0), endTime: new Date(2026, 6, 5, 0), isHoliday: true},
-                {title: "Veterans Day", startTime: new Date(2026, 10, 11, 0), endTime: new Date(2026, 10, 12, 0), isHoliday: true},
-                {title: "Christmas Day", startTime: new Date(2026, 11, 25, 0), endTime: new Date(2026, 11, 26, 0), isHoliday: true}];
+        return [{title: "Juneteenth", startTime: new Date(2020, 5, 19, 0), endTime: new Date(2020, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2020, 6, 4, 0), endTime: new Date(2020, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2020, 10, 11, 0), endTime: new Date(2020, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2020, 11, 25, 0), endTime: new Date(2020, 11, 26, 0), isHoliday: 1},
+                {title: "New Years Day", startTime: new Date(2021, 0, 1, 0), endTime: new Date(2021, 0, 2, 0), isHoliday: 1},
+                {title: "Juneteenth", startTime: new Date(2021, 5, 19, 0), endTime: new Date(2021, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2021, 6, 4, 0), endTime: new Date(2021, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2021, 10, 11, 0), endTime: new Date(2021, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2021, 11, 25, 0), endTime: new Date(2021, 11, 26, 0), isHoliday: 1},
+                {title: "New Years Day", startTime: new Date(2022, 0, 1, 0), endTime: new Date(2022, 0, 2, 0), isHoliday: 1},
+                {title: "Juneteenth", startTime: new Date(2022, 5, 19, 0), endTime: new Date(2022, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2022, 6, 4, 0), endTime: new Date(2022, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2022, 10, 11, 0), endTime: new Date(2022, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2022, 11, 25, 0), endTime: new Date(2022, 11, 26, 0), isHoliday: 1},
+                {title: "New Years Day", startTime: new Date(2023, 0, 1, 0), endTime: new Date(2023, 0, 2, 0), isHoliday: 1},
+                {title: "Juneteenth", startTime: new Date(2023, 5, 19, 0), endTime: new Date(2023, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2023, 6, 4, 0), endTime: new Date(2023, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2023, 10, 11, 0), endTime: new Date(2023, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2023, 11, 25, 0), endTime: new Date(2023, 11, 26, 0), isHoliday: 1},
+                {title: "New Years Day", startTime: new Date(2024, 0, 1, 0), endTime: new Date(2024, 0, 2, 0), isHoliday: 1},
+                {title: "Juneteenth", startTime: new Date(2024, 5, 19, 0), endTime: new Date(2024, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2024, 6, 4, 0), endTime: new Date(2024, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2024, 10, 11, 0), endTime: new Date(2024, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2024, 11, 25, 0), endTime: new Date(2024, 11, 26, 0), isHoliday: 1},
+                {title: "New Years Day", startTime: new Date(2025, 0, 1, 0), endTime: new Date(2025, 0, 2, 0), isHoliday: 1},
+                {title: "Juneteenth", startTime: new Date(2025, 5, 19, 0), endTime: new Date(2025, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2025, 6, 4, 0), endTime: new Date(2025, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2025, 10, 11, 0), endTime: new Date(2025, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2025, 11, 25, 0), endTime: new Date(2025, 11, 26, 0), isHoliday: 1},
+                {title: "New Years Day", startTime: new Date(2026, 0, 1, 0), endTime: new Date(2026, 0, 2, 0), isHoliday: 1},
+                {title: "Juneteenth", startTime: new Date(2026, 5, 19, 0), endTime: new Date(2026, 5, 20, 0), isHoliday: 1},
+                {title: "Independence Day", startTime: new Date(2026, 6, 4, 0), endTime: new Date(2026, 6, 5, 0), isHoliday: 1},
+                {title: "Veterans Day", startTime: new Date(2026, 10, 11, 0), endTime: new Date(2026, 10, 12, 0), isHoliday: 1},
+                {title: "Christmas Day", startTime: new Date(2026, 11, 25, 0), endTime: new Date(2026, 11, 26, 0), isHoliday: 1}];
     }
 
     app.post('/api/searchMonthlyEvent', async(req,res)=>{
@@ -876,4 +876,351 @@ exports.setApp = function (app, client)
         let ret = {error: error};
         res.status(200).json(ret);
       });   
+
+      //add a todo 
+app.post('/api/addToDo', async(req,res)=>{
+    //incoming: id, title, jwtToken
+    //outcoming: error, jwtToken 
+    var error = '';
+    const {_id, title, jwtToken} = req.body;
+  
+    // Ensure the jwt is not expired
+    var token = require('./createJWT.js');
+    try
+    {
+        if( token.isExpired(jwtToken))
+        {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    if(!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    const db = client.db("COP4331");
+    var o_id = new ObjectId(_id);
+    //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+  
+    const results = await db.collection('users').findOneAndUpdate(
+        { _id: o_id },
+        { $push: {todo: { $each: [{ title: title, complete: 0}], $position: 0 } } }
+      );
+  
+    if(results == null){
+      error = 'Not added, no user id found';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    // refresh token
+    var refreshedToken = null;
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    var ret = {error: error, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  });
+  
+  //Delete a todo 
+  app.post('/api/delToDo', async(req,res)=>{
+    //incoming: id, title, jwtToken
+    //outcoming: error, jwtToken
+    var error = '';
+    const {_id, title, jwtToken} = req.body;
+  
+    // Ensure the jwt is not expired
+    var token = require('./createJWT.js');
+    try
+    {
+        if( token.isExpired(jwtToken))
+        {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    if(!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    const db = client.db("COP4331");
+    var o_id = new ObjectId(_id);
+    //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+  
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull :{todo:{title:title}}});
+  
+    if(results == null){
+      error = 'Not deleted, no user id found';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    // refresh token
+    var refreshedToken = null;
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    var ret = {error: error, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  });
+  
+  //edit a todo (mark it as complete)
+  app.post('/api/completeToDo', async(req,res)=>{
+    //incoming: id, title, jwtToken
+    //outcoming: error, jwtToken
+    var error = '';
+    const {_id, title, jwtToken} = req.body;
+  
+  // Ensure the jwt is not expired
+      var token = require('./createJWT.js');
+      try
+      {
+          if( token.isExpired(jwtToken))
+          {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+          }
+      }
+      catch(e)
+      {
+          console.log(e.message);
+      }
+  
+  
+    if(!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    const db = client.db("COP4331");
+    var o_id = new ObjectId(_id);
+    //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+  
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todo.title":title}, {$set :{"todo.$.complete": 1}});
+  
+    if(results == null){
+      error = 'Not edited, no user id found';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    // refresh token
+    var refreshedToken = null;
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    var ret = {error: error, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  });
+  
+  //edit a todo (mark it as incomplete)
+  app.post('/api/incompleteToDo', async(req,res)=>{
+    //incoming: id, title, jwtToken
+    //outcoming: error, jwtToken
+    var error = '';
+    const {_id, title, jwtToken} = req.body;
+  
+    // Ensure the jwt is not expired
+    var token = require('./createJWT.js');
+    try
+    {
+        if( token.isExpired(jwtToken))
+        {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+    
+    if(!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    const db = client.db("COP4331");
+    var o_id = new ObjectId(_id);
+    //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
+  
+    //const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$unset :{todos:{title:title, date:_date, complete: 0}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todo.title":title}, {$set :{"todo.$.complete": 0}});
+    if(results == null){
+      error = 'Not edited, no user id found';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    // refresh token
+    var refreshedToken = null;
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    var ret = {error: error, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  });
+  
+  //edit a todo title
+  app.post('/api/changeTitleToDo', async(req,res)=>{
+    //incoming: id, title, jwtToken
+    //outcoming: error, jwtToken
+    var error = '';
+    const {_id, prevTitle, newTitle, jwtToken} = req.body;
+  
+    // Ensure the jwt is not expired
+    var token = require('./createJWT.js');
+    try
+    {
+        if( token.isExpired(jwtToken))
+        {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    if(!title){
+      error = 'Please add a title';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    const db = client.db("COP4331");
+    var o_id = new ObjectId(_id);
+  
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "todo.title":prevTitle}, {$set :{"todo.$.title": newTitle}});
+    if(results == null){
+      error = 'Not edited, no user id found';
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+    // refresh token
+    var refreshedToken = null;
+    try
+    {
+        refreshedToken = token.refresh(jwtToken);
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    var ret = {error: error, jwtToken: refreshedToken};
+    res.status(200).json(ret);
+  });
+  
+  //find all todos for an user
+  app.post('/api/readToDo', async(req,res)=>{
+    //incoming: id, jwtToken
+    //outcoming: all todo under the user, jwtToken
+    var error = '';
+    const {_id, jwtToken} = req.body;
+  
+    // Ensure the jwt is not expired
+    var token = require('./createJWT.js');
+    try
+    {
+        if( token.isExpired(jwtToken))
+        {
+        var r = {error:'The JWT is no longer valid', jwtToken: ''};
+        res.status(200).json(r);
+        return;
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message);
+    }
+  
+    // Connect to database and get userId
+    const db = client.db("COP4331");
+    var o_id = new ObjectId(_id);
+  
+    // Find the array of all todos
+    const result = await db.collection('users').findOne({ _id: o_id});
+    
+    try {
+      const allToDos = result.todo;
+  
+      // refresh token
+      var refreshedToken = null;
+      try
+      {
+          refreshedToken = token.refresh(jwtToken);
+      }
+      catch(e)
+      {
+          console.log(e.message);
+      }
+  
+      var ret = {error: error, results:allToDos, jwtToken: refreshedToken};
+      res.status(200).json(ret);
+    } catch (error) {
+      error = error;
+      var ret = {error: error};
+      res.status(400).json(ret);
+      return;
+    }
+  
+  });  
 }

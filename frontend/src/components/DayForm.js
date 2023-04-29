@@ -9,9 +9,10 @@ import ContactsIcon from '../styles/assets/ContactsIcon';
 import ListIcon from '../styles/assets/ListIcon';
 import AddIcon from '../styles/assets/AddIcon';
 import LogoutButton from '../styles/assets/LogoutButton';
+import ToDoIcon from '../styles/assets/ToDoIcon';
 import { Title } from '@mui/icons-material';
 
-const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reloadEvents }) =>
+const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reloadEvents, setDisplayToDo }) =>
 {
     // import buildPath and local storage functions
     let bp = require('./Path.js');
@@ -51,7 +52,8 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
             .map((event) => ({
               id: event._id,
               title: event.title,
-              startTime: new Date(event.startTime).toISOString()
+              startTime: new Date(event.startTime).toISOString(),
+              isHoliday: event.isHoliday
             }))
             .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
             .map((event) => ({
@@ -72,6 +74,10 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
 
     function toggleDisplayAddEvent () {
         setDisplayAddEvent(true);
+    }
+
+    function toggleDisplayToDo () {
+        setDisplayToDo(true);
     }
   
     useEffect(() => {
@@ -155,6 +161,7 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
     return (
         <div className='form'>
             <div className='logout-button' onClick={doLogout}> <LogoutButton /> </div>
+            <div className='listview-button'> <ListIcon /> </div>
             <div className='content-container'>
                 <div className='day-container'>
                     <div className='prev-day-container'>
@@ -171,10 +178,10 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
                 <div className='events-container'>
                     <div className='events-list'>
                         {events.map((event) => (
-                          <li className='event-item' key={event.id}>
+                          <li className={event.isHoliday ? 'event-item holiday' : 'event-item' }key={event.id}>
                             <div className={selectedEventId === event.id ? 'trash-icon' : 'trash-icon-hidden'} onClick={prepareDelEvent}> <Trash /> </div>
                             <p className='event-title' onClick={() => handleItemClick(event)}>{event.title}</p>
-                            <p className='event-time'>{event.startTime}</p>
+                            {event.isHoliday ? <p className='event-time'>Holiday</p> : <p className='event-time'>{event.startTime}</p>}
                           </li>
                         ))}
                     </div>
@@ -189,7 +196,7 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
                     <div className='contacts-button'><ContactsIcon /> </div>
                 </div>
                 <div className='list-button-container'>
-                    <div className='list-button'><ListIcon /> </div>
+                    <div className='list-button' onClick={toggleDisplayToDo}><ToDoIcon /> </div>
                 </div>
             </div>
         </div>

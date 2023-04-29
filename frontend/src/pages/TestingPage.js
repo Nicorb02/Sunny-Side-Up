@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
-import TimePicker from 'react-time-picker'
-import '../styles/AddEvent.css'
-import '../styles/TimePick.css'
+import '../styles/ToDo.css'
+import CloseEvent from '../styles/assets/CloseEvent';
+import Trash from '../styles/assets/Trash'
 
 
 const TestingPage = () => {
-    const [time, onChange] = useState('12:00');
 
+    let list = [
+        {title: 'Numero one', complete: '0' },
+        {title: 'Two', complete: '0' },
+        {title: 'Tres/three', complete: '1' },
+        {title: 'Quatro', complete: '1' },
+        {title: 'Cinco five', complete: '0' },
+        {title: '6 six', complete: '0' },
+    ]
+// <button type='button' className='add-task-button'>Add Task</button>
     return (
-        <div className='container'>
-            <div className='event-name-container'>
-                <input type='text' className='name-input' placeholder='Event Name'></input>
+            <div className='tasks-container'>
+                <div className='close-task' >
+                    <CloseEvent />
+                </div>
+                <div className='tasks-list'>
+                    {list.map((task) => (
+                        <li className='task-item'>
+                            <div className={task.complete == 1 ? 'task-complete' : 'task-incomplete'} ></div>
+                            <p className={task.complete == 1 ? 'task-title-complete' : 'task-title'}>{task.title}</p>
+                            <div className='delete-button'> <Trash /> </div>
+                        </li>
+                    ))}
+                </div>
+                <button type='button' className='add-task-button'>Add Task</button>
             </div>
-            <div className='time-pick-container'>
-                <TimePicker 
-                onChange={onChange} 
-                value={time} 
-                disableClock='true'
-                format='h:mm a'
-                />
-            </div>
-            <div className='add-event-button-container'> 
-                <button type='button' className='add-button'>Add</button>
-            </div>
-        </div>
     );
 };
 

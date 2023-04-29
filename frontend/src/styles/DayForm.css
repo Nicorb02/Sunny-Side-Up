@@ -31,6 +31,13 @@
   cursor: pointer;
 }
 
+.listview-button {
+  position: absolute;
+  margin-top: 3%;
+  margin-left: 24%;
+  cursor: pointer;
+}
+
 .day-container {
     height: 50%;
     width: 100%;
@@ -120,6 +127,10 @@
     border-bottom: 0.5px solid rgba(247, 255, 247, 0.5);
   }
 
+  .event-item.holiday {
+    font-style:italic;
+    pointer-events: none;
+  }
 
   .event-item:hover {
     background: #ff9900;
