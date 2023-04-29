@@ -10,23 +10,11 @@ import { Swipeable } from "react-native-gesture-handler";
 import { TextInput } from "react-native-paper";
 import { SoapRegular } from '../../assets/fonts/expo-fonts'
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const ContactsScreen = () => {
-    const [contacts, setContacts] = useState([
-        {id: 0, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 1, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 2, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 3, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 4, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 5, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 6, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 7, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 8, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 9, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 10, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 11, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 12, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 13, name: "Person", phone: "1234567890", email: "person@email.com"},
-    ])
+    
+    const [contacts, setContacts] = useState([])
 
     const [firstTimeInvoke, setFirstTimeInvoke] = useState(true)
     
@@ -52,7 +40,26 @@ const ContactsScreen = () => {
     const fillAllError = "Please fill all fields."
     const phoneError = "Please enter a valid phone number."
     const emailError = "Please enter a valid email."
-    
+
+
+    const storage = require('../tokenStorage.js');
+
+    // retrieve user data and current jwt from local storage
+    const getUserDataAndToken = async () => {
+      const userDataString = await AsyncStorage.getItem('user_data');
+      const userData = JSON.parse(userDataString);
+      const jwtToken = await storage.retrieveToken();
+      
+      return { userData, jwtToken };
+    }
+
+    const app_name = 'ssu-testing'        // testing server
+
+    const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
     const addContact = () => {
         contacts.push(
             {
@@ -74,7 +81,7 @@ const ContactsScreen = () => {
             )
         else
             return(
-                <FlatList data={contacts} renderItem={renderItems} keyExtractor={(contact) => contact.id.toString()} />
+                <FlatList data={contacts} renderItem={renderItems} keyExtractor={(contact) => contact.email} />
             )
     }
 
@@ -196,6 +203,27 @@ const ContactsScreen = () => {
         </Swipeable>
     );
 
+    const loadItemsFromServer = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/searchContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, name: '' })
+        });
+
+        const data = await response.json();
+
+        if (data.error === '')
+        {
+            console.log('load success')
+            setContacts(data.results)
+        }
+        else
+        {
+            console.log('load fail')
+        }
+    }
+
     const deleteContact = (id) => {
         setContacts((prevData) => prevData.filter((item) => item.id !== id));
         setEditContactModal(false);
@@ -286,6 +314,10 @@ const ContactsScreen = () => {
       useEffect(() => {
           checkInputValidity()
       }, [contactEmailError, contactNameError, contactPhoneError])
+
+      useEffect(() => {
+        loadItemsFromServer()
+      }, [])
 
     const [fontsLoaded] = useFonts({
         SoapRegular,
