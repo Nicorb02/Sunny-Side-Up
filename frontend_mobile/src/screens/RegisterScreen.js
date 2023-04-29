@@ -50,7 +50,7 @@ const RegisterScreen = ({navigation}) => {
     };
     
     const onConfirmPressed = () => {
-        console.warn("registered");
+        console.log("registered");
     }
     
     const onSignInPressed = () => {
@@ -77,7 +77,7 @@ const RegisterScreen = ({navigation}) => {
             // prints to console for now (inspect element to see console)
             if (data.error === '') 
             {
-                console.warn('good register');
+                console.log('good register');
             } 
             else 
             {
@@ -91,7 +91,7 @@ const RegisterScreen = ({navigation}) => {
         if (!isPasswordValidFunc(password))
         {
             setIsPassCompFormSlid(true);
-            console.warn("invalid password")
+            console.log("invalid password")
 
             return;
         }
