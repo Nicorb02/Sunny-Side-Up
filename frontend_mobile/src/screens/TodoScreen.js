@@ -2,21 +2,34 @@ import React,{useState, useEffect} from "react";
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from "react-native";
 import  Icon  from "react-native-vector-icons/Feather";
 import { Swipeable } from "react-native-gesture-handler";
-import { Card, Checkbox } from "react-native-paper";
+import { Card, Checkbox, TextInput } from "react-native-paper";
 import {SoapRegular} from '../../assets/fonts/expo-fonts'
 import { useFonts } from "expo-font";
+import CustomInput from "../components/CustomInput";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const TodoScreen = () => {
-    const [todo, setTodo] = useState([
-        {id: 0, title: 'task 1', date: new Date(), isComplete: true},
-        {id: 1, title: 'task 2', date: new Date(), isComplete: false},
-        {id: 2, title: 'task 3', date: new Date(), isComplete: false},
-        {id: 3, title: 'task 4', date: new Date(), isComplete: false},
-        {id: 4, title: 'task 5', date: new Date(), isComplete: false},
-        {id: 5, title: 'task 6', date: new Date(), isComplete: false},
-        {id: 6, title: 'task 7', date: new Date(), isComplete: false},
-        {id: 7, title: 'task 8', date: new Date(), isComplete: false},
-        {id: 8, title: 'task 9', date: new Date(), isComplete: false},
-    ])
+    const [title, setTitle] = useState('')
+
+    const [todo, setTodo] = useState([])
+    const storage = require('../tokenStorage.js');
+
+    // retrieve user data and current jwt from local storage
+    const getUserDataAndToken = async () => {
+      const userDataString = await AsyncStorage.getItem('user_data');
+      const userData = JSON.parse(userDataString);
+      const jwtToken = await storage.retrieveToken();
+      
+      return { userData, jwtToken };
+    }
+
+    const app_name = 'ssu-testing'        // testing server
+
+    const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
 
     const displayTodo = () => {
         if (todo.length == 0)
@@ -27,11 +40,56 @@ const TodoScreen = () => {
             )
         else
             return(
-                <FlatList data={todo} renderItem={renderItems} keyExtractor={(item) => item.id.toString()} />
+                <FlatList data={todo} renderItem={renderItems} keyExtractor={(item) => item.title} />
             )
     }
 
-    const deleteTask = (id) => {
+    const loadItemsFromServer = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/readToDo'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, jwtToken})
+        });
+
+        const data = await response.json();
+
+        if (data.error === '')
+        {
+            console.log('load success')
+            setTodo(data.results)
+        }
+        else
+        {
+            console.log('load fail')
+        }
+        
+
+    }
+
+    const addTask = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/addToDo'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, title, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('add successful')
+            setTitle('')
+            loadItemsFromServer()
+
+        }
+        else
+        {
+            console.log('add failed')
+        }
+    }
+
+    const deleteTask = async (id) => {
         setTodo((prevData) => prevData.filter((item) => item.id !== id));
     }
 
@@ -80,6 +138,9 @@ const TodoScreen = () => {
             </TouchableOpacity>
         </Swipeable>
     );
+    useEffect(() => {
+        loadItemsFromServer()
+    }, [])
     const [fontsLoaded] = useFonts({
         SoapRegular,
       });
@@ -90,10 +151,18 @@ const TodoScreen = () => {
     
     return(
         <SafeAreaView style={styles.container}>
+
+            <View style={{marginHorizontal: 10}}>
+                
+            <Text style={styles.header}>To do</Text>
             <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
-                <Text style={styles.header}>To do</Text>
-                <View>
-                    <TouchableOpacity >
+            <View style={{width: '90%'}}>
+                {/* <TextInput style={styles.input} mode="flat" label="Title" value={title} onChangeText={title => setTitle(title)} autoCapitalize="none" /> */}
+                <CustomInput placeholder="Title" value={title} setValue={setTitle}/>
+
+            </View>
+            <View style={{padding: 10}}>
+                    <TouchableOpacity onPress={addTask}>
                         <Icon name="plus" size={45} color='#e94d0b'/>
                     </TouchableOpacity>
                 </View>
@@ -132,6 +201,7 @@ const TodoScreen = () => {
                         </View>
                     </View>
                 </Modal> */}
+                </View>
           </SafeAreaView>
     );
 }
@@ -142,7 +212,6 @@ const styles = StyleSheet.create({
         padding: 5,
         marginBottom: 50,
         backgroundColor: '#fff',
-        marginHorizontal: 10,
         flexDirection: "column",
     },
     item: {
@@ -156,6 +225,11 @@ const styles = StyleSheet.create({
         margin: 15,
         color: '#343434',
         fontFamily: 'SoapRegular'
+    },
+    input: {
+        marginVertical: 5, 
+        backgroundColor: '#fff',
+        
     },
     title: {
         fontSize: 20,
