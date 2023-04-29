@@ -4,7 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/Feather"
 import { Swipeable } from "react-native-gesture-handler";
-    
+import { SoapRegular } from '../../assets/fonts/expo-fonts'
+import { useFonts } from "expo-font";
 const NotesScreen = () => {
     const [notes, setNotes] = useState([
         { id: 0, title: 'Notes', content: 'Content'},
@@ -100,7 +101,7 @@ const NotesScreen = () => {
             <TouchableOpacity onPress={() => {
                 openEditModal(item)
             }}>
-                <Card style={{marginVertical: 5,borderRadius: 5, borderWidth: 0.3, borderColor: '#343434', backgroundColor: '#fff'}}>
+                <Card style={{marginVertical: 5,borderRadius: 5, borderWidth: 0.3, borderColor: '#343434', backgroundColor: '#f7fff7'}}>
                     <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
                         <View>
                             <Text style={styles.title}>{item.title}</Text>
@@ -119,7 +120,13 @@ const NotesScreen = () => {
         }
       }, [addNoteModal, editNoteModal])
 
-
+      const [fontsLoaded] = useFonts({
+        SoapRegular,
+      });
+    
+      if (!fontsLoaded) {
+        return null;
+      }
     return(
         <SafeAreaView style={styles.container}>
             <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
@@ -220,7 +227,8 @@ const styles = StyleSheet.create({
         fontSize: 34,
         fontWeight: 'bold',
         margin: 15,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
     title: {
         fontSize: 20,
@@ -232,7 +240,6 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         height: '100%',
         marginTop: 50
-
     },
     content: {
         alignItems: 'center',
