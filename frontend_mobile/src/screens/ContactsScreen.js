@@ -8,7 +8,8 @@ import Icon from "react-native-vector-icons/Feather"
 import { Swipeable } from "react-native-gesture-handler";
 
 import { TextInput } from "react-native-paper";
-
+import { SoapRegular } from '../../assets/fonts/expo-fonts'
+import { useFonts } from "expo-font";
 const ContactsScreen = () => {
     const [contacts, setContacts] = useState([
         {id: 0, name: "Person", phone: "1234567890", email: "person@email.com"},
@@ -89,6 +90,37 @@ const ContactsScreen = () => {
         checkEmailValidity(contactEmail)
     }
 
+    const colors = ['#e94d0b', '#ff9900', '#ffe66d', '#f0e9b2', '#343434'];
+
+    const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+    };
+
+    const getContactsFromServer = async () => {
+        try {
+          const data = [  
+            {id: 0, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 1, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 2, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 3, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 4, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 5, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 6, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 7, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 8, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 9, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 10, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 11, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 12, name: "Person", phone: "1234567890", email: "person@email.com"},
+        {id: 13, name: "Person", phone: "1234567890", email: "person@email.com"},
+        ]
+        return data
+        } catch(e) {
+            return []
+        }
+    }
+
     const checkInputValidity = () => {
 
 
@@ -141,9 +173,9 @@ const ContactsScreen = () => {
         <TouchableOpacity onPress={() => {
             openEditModal(item)
         }}>
-            <Card style={{margin: 10, backgroundColor: '#fff', borderRadius: 0}}>
+            <Card style={{margin: 10, backgroundColor: '#f7fff7', borderRadius: 0}}>
                 <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
-                    <Avatar.Text label={item.name[0]} size={60} style={{backgroundColor:'#ff9900'}}/>
+                    <Avatar.Text label={item.name[0]} size={60} style={{backgroundColor: getRandomColor()}}/>
                     <View style={{marginLeft: 20}}>
                         <View style={{flexDirection: "row"}}>
                             <Icon name="user" size={20} color="#343434"/>
@@ -255,6 +287,13 @@ const ContactsScreen = () => {
           checkInputValidity()
       }, [contactEmailError, contactNameError, contactPhoneError])
 
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+    });
+    
+    if (!fontsLoaded) {
+    return null;
+    }
     return(
         <SafeAreaView style={styles.container}>
 
@@ -280,7 +319,7 @@ const ContactsScreen = () => {
             <Modal animationType="slide" visible={addContactModal}>
                 <View style={styles.root}>
                     <View style={styles.content}>
-                        <Text style={styles.title}>Add New Contact</Text>
+                        <Text style={styles.title}>Add Contact</Text>
                         <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
                         <View style={{width: '100%', marginTop: 20}}>
                             <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => setContactName(contactName)} autoCapitalize="none" error={contactNameError}/>
@@ -369,7 +408,8 @@ const styles = StyleSheet.create({
         fontSize: 34,
         fontWeight: 'bold',
         margin: 15,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
     dateContainer: {
         flexDirection:'row', 
