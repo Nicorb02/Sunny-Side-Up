@@ -863,13 +863,13 @@ exports.setApp = function (app, client)
         // outgoing: error
         let error = '';
         const {_id, itemId} = req.body;
-        if (!name)
-        {
-          error: "Please input the contact to delete";
-          let ret = {error: error};
-          res.status(400).json(ret);
-          return;
-        }
+        // if (!name)
+        // {
+        //   error: "Please input the contact to delete";
+        //   let ret = {error: error};
+        //   res.status(400).json(ret);
+        //   return;
+        // }
         const db = client.db("COP4331");
         let o_id = new ObjectId(_id);
         const itemObjectId = new ObjectId(itemId);
