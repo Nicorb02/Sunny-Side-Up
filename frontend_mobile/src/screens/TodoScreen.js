@@ -109,11 +109,47 @@ const TodoScreen = () => {
         }
     }
 
-    const handleCheck = (itemId) => {
-        const updatedItems = todo.map((item) =>
-          item.id === itemId ? { ...item, isComplete: !item.isComplete } : item
-        );
-        setTodo(updatedItems);
+    const handleCheck = async (item) => {
+        if (item.complete == 1)
+        {
+            const { userData, jwtToken } = await getUserDataAndToken();
+            const response = await fetch(buildPath('/api/incompleteToDo'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ _id: userData.id, title: item.title, jwtToken })
+            });
+    
+            const data = await response.json();
+            if (data.error === '')
+            {
+                console.log('edit successful')
+                loadItemsFromServer()
+            }
+            else
+            {
+                console.log('edit failed')
+            }
+        }
+        else
+        {
+            const { userData, jwtToken } = await getUserDataAndToken();
+            const response = await fetch(buildPath('/api/completeToDo'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ _id: userData.id, title: item.title, jwtToken })
+            });
+    
+            const data = await response.json();
+            if (data.error === '')
+            {
+                console.log('edit successful')
+                loadItemsFromServer()
+            }
+            else
+            {
+                console.log('edit failed')
+            }
+        }
     };
 
     const renderItems = ({ item }) => (
@@ -133,12 +169,12 @@ const TodoScreen = () => {
                 <View style={{marginVertical: 5,borderRadius: 5, borderWidth: 0.3, borderColor: '#343434', backgroundColor: '#f7fff7'}}>
                     <View style={{flexDirection: 'row', alignItems:'center', justifyContent: "space-between", padding: 10}}>
 
-                            <Text style={item.isComplete ? styles.strikeThrough : styles.title}>{item.title}</Text>
+                            <Text style={item.complete ? styles.strikeThrough : styles.title}>{item.title}</Text>
                             {/* <View style={{borderWidth: 1, borderColor: 'red'}}> */}
                                 <Checkbox.IOS
-                                status={item.isComplete ? 'checked' : 'unchecked'}
+                                status={item.complete ? 'checked' : 'unchecked'}
                                 onPress={() => {
-                                    handleCheck(item.id)
+                                    handleCheck(item)
                                 }}
                                 borderColor='black'
                                 borderWidth={1}
