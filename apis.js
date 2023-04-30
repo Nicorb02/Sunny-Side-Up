@@ -198,7 +198,7 @@ exports.setApp = function (app, client)
     // outgoing: error (if applicable)
 
     var error = '';
-    const {_id, title, jwtToken} = req.body;
+    const {_id, itemId, jwtToken} = req.body;
 
     // Ensure the jwt is not expired
     var token = require('./createJWT.js');
@@ -217,16 +217,17 @@ exports.setApp = function (app, client)
     }
 
     // check if any fields are empty
-    if (!title){
-        error = 'Please add a title';
-        var ret = {error: error};
-        res.status(400).json(ret);
-        return;
-    }
+    // if (!itemId){
+    //     error = 'Please add an id';
+    //     var ret = {error: error};
+    //     res.status(400).json(ret);
+    //     return;
+    // }
 
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{title:title}}});
+    const itemObjectId = new ObjectId(itemId);
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{notes:{_id:itemObjectId}}});
     if(results == null){
         error = 'No Note Found';
         var ret = {error: error};
@@ -302,7 +303,7 @@ exports.setApp = function (app, client)
     // outgoing: error (if applicable)
 
     var error = '';
-    const {_id, prevTitle, newTitle, newContent, jwtToken} = req.body;
+    const {_id, itemId, newTitle, newContent, jwtToken} = req.body;
 
     // Ensure the jwt is not expired
     var token = require('./createJWT.js');
@@ -330,7 +331,9 @@ exports.setApp = function (app, client)
     // edit note
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "notes.title":prevTitle}, {$set:{"notes.$.title":newTitle, "notes.$.content":newContent}});
+    const itemObjectId = new ObjectId(itemId);
+
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id, "notes._id":itemObjectId}, {$set:{"notes.$.title":newTitle, "notes.$.content":newContent}});
     if(results == null){
         error = 'No Note Found';
         var ret = {error: error};
@@ -833,7 +836,7 @@ exports.setApp = function (app, client)
         // outgoing: error
         
         let error = "";
-        const {_id, old_id,  name, email, phone} = req.body;
+        const {_id, itemId,  name, email, phone} = req.body;
         
         if (!name || !email || !phone)
         {
@@ -845,8 +848,12 @@ exports.setApp = function (app, client)
     
         const db = client.db("COP4331");
         var o_id = new ObjectId(_id);
-        await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull: {contacts: {name: name}}});
-        await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push: {contacts: {_id:new ObjectId(old_id), name: name, email: email, phone: phone}}});
+        const itemObjectId = new ObjectId(itemId);
+
+        // await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull: {contacts: {name: name}}});
+        // await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push: {contacts: {_id:new ObjectId(old_id), name: name, email: email, phone: phone}}});
+        await db.collection('users').findOneAndUpdate({ _id: o_id, "contacts._id":itemObjectId}, {$set:{"contacts.$.name":name, "contacts.$.phone":phone, "contacts.$.email":email}});
+
         var ret = {error: error};
         res.status(200).json(ret);
     });
@@ -855,17 +862,18 @@ exports.setApp = function (app, client)
         // incoming: user id, contact name
         // outgoing: error
         let error = '';
-        const {_id, name} = req.body;
-        if (!name)
-        {
-          error: "Please input the contact to delete";
-          let ret = {error: error};
-          res.status(400).json(ret);
-          return;
-        }
+        const {_id, itemId} = req.body;
+        // if (!name)
+        // {
+        //   error: "Please input the contact to delete";
+        //   let ret = {error: error};
+        //   res.status(400).json(ret);
+        //   return;
+        // }
         const db = client.db("COP4331");
         let o_id = new ObjectId(_id);
-        const results = await db.collection('users').findOneAndUpdate({_id: o_id}, {$pull:{contacts: {name: name}}});
+        const itemObjectId = new ObjectId(itemId);
+        const results = await db.collection('users').findOneAndUpdate({_id: o_id}, {$pull:{contacts: {_id: itemObjectId}}});
         if (results == null)
         {
           error = 'Invalid user id';
