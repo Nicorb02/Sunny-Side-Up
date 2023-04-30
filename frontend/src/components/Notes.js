@@ -66,7 +66,7 @@ const Notes = ({ setDisplayNotes }) => {
         setSelectedNoteId('');
         if (notes.length > 0)
         {
-            setSelectedNoteIndex(0);
+            handleNoteClick(notes[0]);
         }
     }
 
@@ -144,7 +144,7 @@ const Notes = ({ setDisplayNotes }) => {
                     ))}
                 </div>
                 <div className='current-note-container'>
-                    {notes.length > 0 ? (
+                    {notes.length > 0 && selectedNoteName != '' ? (
                         <textarea
                             className='current-note-string'
                             type='text'
