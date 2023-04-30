@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         color: '#F7FFF7'
     },
     text_TERTIARY: {
-        color: 'gray',
+        color: '#343434',
     },
     text_SECONDARY: {
         color: '#FF9900',

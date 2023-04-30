@@ -5,26 +5,16 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, FlatList }
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import Icon from "react-native-vector-icons/Feather"
+import { Swipeable } from "react-native-gesture-handler";
 
 import { TextInput } from "react-native-paper";
+import { SoapRegular } from '../../assets/fonts/expo-fonts'
+import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ContactsScreen = () => {
-    const [contacts, setContacts] = useState([
-        {id: 0, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 1, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 2, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 3, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 4, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 5, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 6, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 7, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 8, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 9, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 10, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 11, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 12, name: "Person", phone: "1234567890", email: "person@email.com"},
-        {id: 13, name: "Person", phone: "1234567890", email: "person@email.com"},
-    ])
+    
+    const [contacts, setContacts] = useState([])
 
     const [firstTimeInvoke, setFirstTimeInvoke] = useState(true)
     
@@ -37,31 +27,40 @@ const ContactsScreen = () => {
     const [contactEmailError, setContactEmailError] = useState(false)
     const [inputValid, setInputValid] = useState(false)
     
-    const [editItem, setEditItem] = useState({id: null});
-
+    const [editItem, setEditItem] = useState({_id: null});
+    
     const [addContactModal, setAddContactModal] = useState(false)
     const [editContactModal, setEditContactModal] = useState(false)
 
     const [submitEnabled, setSubmitEnabled] = useState(false)
-    let count = contacts.length
+
 
     const [errorText, setErrorText] = useState('')
 
     const fillAllError = "Please fill all fields."
     const phoneError = "Please enter a valid phone number."
     const emailError = "Please enter a valid email."
-    
-    const addContact = () => {
-        contacts.push(
-            {
-                id: count,
-                name: contactName,
-                phone: contactPhone,
-                email: contactEmail
-            })
-            setAddContactModal(false)   
-            count++
+
+
+    const storage = require('../tokenStorage.js');
+
+    // retrieve user data and current jwt from local storage
+    const getUserDataAndToken = async () => {
+      const userDataString = await AsyncStorage.getItem('user_data');
+      const userData = JSON.parse(userDataString);
+      const jwtToken = await storage.retrieveToken();
+      
+      return { userData, jwtToken };
     }
+
+    const app_name = 'ssu-testing'        // testing server
+
+    const buildPath = (route) =>
+    {
+        return 'https://' + app_name + '.herokuapp.com' + route;
+    }
+
+    
 
     const displayContacts = () => {
         if (contacts.length == 0)
@@ -72,7 +71,7 @@ const ContactsScreen = () => {
             )
         else
             return(
-                <FlatList data={contacts} renderItem={renderItems} keyExtractor={(contact) => contact.id.toString()} />
+                <FlatList data={contacts} renderItem={renderItems} keyExtractor={(contact) => contact._id} />
             )
     }
 
@@ -87,6 +86,14 @@ const ContactsScreen = () => {
         checkPhoneValidity(contactPhone)
         checkEmailValidity(contactEmail)
     }
+
+    const colors = ['#e94d0b', '#ff9900', '#ffe66d', '#f0e9b2', '#343434'];
+
+    const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+    };
+
 
     const checkInputValidity = () => {
 
@@ -127,37 +134,122 @@ const ContactsScreen = () => {
     }
 
     const renderItems = ({ item }) => (
+        <Swipeable
+    renderRightActions={() => (
+    <TouchableOpacity
+    style={styles.deleteButton}
+    onPress={() => deleteContact(item._id)}
+    >
+    <Icon name="trash-2" size={30} color="#fff"/>
+    </TouchableOpacity>
+    )}
+>
         <TouchableOpacity onPress={() => {
             openEditModal(item)
         }}>
-            <Card style={{margin: 10}}>
+            <Card style={{margin: 10, backgroundColor: '#f7fff7', borderRadius: 0}}>
                 <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
-                    <Avatar.Text label={item.name[0]} size={50} style={{backgroundColor:'#ff9900'}}/>
-                    <View>
-                        <Text style={styles.item}>{item.name}</Text>
-                        <Text style={styles.item}>({item.phone.slice(0, 3)})-{item.phone.slice(3, 6)}-{item.phone.slice(6, 10)}</Text>
-                        <Text style={styles.item}>{item.email}</Text>
+                    <Avatar.Text label={item.name[0]} size={60} style={{backgroundColor: getRandomColor()}}/>
+                    <View style={{marginLeft: 20}}>
+                        <View style={{flexDirection: "row"}}>
+                            <Icon name="user" size={20} color="#343434"/>
+                            <Text style={[styles.item, {fontWeight:"bold"}]}>{item.name}</Text>
+                        </View>
+                        <View style={{flexDirection: "row"}}>
+                            <Icon name="phone" size={20} color="#343434"/>
+                            <Text style={styles.item}>({item.phone.slice(0, 3)})-{item.phone.slice(3, 6)}-{item.phone.slice(6, 10)}</Text>
+                        </View>
+                        <View style={{flexDirection: "row"}}>
+                            <Icon name="mail" size={20} color="#343434"/>
+                            <Text style={styles.item}>{item.email}</Text>
+                        </View>
                     </View>
                 </View>
             </Card>
         </TouchableOpacity>
+        </Swipeable>
     );
 
-    const deleteContact = (id) => {
-        setContacts((prevData) => prevData.filter((item) => item.id !== id));
-        setEditContactModal(false);
+    const loadItemsFromServer = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/searchContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, name: '' })
+        });
+
+        const data = await response.json();
+
+        if (data.error === '')
+        {
+            console.log('load success')
+            setContacts(data.results)
+        }
+        else
+        {
+            console.log('load fail')
+        }
+    }
+
+    const deleteContact = async (itemId) => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/deleteContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, itemId })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('delete successful')
+            loadItemsFromServer()
+        }
+        else
+        {
+            console.log('delete failed')
+        }
     };
 
-    const editContact = () => {
-        console.log(inputValid)
-        setContacts((prevData) =>
-        prevData.map((item) =>
-        item.id === editItem.id
-          ? { ...item, name: contactName, email: contactEmail, phone: contactPhone }
-          : item
-        )
-        );
-        setEditContactModal(false);
+    const addContact = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/addContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, name: contactName, email: contactEmail, phone: contactPhone })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('add successful')
+            loadItemsFromServer()
+            setAddContactModal(false)   
+        }
+        else
+        {
+            console.log('add failed')
+        }
+    }
+    const editContact = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/editContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, itemId: editItem._id, name: contactName, email: contactEmail, phone: contactPhone, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('edit successful')
+            loadItemsFromServer()
+            setEditContactModal(false)  
+        }
+        else
+        {
+            console.log('edit failed')
+        }
     };  
 
     const checkPhoneValidity = (contactPhone) => {
@@ -234,6 +326,17 @@ const ContactsScreen = () => {
           checkInputValidity()
       }, [contactEmailError, contactNameError, contactPhoneError])
 
+      useEffect(() => {
+        loadItemsFromServer()
+      }, [])
+
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+    });
+    
+    if (!fontsLoaded) {
+    return null;
+    }
     return(
         <SafeAreaView style={styles.container}>
 
@@ -259,7 +362,7 @@ const ContactsScreen = () => {
             <Modal animationType="slide" visible={addContactModal}>
                 <View style={styles.root}>
                     <View style={styles.content}>
-                        <Text style={styles.title}>Add New Contact</Text>
+                        <Text style={styles.title}>Add Contact</Text>
                         <Avatar.Text label={contactName ? contactName[0].toUpperCase() : null} size={100} style={{backgroundColor:'#ff9900'}}/>
                         <View style={{width: '100%', marginTop: 20}}>
                             <TextInput style={styles.input} mode="outlined" label="Name" value={contactName} onChangeText={contactName => setContactName(contactName)} autoCapitalize="none" error={contactNameError}/>
@@ -311,9 +414,9 @@ const ContactsScreen = () => {
                         <CustomButton text="Apply Changes" disabled={!submitEnabled} onPress={() => {
                             editContact()
                         }}/>
-                            <CustomButton text="Delete Contact" onPress={() =>{
+                            {/* <CustomButton text="Delete Contact" onPress={() =>{
                                 deleteContact(editItem.id)
-                            }} type="DELETE"/>
+                            }} type="DELETE"/> */}
                         <CustomButton text="Cancel" onPress={() =>{
                             setEditContactModal(false)
                         }} type="TERTIARY"/>
@@ -330,7 +433,8 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 5,
-      marginBottom: 50
+      marginBottom: 50,
+      backgroundColor: '#fff'
 
     },
     item: {
@@ -339,9 +443,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     root: {
-        // alignItems: 'center',
-        // padding: 10,
-        // marginVertical: 50
         flexDirection: "column",
         justifyContent: "space-between",
         height: '100%'
@@ -350,7 +451,8 @@ const styles = StyleSheet.create({
         fontSize: 34,
         fontWeight: 'bold',
         margin: 15,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
     dateContainer: {
         flexDirection:'row', 
@@ -381,7 +483,14 @@ const styles = StyleSheet.create({
         width: '100%', 
         bottom: 5, 
         padding: 10
-    }
+    },
+    deleteButton: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        width: 100,
+      },
   });
 
 export default ContactsScreen;

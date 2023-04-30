@@ -19,7 +19,7 @@ export default function App() {
 
     <NavigationContainer>
       {/* <SafeAreaView style={styles.root}> */}
-    <Stack.Navigator initialRouteName="NavBar">
+    <Stack.Navigator initialRouteName="LogIn">
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -30,7 +30,7 @@ export default function App() {
       <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} options={{headerShown: false}}/>
       <Stack.Screen name="NavBar" component={NavBar} options={{headerShown: false}}/>
       <Stack.Screen name="ScheduleScreen" component={ScheduleScreen} options={{headerShown: false}}/>
-  
+
     </Stack.Navigator>
         {/* </SafeAreaView>  */}
   </NavigationContainer>

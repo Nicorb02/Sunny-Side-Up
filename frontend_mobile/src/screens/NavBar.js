@@ -1,11 +1,13 @@
 import React from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, Dimensions, Image, StyleSheet } from 'react-native';
-
+import { Icon } from "react-native-vector-icons/Feather";
 import ScheduleScreen from "./ScheduleScreen";
 import NotesScreen from "./NotesScreen";
 import ProfileScreen from "./ProfileScreen";
 import ContactsScreen from "./ContactsScreen";
+import TodoScreen from "./TodoScreen";
+
 const home = require('../../assets/home.png')
 const profile = require('../../assets/profile.png')
 const contacts = require('../../assets/contacts.png')
@@ -68,7 +70,7 @@ const NavBar = ({ navigation }) => {
             ),
           }}
         />
-        <Tab.Screen  
+        {/* <Tab.Screen  
           name='Profile' 
           component={ProfileScreen} 
           options={{
@@ -84,13 +86,13 @@ const NavBar = ({ navigation }) => {
               </View>
             ),
           }}
-        />
+        /> */}
          <Tab.Screen name='To do' 
-          component={NotesScreen} 
+          component={TodoScreen} 
           options={{
             tabBarIcon: ({focused}) => (
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                 <Image  source={todo} 
+                 <Image source={todo} 
                   resizeMode='contain'
                   style={[
                     styles.image, {tintColor: focused ? '#e94d0b' : '#343434'}
