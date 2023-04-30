@@ -49,5 +49,5 @@ exports.refresh = function(token)
     let firstName = ud.payload.firstName;
     let lastName = ud.payload.lastName;
 
-    return _createToken(firstName, lastName, id);
+    return _createToken(id, firstName, lastName);
 }
