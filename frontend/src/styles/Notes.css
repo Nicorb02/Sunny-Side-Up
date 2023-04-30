@@ -17,15 +17,16 @@
     background: #ff9900;
     border-right: 0.5px solid black;
     list-style-type: none;
+    overflow-y: scroll;
 }
 
 .current-note-container {
+    position: relative;
     width: 67%;
     height: 100%;
     background: #f7fff7;
     display: flex;
     flex-direction: column;
-
   }
 
   .selected-listed-note {
@@ -70,10 +71,21 @@
     display: none;
 }
 
+.close-notes {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+
+  }
+
 .new-note {
-    bottom: 0;
-    right: 0;
-}
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    cursor: pointer;
+
+  }
 
 .current-note-string {
     flex: 1;
@@ -91,5 +103,6 @@
     overflow-wrap: break-word;
     resize: none;
     margin: 10px;
+    margin-right: 60px;
   }
   
