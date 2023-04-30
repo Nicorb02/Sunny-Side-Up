@@ -27,13 +27,13 @@ const ContactsScreen = () => {
     const [contactEmailError, setContactEmailError] = useState(false)
     const [inputValid, setInputValid] = useState(false)
     
-    const [editItem, setEditItem] = useState({id: null});
+    const [editItem, setEditItem] = useState({_id: null});
     
     const [addContactModal, setAddContactModal] = useState(false)
     const [editContactModal, setEditContactModal] = useState(false)
 
     const [submitEnabled, setSubmitEnabled] = useState(false)
-    let count = contacts.length
+
 
     const [errorText, setErrorText] = useState('')
 
@@ -71,7 +71,7 @@ const ContactsScreen = () => {
             )
         else
             return(
-                <FlatList data={contacts} renderItem={renderItems} keyExtractor={(contact) => contact.email} />
+                <FlatList data={contacts} renderItem={renderItems} keyExtractor={(contact) => contact._id} />
             )
     }
 
@@ -138,7 +138,7 @@ const ContactsScreen = () => {
     renderRightActions={() => (
     <TouchableOpacity
     style={styles.deleteButton}
-    onPress={() => deleteContact(item.name)}
+    onPress={() => deleteContact(item._id)}
     >
     <Icon name="trash-2" size={30} color="#fff"/>
     </TouchableOpacity>
@@ -191,12 +191,12 @@ const ContactsScreen = () => {
         }
     }
 
-    const deleteContact = async (name) => {
+    const deleteContact = async (itemId) => {
         const { userData, jwtToken } = await getUserDataAndToken();
         const response = await fetch(buildPath('/api/deleteContact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ _id: userData.id, name })
+        body: JSON.stringify({ _id: userData.id, itemId })
         });
 
         const data = await response.json();
@@ -231,16 +231,25 @@ const ContactsScreen = () => {
             console.log('add failed')
         }
     }
-    const editContact = () => {
-        console.log(inputValid)
-        setContacts((prevData) =>
-        prevData.map((item) =>
-        item.id === editItem.id
-          ? { ...item, name: contactName, email: contactEmail, phone: contactPhone }
-          : item
-        )
-        );
-        setEditContactModal(false);
+    const editContact = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/editContact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, itemId: editItem._id, name: contactName, email: contactEmail, phone: contactPhone, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('edit successful')
+            loadItemsFromServer()
+            setEditContactModal(false)  
+        }
+        else
+        {
+            console.log('edit failed')
+        }
     };  
 
     const checkPhoneValidity = (contactPhone) => {
