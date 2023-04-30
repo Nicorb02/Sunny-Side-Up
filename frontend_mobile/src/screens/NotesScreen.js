@@ -16,7 +16,7 @@ const NotesScreen = () => {
     const [addNoteModal, setAddNoteModal] = useState(false)
     const [editNoteModal, setEditNoteModal] = useState(false)
 
-    const [editItem, setEditItem] = useState({id: null})
+    const [editItem, setEditItem] = useState({_id: null})
 
     let count = notes.length
 
@@ -59,12 +59,12 @@ const NotesScreen = () => {
         }
     }
 
-    const deleteNote = async (title) => {
+    const deleteNote = async (itemId) => {
         const { userData, jwtToken } = await getUserDataAndToken();
         const response = await fetch(buildPath('/api/delNote'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ _id: userData.id, title, jwtToken })
+        body: JSON.stringify({ _id: userData.id, itemId, jwtToken })
         });
 
         const data = await response.json();
@@ -79,15 +79,25 @@ const NotesScreen = () => {
         }
     };
     
-    const editNote = () => {
-        setNotes((prevData) =>
-        prevData.map((item) =>
-        item.id === editItem.id
-          ? { ...item, title: title, content: content }
-          : item
-        )
-        );
-        setEditNoteModal(false);
+    const editNote = async () => {
+        const { userData, jwtToken } = await getUserDataAndToken();
+        const response = await fetch(buildPath('/api/editNote'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ _id: userData.id, itemId: editItem._id, newTitle: title, newContent: content, jwtToken })
+        });
+
+        const data = await response.json();
+        if (data.error === '')
+        {
+            console.log('edit successful')
+            loadItemsFromServer()
+            setEditNoteModal(false)  
+        }
+        else
+        {
+            console.log('edit failed')
+        }
     }
 
     const addNote = async () => {
@@ -131,7 +141,7 @@ const NotesScreen = () => {
             )
         else
             return(
-                <FlatList data={notes} renderItem={renderItems} keyExtractor={(note) => note.title} />
+                <FlatList data={notes} renderItem={renderItems} keyExtractor={(note) => note._id} />
             )
     }
     
@@ -144,7 +154,7 @@ const NotesScreen = () => {
             renderRightActions={() => (
             <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => deleteNote(item.title)}
+            onPress={() => deleteNote(item._id)}
             >
             <Icon name="trash-2" size={30} color="#fff"/>
             </TouchableOpacity>
