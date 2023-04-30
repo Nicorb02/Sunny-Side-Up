@@ -878,65 +878,75 @@ exports.setApp = function (app, client)
       });   
 
       //add a todo 
-app.post('/api/addToDo', async(req,res)=>{
-    //incoming: id, title, jwtToken
-    //outcoming: error, jwtToken 
-    var error = '';
-    const {_id, title, jwtToken} = req.body;
-  
-    // Ensure the jwt is not expired
-    var token = require('./createJWT.js');
-    try
-    {
-        if( token.isExpired(jwtToken))
+      app.post('/api/addToDo', async(req,res)=>{
+        //incoming: id, title, jwtToken
+        //outcoming: error, jwtToken 
+        var error = '';
+        const {_id, title, jwtToken} = req.body;
+      
+        // Ensure the jwt is not expired
+        var token = require('./createJWT.js');
+        try
         {
-        var r = {error:'The JWT is no longer valid', jwtToken: ''};
-        res.status(200).json(r);
-        return;
+            if( token.isExpired(jwtToken))
+            {
+            var r = {error:'The JWT is no longer valid', jwtToken: ''};
+            res.status(200).json(r);
+            return;
+            }
         }
-    }
-    catch(e)
-    {
-        console.log(e.message);
-    }
-  
-    if(!title){
-      error = 'Please add a title';
-      var ret = {error: error};
-      res.status(400).json(ret);
-      return;
-    }
-  
-    const db = client.db("COP4331");
-    var o_id = new ObjectId(_id);
-    //const _date = new Date(date).toLocaleString("en-US", {timeZone: "America/New_York"});
-  
-    const results = await db.collection('users').findOneAndUpdate(
-        { _id: o_id },
-        { $push: {todo: { $each: [{ title: title, complete: 0}], $position: 0 } } }
-      );
-  
-    if(results == null){
-      error = 'Not added, no user id found';
-      var ret = {error: error};
-      res.status(400).json(ret);
-      return;
-    }
-  
-    // refresh token
-    var refreshedToken = null;
-    try
-    {
-        refreshedToken = token.refresh(jwtToken);
-    }
-    catch(e)
-    {
-        console.log(e.message);
-    }
+        catch(e)
+        {
+            console.log(e.message);
+        }
+      
+        if(!title){
+          error = 'Please add a title';
+          var ret = {error: error};
+          res.status(400).json(ret);
+          return;
+        }
+      
+        const db = client.db("COP4331");
+        var o_id = new ObjectId(_id);
     
-    var ret = {error: error, jwtToken: refreshedToken};
-    res.status(200).json(ret);
-  });
+        // check for duplicate title
+        const existingTodo = await db.collection('users').findOne({ _id: o_id, "todo.title": title });
+        if(existingTodo){
+          error = 'A todo item with this title already exists';
+          var ret = {error: error};
+          res.status(400).json(ret);
+          return;
+        }
+    
+        // insert new todo item
+        const results = await db.collection('users').findOneAndUpdate(
+            { _id: o_id },
+            { $push: {todo: { $each: [{ title: title, complete: 0}], $position: 0 } } }
+          );
+      
+        if(results == null){
+          error = 'Not added, no user id found';
+          var ret = {error: error};
+          res.status(400).json(ret);
+          return;
+        }
+      
+        // refresh token
+        var refreshedToken = null;
+        try
+        {
+            refreshedToken = token.refresh(jwtToken);
+        }
+        catch(e)
+        {
+            console.log(e.message);
+        }
+        
+        var ret = {error: error, jwtToken: refreshedToken};
+        res.status(200).json(ret);
+      });
+    
   
   //Delete a todo 
   app.post('/api/delToDo', async(req,res)=>{
