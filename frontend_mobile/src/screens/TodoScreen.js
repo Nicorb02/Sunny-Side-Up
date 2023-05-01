@@ -166,9 +166,7 @@ const TodoScreen = () => {
             </TouchableOpacity>
             )}
         >
-            <TouchableOpacity onPress={() => {
-
-            }}>
+            <View>
                 <View style={{marginVertical: 5,borderRadius: 5, borderWidth: 0.3, borderColor: '#343434', backgroundColor: '#f7fff7'}}>
                     <View style={{flexDirection: 'row', alignItems:'center', justifyContent: "space-between", padding: 10}}>
 
@@ -190,7 +188,7 @@ const TodoScreen = () => {
 
                     </View>
                 </View>
-            </TouchableOpacity>
+            </View>
         </Swipeable>
     );
     useEffect(() => {
