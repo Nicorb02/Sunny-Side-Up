@@ -1,11 +1,11 @@
 import React from "react";
-import { TouchableOpacity, View, Text } from "react-native";
-import { Card } from "react-native-paper";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { Card } from "react-native-paper"; 
+import Icon from "react-native-vector-icons/Feather"
+import { Swipeable } from "react-native-gesture-handler";
+
 
 const EventItem = ({ title, isHoliday, startTime, onPress }) => {
-    const options = { hour: 'numeric', minute: 'numeric' };
-    // const time = startTime.toLocaleTimeString([], options);
-
     if (isHoliday)
     {
         return(
@@ -17,9 +17,6 @@ const EventItem = ({ title, isHoliday, startTime, onPress }) => {
                                 <Text>
                                     {title}
                                 </Text>
-                                <Text>
-                                    {startTime}
-                                </Text>
                             </View>
                         </Card.Content>
                     </Card>
@@ -28,13 +25,19 @@ const EventItem = ({ title, isHoliday, startTime, onPress }) => {
     }
 
     return(
-        <TouchableOpacity 
-        style={{marginRight: 10, marginTop: 10}}
-        onPress={() => {
-            if (typeof onPress === 'function') onPress();
-        }}
+        <Swipeable
+            renderRightActions={() => (
+            <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => {
+                if (typeof onPress === 'function') onPress();
+            }}
+            >
+            <Icon name="trash-2" size={30} color="#fff"/>
+            </TouchableOpacity>
+            )}
         >
-                <Card style={{backgroundColor:'#fff', borderRadius: 0}}>
+                <Card style={{backgroundColor:'#fff', borderRadius: 0, marginTop: 10, marginRight: 10}}>
                     <Card.Content>    
                         <View>
                             <Text>
@@ -46,8 +49,19 @@ const EventItem = ({ title, isHoliday, startTime, onPress }) => {
                         </View>
                     </Card.Content>
                 </Card>
-            </TouchableOpacity>
+             </Swipeable>
     )
 }
 
+const styles = StyleSheet.create({
+    deleteButton: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 5,
+        width: 50,
+        marginRight: 10, 
+        marginTop: 10
+      },
+})
 export default EventItem;
