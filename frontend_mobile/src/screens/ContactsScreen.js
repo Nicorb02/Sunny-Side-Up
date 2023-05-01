@@ -87,13 +87,15 @@ const ContactsScreen = () => {
         checkEmailValidity(contactEmail)
     }
 
-    const colors = ['#e94d0b', '#ff9900', '#ffe66d', '#f0e9b2', '#343434'];
-
-    const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-    };
-
+    const getColorFromPhoneNumber = (phoneNumber) => {
+        const colors = ['#e94d0b', '#ff9900', '#ffe66d', '#f0e9b2', '#343434'];
+        const hash = phoneNumber.split('').reduce((hash, char) => {
+            hash = ((hash << 5) - hash) + char.charCodeAt(0);
+            return hash & hash;
+        }, 0);
+        const index = Math.abs(hash) % colors.length;
+        return colors[index];
+    }
 
     const checkInputValidity = () => {
 
@@ -149,7 +151,7 @@ const ContactsScreen = () => {
         }}>
             <Card style={{margin: 10, backgroundColor: '#f7fff7', borderRadius: 0}}>
                 <View style={{flexDirection: 'row', alignItems:'center', padding: 10}}>
-                    <Avatar.Text label={item.name[0]} size={60} style={{backgroundColor: getRandomColor()}}/>
+                    <Avatar.Text label={item.name[0]} size={60} style={{backgroundColor: getColorFromPhoneNumber(item._id)}}/>
                     <View style={{marginLeft: 20}}>
                         <View style={{flexDirection: "row"}}>
                             <Icon name="user" size={20} color="#343434"/>
