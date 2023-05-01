@@ -233,8 +233,8 @@ const NotesScreen = () => {
                     <View style={styles.lowerContent}>
 
                         <View style={{width: '100%', paddingVertical: 20, paddingHorizontal: 20}}>
-                            <TextInput placeholder="Title" value={title} onChangeText={title => setTitle(title)} autoCapitalize="none" fontSize="32" fontWeight='bold'/>
-                            <TextInput placeholder="Content" value={content} scrollEnabled={true} onChangeText={content => setContent(content)} autoCapitalize="none" multiline={true} fontSize="16" style={{marginBottom: 100}}/>
+                            <TextInput placeholder="Title" value={title} onChangeText={title => setTitle(title)} autoCapitalize="none" fontSize="32" fontWeight='bold' placeholderTextColor="#D3D3D3"/>
+                            <TextInput placeholder="Content" value={content} scrollEnabled={true} onChangeText={content => setContent(content)} autoCapitalize="none" multiline={true} fontSize="16" style={{marginBottom: 100}} placeholderTextColor="#D3D3D3"/>
                         </View>
                         <View style={{marginTop: 30, justifyContent: "center", alignItems: 'center', backgroundColor: '#fff', width: 300}}>
                             <Text style={{color: 'red'}}></Text>
