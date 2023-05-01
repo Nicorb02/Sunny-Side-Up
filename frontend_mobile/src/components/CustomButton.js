@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
 import {View, Text, StyleSheet, Pressable} from 'react-native'
-
+import { useFonts } from 'expo-font';
+import { SoapRegular } from '../../assets/fonts/expo-fonts';
 const CustomButton = ( {onPress, text, type = "PRIMARY", disabled = false} ) => {
+    const [fontsLoaded] = useFonts({
+            SoapRegular,
+        });
+        
+        if (!fontsLoaded) {
+            return null;
+        }
     
         return (     
         <Pressable onPress={onPress} disabled={disabled} style={[styles.container, styles[`container_${type}`], disabled && styles.disabledButton]}>
@@ -35,7 +43,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
     text: {
-        fontFamily: "Arial",
+        fontFamily: "SoapRegular",
         fontWeight: 'bold',
         
         color: '#F7FFF7'

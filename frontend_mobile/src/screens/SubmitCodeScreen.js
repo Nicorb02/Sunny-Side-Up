@@ -2,15 +2,24 @@ import React, {useState} from "react";
 import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-
+import { useFonts } from 'expo-font';
+import { SoapRegular } from '../../assets/fonts/expo-fonts';
 
 const SubmitCodeScreen = ({ onSubmitVerificationCode, onCancel }) => {
+    
     const [enteredCode, setEnteredCode] = useState('')
     
     const handleSubmitVerificationCode = () => {
         onSubmitVerificationCode(enteredCode);
     };
-
+    
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+    });
+    
+    if (!fontsLoaded) {
+        return null;
+    }
     return(
         <SafeAreaView style={styles.root}>
             <Text style={styles.title}>Enter reset code</Text>
@@ -43,7 +52,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 10,
         marginTop: 50,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
 })
 

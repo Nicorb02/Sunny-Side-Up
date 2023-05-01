@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
+import { useFonts } from 'expo-font';
+import { SoapRegular } from '../../assets/fonts/expo-fonts';
 
 
 const ResetPasswordScreen = ({ onSubmitNewPassword, onCancel }) => {
@@ -11,9 +13,16 @@ const ResetPasswordScreen = ({ onSubmitNewPassword, onCancel }) => {
         onSubmitNewPassword(newPassword);
     };
 
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+    });
+    
+    if (!fontsLoaded) {
+        return null;
+    }
     return(
         <SafeAreaView style={styles.root}>
-                <Text style={styles.title}>Enter your new password</Text>
+                <Text style={styles.title}>Enter new password</Text>
                 <View style={{width: '100%', marginVertical: 50, padding: 10}}>
                     <CustomInput placeholder="New Password" value={newPassword} setValue={setNewPassword}/>
                 </View>
@@ -21,7 +30,6 @@ const ResetPasswordScreen = ({ onSubmitNewPassword, onCancel }) => {
                     <CustomButton text="Reset Password" onPress={handleSubmitNewPassword}/>
                     <CustomButton text="Cancel" onPress={onCancel} type="TERTIARY"/>
                 </View>
-
         </SafeAreaView>
     )
 }
@@ -44,7 +52,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 10,
         marginTop: 50,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
 })
 

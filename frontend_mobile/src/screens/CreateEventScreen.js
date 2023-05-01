@@ -4,6 +4,8 @@ import DTPicker from "../components/DTPicker";
 import CustomButton from "../components/CustomButton";
 import CustomInput from "../components/CustomInput";
 import { TextInput } from "react-native-paper";
+import { useFonts } from 'expo-font';
+import { SoapRegular } from '../../assets/fonts/expo-fonts';
 
 
 const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
@@ -32,6 +34,14 @@ const CreateEventScreen = ({onPressAdd, onPressCancel}) => {
           } else {
             setEventStartDate(selectedDate);
           }
+    }
+
+    const [fontsLoaded] = useFonts({
+      SoapRegular,
+    });
+    
+    if (!fontsLoaded) {
+        return null;
     }
     return(
         <SafeAreaView style={styles.root}>
@@ -84,7 +94,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 10,
         marginTop: 50,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
     dateContainer: {
         flexDirection:'row', 

@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts } from 'expo-font';
+import { SoapRegular } from '../../assets/fonts/expo-fonts';
 
 const SendEmailScreen = ({ onSubmitEmail, onCancel }) => {
     const [email, setEmail] = useState('');
@@ -11,6 +12,13 @@ const SendEmailScreen = ({ onSubmitEmail, onCancel }) => {
         onSubmitEmail(email);
     };
 
+    const [fontsLoaded] = useFonts({
+        SoapRegular,
+    });
+    
+    if (!fontsLoaded) {
+        return null;
+    }
     return(
         <SafeAreaView style={styles.root}>
                 <Text style={styles.title}>Reset your password</Text>
@@ -43,7 +51,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 10,
         marginTop: 50,
-        color: '#343434'
+        color: '#343434',
+        fontFamily: 'SoapRegular'
     },
 })
 
