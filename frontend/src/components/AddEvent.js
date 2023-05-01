@@ -4,9 +4,6 @@ import CloseEvent from '../styles/assets/CloseEvent';
 import '../styles/AddEvent.css'
 import '../styles/TimePick.css'
 
-// update other api's to pass on user id (login)
-
-
 const AddEvent = ({ setDisplayAddEvent, date, toggleReloadEvents, reloadEvents }) => {
     // import buildPath and local storage functions
     let bp = require('./Path.js');

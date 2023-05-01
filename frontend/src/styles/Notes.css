@@ -1,0 +1,108 @@
+.notes-container {
+    height: 400px;
+    width: 700px;
+    background: gray;
+    border-radius: 10px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 0.5px solid black;
+}
+
+.notes-list {
+    width: 33%;
+    height: 100%;
+    background: #ff9900;
+    border-right: 0.5px solid black;
+    list-style-type: none;
+    overflow-y: scroll;
+}
+
+.current-note-container {
+    position: relative;
+    width: 67%;
+    height: 100%;
+    background: #f7fff7;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .selected-listed-note {
+    display: flex;
+    text-decoration: underline;
+    text-decoration-color: #f7fff7;
+    background: #e94d0b;
+    width: 100%;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 0.5px solid rgba(247, 255, 247, 0.5);
+}
+
+.listed-note {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 0.5px solid rgba(247, 255, 247, 0.5);
+}
+
+.listed-note-name {
+    flex-basis: 85%;
+    margin-left: 5%;
+    color: #f7fff7;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete-note {
+    flex-basis: 10%;
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
+}
+
+.close-notes {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+
+  }
+
+.new-note {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    cursor: pointer;
+
+  }
+
+.current-note-string {
+    flex: 1;
+    border: none;
+    background-color: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    resize: none;
+    margin: 10px;
+    margin-right: 60px;
+  }
+  

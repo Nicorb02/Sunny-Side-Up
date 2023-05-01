@@ -11,7 +11,7 @@ import AddIcon from '../styles/assets/AddIcon';
 import LogoutButton from '../styles/assets/LogoutButton';
 import ToDoIcon from '../styles/assets/ToDoIcon';
 
-const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reloadEvents, setDisplayToDo }) =>
+const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reloadEvents, setDisplayToDo, setDisplayNotes }) =>
 {
     // import buildPath and local storage functions
     let bp = require('./Path.js');
@@ -67,12 +67,17 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
     const [weekday, setWeekday] = useState("");
     const [day, setDay] = useState("");
 
+    // functions to display following components
     function toggleDisplayAddEvent () {
         setDisplayAddEvent(true);
     }
 
     function toggleDisplayToDo () {
         setDisplayToDo(true);
+    }
+
+    function toggleDisplayNotes () {
+        setDisplayNotes(true);
     }
   
     useEffect(() => {
@@ -182,7 +187,7 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
             </div>
             <div className='buttons-container'>
                 <div className='notes-button-container'>
-                    <div className='notes-button'> <NotesIcon /> </div>
+                    <div className='notes-button' onClick={toggleDisplayNotes}> <NotesIcon /> </div>
                 </div>
                 <div className='contacts-button-container'>
                     <div className='contacts-button'><ContactsIcon /> </div>
