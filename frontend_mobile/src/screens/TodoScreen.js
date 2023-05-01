@@ -1,8 +1,8 @@
 import React,{useState, useEffect} from "react";
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from "react-native";
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, TextInput } from "react-native";
 import  Icon  from "react-native-vector-icons/Feather";
 import { Swipeable } from "react-native-gesture-handler";
-import { Card, Checkbox, TextInput } from "react-native-paper";
+import { Card, Checkbox } from "react-native-paper";
 import {SoapRegular} from '../../assets/fonts/expo-fonts'
 import { useFonts } from "expo-font";
 import CustomInput from "../components/CustomInput";
@@ -12,6 +12,8 @@ const TodoScreen = () => {
     const [title, setTitle] = useState('')
 
     const [todo, setTodo] = useState([])
+    const [todoError, setTodoError] = useState(false)
+
     const storage = require('../tokenStorage.js');
 
     // retrieve user data and current jwt from local storage
@@ -80,12 +82,13 @@ const TodoScreen = () => {
         {
             console.log('add successful')
             setTitle('')
+            setTodoError(false)
             loadItemsFromServer()
-
         }
         else
         {
             console.log('add failed')
+            setTodoError(true)
         }
     }
 
@@ -210,8 +213,15 @@ const TodoScreen = () => {
             <View style={{flexDirection:"row", justifyContent:'space-between', alignItems: "center", marginRight: 25}}>
             <View style={{width: '90%'}}>
                 {/* <TextInput style={styles.input} mode="flat" label="Title" value={title} onChangeText={title => setTitle(title)} autoCapitalize="none" /> */}
-                <CustomInput placeholder="Title" value={title} setValue={setTitle}/>
-
+                {/* <CustomInput placeholder="Title" value={title} setValue={setTitle}/> */}
+                <TextInput 
+            style={todoError ? styles.inputContainerError : styles.inputContainer} 
+            placeholder="Title"
+            placeholderTextColor='#c2c2c2'
+            value={title}
+            onChangeText={setTitle}
+            autoCapitalize='none'
+            />
             </View>
             <View style={{padding: 10}}>
                     <TouchableOpacity onPress={addTask}>
@@ -319,5 +329,27 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         width: 75,
       },
+      inputContainer: {
+        backgroundColor: 'white',
+        width: '100%',
+
+        borderColor: '#343434',
+        borderWidth: 1,
+        borderRadius: 10,
+
+        padding: 10,
+        marginVertical: 5,
+    },
+      inputContainerError: {
+        backgroundColor: 'white',
+        width: '100%',
+
+        borderColor: 'red',
+        borderWidth: 1,
+        borderRadius: 10,
+
+        padding: 10,
+        marginVertical: 5,
+    },
 })
 export default TodoScreen;
