@@ -1,6 +1,6 @@
   // for local and prod testing build paths (connects us to the backend)
-  // const app_name = 'ssu-planner'     // prod server
-  const app_name = 'ssu-testing'        // testing server
+  const app_name = 'ssu-planner'     // prod server
+  // const app_name = 'ssu-testing'        // testing server
   exports.buildPath =
   function buildPath(route)
   {
