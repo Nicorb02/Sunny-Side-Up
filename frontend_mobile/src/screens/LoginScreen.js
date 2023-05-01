@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, StyleSheet, useWindowDimensions, Pressable, SafeAreaView, KeyboardAvoidingView} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Pressable, SafeAreaView, KeyboardAvoidingView, Alert} from 'react-native';
 import Logo from '../../assets/ssu_logo.png'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
@@ -64,7 +64,12 @@ const LoginScreen = ({navigation}) => {
           }
           else 
           {
-            console.error(data.error);
+            Alert.alert(
+                "User does not exist",
+                "Incorrect username or password.",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+            );
+            console.log(data.error);
           }
 
     }
