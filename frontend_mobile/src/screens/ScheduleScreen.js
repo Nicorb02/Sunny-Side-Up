@@ -213,7 +213,7 @@ const ScheduleScreen = ({ navigation }) => {
         console.log(endDate)
 
         const newItems = await getItemsFromServer(startTime, endDate);
-        
+
         // sort the array by date field in ascending order
         newItems.sort((a, b) => {
           return Date.parse(a.startTime) - Date.parse(b.startTime);
@@ -278,9 +278,10 @@ const ScheduleScreen = ({ navigation }) => {
         console.log(item.title)
           return(
               <EventItem title={item.title} isHoliday={item.isHoliday} startTime={time} onPress={() => {
-
                 deleteEvent(item)
-              }}/>
+              }}
+              key={item.title}
+              />
           )
       }
 
