@@ -1,0 +1,33 @@
+#formEdit {
+    background: #e94d0b;
+    width: 30vw;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 30px;
+}
+
+#nameEdit{
+    text-align: left;
+    padding-right: 20px;
+    justify-content: left;
+    border-color: #343434;
+    border-radius: 5px;
+}
+
+#emailEdit{
+    text-align: left;
+    padding-right: 20px;
+    justify-content: left;
+    border-color: #343434;
+    border-radius: 5px;
+}
+
+#phoneEdit{
+    text-align: left;
+    padding-right: 20px;
+    justify-content: left;
+    border-color: #343434;
+    border-radius: 5px;
+}
+

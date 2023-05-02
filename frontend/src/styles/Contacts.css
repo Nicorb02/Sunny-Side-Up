@@ -85,18 +85,16 @@
 }
 
 #contacts th {
-    padding: 20px 125px;
+    padding: 20px 83px;
     text-align: center;
     font-family: Soap;
     font-weight: 500;
     font-size: 20px;
-
     color: #f7fff7;
     background-color: #ff9900;
     text-transform: uppercase;
     padding-top: 20px;
-   
-
+    border-bottom:10pt solid #f7fff7;
 }
 
 #contacts td {
@@ -106,13 +104,10 @@
     vertical-align: middle;
     font-weight: 300;
     font-size: 20px;
-
-    
-    
 }
 
 .contactSlip:hover{
-    background-color: #ff9900;
+    background-color: #e0992e;
 }
 
 #contacts td span {
