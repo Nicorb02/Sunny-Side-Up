@@ -1,13 +1,17 @@
 import '../styles/Contacts.css';
 import ContactsForm from '../components/ContactsForm';
 import { Navigate, useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import BackButton from '../styles/assets/BackButton';
 import AddContactIcon from '../styles/assets/AddContactIcon';
 import Trash2 from '../styles/assets/Trash2'
 import EditIcon from '../styles/assets/EditIcon';
 import SearchIcon from '../styles/assets/SearchIcon';
 import validator from 'validator'
+import EditRow from './EditRow';
+import ReadRow from './ReadRow';
+import EditContact from './EditContact';
+
 
 
 const Contacts = () => {
@@ -23,6 +27,8 @@ const Contacts = () => {
     
         const navigate = useNavigate();
 
+        
+        const [loaded, updateLoadingStatus] = useState(false);
         const [contacts, setContacts] = useState([]);
         const [editItem, setEditItem] = useState({_id: null});
         const [contactName, setContactName] = useState('')
@@ -46,10 +52,12 @@ const Contacts = () => {
         });
 
         const data = await response.json();
+        
 
         if (data.error === '')
         {
             console.log('load success');
+            updateLoadingStatus(true);
             setContacts(data.results);
         }
         else
@@ -70,7 +78,9 @@ const Contacts = () => {
         }
 
     function displayContacts(){
-        if (contacts.length === 0)
+        
+       // if (contacts.length === 0)
+        if (loaded === false)
         {
             loadItemsFromServer();
         }
@@ -84,25 +94,33 @@ const Contacts = () => {
         else
             return(
                 <div className='contactsFilled'>
-                {contacts.map(contact => 
-                <div className = 'contactSlip'>
-                <td className='nameSlot'>{contact.name} </td>
-                <td className='emailSlot'>{contact.email} </td>
-                <td className='phoneSlot'>{contact.phone}</td>
-                <td className='trashSlot' onClick={() => deleteContact(contact._id)}> <Trash2 /> </td>
-                <td className='editSlot' onClick={editContact}> <EditIcon /> </td>
-                
-                
-                
-                </div>)}
-                
+                    
+                {contacts.map((contact) =>  (
+                        <div className='contactSlip'>
+                        <td className='nameSlot'>{contact.name} </td>
+                        <td className='emailSlot'>{contact.email} </td>
+                        <td className='phoneSlot'>{contact.phone}</td>
+                        <td className='trashSlot' onClick={() => deleteContact(contact._id)}> <Trash2 /> </td>
+                        </div>
+                ))}
+                    
                 </div>
+
+ 
             )
     }
 
     function doBack () {
         navigate("/PlannerPage");
     }
+
+
+    const [displayEdit, setDisplayEdit] = useState(false);
+    function toggleDisplayEdit () {
+        setDisplayEdit(true);
+    }
+
+
 
     function ClearFields() {
         document.getElementById("name").value = "";
@@ -163,8 +181,30 @@ const Contacts = () => {
         }
     };
 
+    //edit start
+    const [editFormData, setEditFormData] = useState({
+        name: "",
+        number: "",
+        email: "",
+      });
+    const [editContactId, setEditContactId] = useState(null);
+
+    //handle edit click
+    const handleEditClick = (event, contact) => {
+       
+        setEditContactId(contact.editItem._id);
+    
+        const formValues = {
+          fullName: contact.name,
+          phoneNumber: contact.phone,
+          email: contact.email,
+        };
+    
+        setEditFormData(formValues);
+      };
+
     //edit contact
-    async function editContact() {
+    async function editContact2() {
         const { userData, jwtToken } = await getUserDataAndToken();
         const response = await fetch(bp.buildPath('/api/editContact'), {
         method: 'POST',
@@ -184,35 +224,11 @@ const Contacts = () => {
         }
     };  
 
-    async function searchContacts(){
-        let content = document.getElementById("searchData").value;
-        console.log(content);
-        const selections = content.value;
-        const table = document.getElementById("contacts");
-        const tr = table.getElementsByTagName("tr");
-
-        for (let i = 0; i < tr.length; i++) {
-            const td_fn = tr[i].getElementsByTagName("td")[0]; // Table Data: First Name
-            const td_ln = tr[i].getElementsByTagName("td")[1]; // Table Data: Last Name
-        
-            if (td_fn && td_ln) {
-              const txtValue_fn = td_fn.textContent || td_fn.innerText;
-              const txtValue_ln = td_ln.textContent || td_ln.innerText;
-              tr[i].style.display = "none";
-        
-              for (const selection of selections) {
-                if (
-                  txtValue_fn.toUpperCase().indexOf(selection) > -1 ||
-                  txtValue_ln.toUpperCase().indexOf(selection) > -1
-                ) {
-                  tr[i].style.display = "";
-                  break;
-                }
-              }
-            }
-          }
+    //editform
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleEditContact = () =>{
+        setIsOpen(!isOpen);
     }
-
 
     return (
         <React.Fragment>
@@ -241,23 +257,16 @@ const Contacts = () => {
                 </div>
                 <div className='back-button' onClick={() => {
                             addContact();
-                            ClearFields();
+                            //ClearFields();
                     }}> <AddContactIcon /> </div>
-                
-
             </div>
         <div class="table-responsive" id="contactsTable">
-            
-          <section class="search-bar">
-            <input type="text" class="searchInput" id="searchData" placeholder="Search Contacts"/>
-            <p className='search-button' onClick={searchContacts}>
-                <SearchIcon />
-            </p>
-          </section>
+
           
 
           <div class="tables">
 			<div class="tbl-content" id="contactsTable">
+                <form>
 				<table id="contacts" cellpadding="0" cellspacing="0" border="0">
 
 					<tbody id="tbody">
@@ -266,16 +275,25 @@ const Contacts = () => {
 							<th>Name</th>
 							<th>Email</th>
 							<th>Phone</th>
-
+                            <th>Actions </th>
 						</tr>
 					</thread>
                     {displayContacts()}
                     </tbody>
 
+                    {isOpen && <EditContact
+                    handleClose={() => { }}
+                    editContact2={editContact2}
+                    editItem = {editItem}
+
+                
+                />
+                }
+
 				</table>
+                </form>
 			</div>
 		</div>
-
 
       </div>
         
