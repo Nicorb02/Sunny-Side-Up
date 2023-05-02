@@ -1,0 +1,84 @@
+@font-face {
+    font-family: Soap;
+    src: url(./fonts/Soap.woff);
+}
+
+@font-face {
+    font-family: Bodoni_72;
+    src: url(./fonts/Bodoni-72-Fatface.woff);
+}
+
+.about-body{
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Soap;
+    width: 100vw;
+    background: #F7FFF7;
+    justify-content: flex-start;
+    text-align: center;
+    
+}
+
+.logo-box{
+    height: 50vh;
+    width: 30vw;
+    left: 0px;
+    right: 0px;
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+
+.about-section{
+    background: #F0E9B2;
+    height: 100vh;
+    width: 70vw;
+
+    margin-left: 0px;
+    margin-right: 0px;
+    text-align: center;
+    
+}
+
+text-body{
+    display: flex;
+    font-family: soap;
+    font-size: 20pt;
+    color: black;
+    margin-top: 10pt;
+    font-weight: -1000;
+    
+}
+
+header{
+    font-family: Soap;
+    font-size: 30pt;
+}
+
+.flexbox-container {
+    display: flex;
+    font-family: Soap;
+    flex-direction: row;
+    width: 40vw;
+    padding-right: 0px;
+    padding-left: 50px;
+}
+
+name{
+    font-family: Soap;
+    text-align: center;
+    font-size: 25px;
+    padding-bottom: 10px;
+    display: flex;
+}
+
+.about-background{
+    width: 67vw;
+    margin-right: 0px;
+    background: #F7FFF7;
+    height: 100vh;
+    align-items: center;
+    display: flex;
+}
+
+

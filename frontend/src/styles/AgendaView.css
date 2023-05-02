@@ -1,0 +1,74 @@
+@font-face {
+    font-family: Soap;
+    src: url(./fonts/Soap.woff);
+}
+
+@font-face {
+    font-family: Bodoni_72;
+    src: url(./fonts/Bodoni-72-Fatface.woff);
+}
+
+.maincontainer {
+    background-color: #F7FFF7;
+    font-family: Bodoni_72;
+    display: flex;
+    height: 100vh;
+    width: 70vw;
+    overflow: hidden;
+}
+
+:root{
+    --fc-small-font-size: .85em;
+    --fc-page-bg-color: #F0E9B2;
+    --fc-neutral-bg-color: #F0E9B2(0,0%,82%,.3);
+    --fc-neutral-text-color: #F0E9B2;
+    --fc-border-color: #ddd;
+    --fc-button-text-color: #F7FFF7;
+    --fc-button-bg-color: #E94D0B;
+    --fc-button-border-color: #E94D0B;
+    --fc-button-hover-bg-color: #f3692d;
+    --fc-button-hover-border-color: #f3692d;
+    --fc-button-active-bg-color: #E94D0B;
+    --fc-button-active-border-color: #E94D0B;
+    --fc-event-bg-color: #FF9900;
+    --fc-event-border-color: #FFE66D;
+    --fc-event-text-color: #F7FFF7;
+    --fc-list-event-dot-width: 10px;
+    --fc-list-event-hover-bg-color: #FF9900;
+    --fc-event-selected-overlay-color: rgba(0,0,0,.25);
+    --fc-more-link-bg-color: #F0E9B2;
+    --fc-more-link-text-color: inherit;
+    --fc-event-resizer-thickness: 8px;
+    --fc-event-resizer-dot-total-width: 8px;
+    --fc-event-resizer-dot-border-width: 1px;
+    --fc-non-business-color: hsla(0,0%,84%,.3);
+    --fc-bg-event-color: #8fdf82;
+    --fc-bg-event-opacity: 0.3;
+    --fc-highlight-color: rgba(188,232,241,.3);
+    --fc-today-bg-color: rgba(255,220,40,.15);
+    --fc-now-indicator-color: red;
+    --fc-view-harness-bg-color: #F0E9B2;
+}
+
+.fc {
+    border-style: hidden;
+    width: 70vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.fc table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 1em;
+}
+
+.tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+.fc-list-table{
+
+}
