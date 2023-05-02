@@ -101,7 +101,6 @@ const Contacts = () => {
                         <td className='emailSlot'>{contact.email} </td>
                         <td className='phoneSlot'>{contact.phone}</td>
                         <td className='trashSlot' onClick={() => deleteContact(contact._id)}> <Trash2 /> </td>
-                        <td className='editSlot' id='editBtn' onClick={ () => {toggleEditContact(); setEditItem(contact._id);}} > <EditIcon /> </td>
                         </div>
                 ))}
                     
