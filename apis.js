@@ -499,14 +499,17 @@ exports.setApp = function (app, client)
     var o_id = new ObjectId(_id);
 
     const dateFirstOfMonth = new Date(firstOfMonth)
+    dateFirstOfMonth.setHours(0,0,0,0);
     const dateLastOfMonth = new Date(lastOfMonth)
+    dateLastOfMonth.setHours(23,59,59,999);
 
     // Find the array of all events
     const result = await db.collection('users').findOne({ _id: o_id});
     const allEventsResults = result.events;
+    console.log(result.events)
 
     // Filter the array of all results, as long as the title includes searchTitle, and falls inbetween the firstOfMonth and lastOfMonth 
-    const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateFirstOfMonth  <= allEventsResults.startTime && allEventsResults.endTime <= dateLastOfMonth));
+    const searchedEventsResults = allEventsResults.filter(allEventsResults => ( allEventsResults.title.includes(searchTitle) && dateFirstOfMonth <= allEventsResults.startTime && dateLastOfMonth >= allEventsResults.startTime));
     
     // refresh token
     var refreshedToken = null;

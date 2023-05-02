@@ -1,100 +1,139 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from "react-router-dom";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../styles/AgendaView.css";
-import Trash from '../styles/assets/Trash'
+import LeftArrow from '../styles/assets/LeftArrow';
+import RightArrow from '../styles/assets/RightArrow';
 
 
-//Fullcalendar and Realted Plugins
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction"; // needed
-import listPlugin from '@fullcalendar/list'; //For List View
-
-
-const AgendaView = ({ date, reloadEvents}) => 
+const AgendaView = ({ reloadEvents }) => 
 { 
-    // import buildPath and local storage functions
-    let bp = require('./Path.js');
-    var storage = require('../tokenStorage.js');
-
-    // retrieve user data and current jswt from local storage
-    const userData = JSON.parse(localStorage.getItem('user_data'));
-    const _id = userData.id;
-    const jwtToken = storage.retrieveToken();
-
-    var first = date.getDate() - date.getDay();
-    var last = first + 6;
-
-    var firstDay = new Date(date.setDate(first));
-    var lastDay = new Date(date.setDate(last));
-
-    const navigate = useNavigate();
+  // import buildPath and local storage functions
+  let bp = require('./Path.js');
+  var storage = require('../tokenStorage.js');
+  
+  const [date, setDate] = useState(new Date());
+  // retrieve user data and current jswt from local storage
+  const userData = JSON.parse(localStorage.getItem('user_data'));
+  const _id = userData.id;
+  const jwtToken = storage.retrieveToken();
     
+  const navigate = useNavigate();
+    
+  function getWeekendDates(date) {
+    const currentDay = date.getDay(); // 0 is Sunday, 1 is Monday, etc.
+    const sundayDate = new Date(date.getTime() - (currentDay * 24 * 60 * 60 * 1000));
+    const saturdayDate = new Date(sundayDate.getTime() + (6 * 24 * 60 * 60 * 1000));
+    return { firstDay: sundayDate, lastDay: saturdayDate };
+  }
+    
+  const {firstDay, lastDay}  = getWeekendDates(date);
+  //console.log("first day: " + firstDay.toISOString())
+  //console.log("last day: " + lastDay.toISOString())
+  const options = {
+    month: 'long', // display month in short format (e.g. Jan, Feb)
+    day: 'numeric' // display day as a number
+  };
+  const formattedFirstDay = firstDay.toLocaleDateString('en-US', options); 
+  const formattedLastDay = lastDay.toLocaleDateString('en-US', options); 
 
-  const [events, setEvents] = useState([]);
+  function goNextWeek () {
+    const nextWeekDate = new Date(date);
+    nextWeekDate.setDate(date.getDate() + 7);
+    setDate(nextWeekDate);
+  }
+
+  function goLastWeek () {
+    const lastWeekDate = new Date(date);
+    lastWeekDate.setDate(date.getDate() - 7);
+    setDate(lastWeekDate);
+  }
+
+  
+  const [weekdays, setWeekdays] = useState([]);
+    
   useEffect(() => {
       async function handleWeekEvents() {
           //monthly
           const response = await fetch(bp.buildPath('/api/searchMonthlyEvent'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ _id, searchTitle: '', firstDay, lastDay, jwtToken }),
+            body: JSON.stringify({ _id, searchTitle: '', firstOfMonth: firstDay, lastOfMonth: lastDay, jwtToken }),
           });
 
           const data = await response.json();
-    
-          console.log(data);
-          console.log(firstDay.toUTCString());
-          console.log(lastDay.toUTCString());
+          console.log(data.results)
+          const weekdaysTemp = [      
+            { weekday: 'Sunday', events: [] },
+            { weekday: 'Monday', events: [] },
+            { weekday: 'Tuesday', events: [] },
+            { weekday: 'Wednesday', events: [] },
+            { weekday: 'Thursday', events: [] },
+            { weekday: 'Friday', events: [] },
+            { weekday: 'Saturday', events: [] },
+          ];
 
-          // sorts the events into a readable format for mapping later in the jsx
-          let idCounter = 1;
-          const sortedEvents = data.results
-            .map((event) => ({
-              id: event._id,
+          // Sort events into weekdays based on day of the week
+          data.results.forEach((event) => {
+            // Convert to EST timezone
+            const tempDate = new Date(event.startTime).toLocaleDateString();
+            const eventDate = new Date(tempDate);
+            const eventTime = new Date(event.startTime).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+            
+            // Add event to the corresponding weekday
+            const dayOfWeek = eventDate.getDay();
+            weekdaysTemp[dayOfWeek].events.push({
               title: event.title,
-              startTime: new Date(event.startTime).toISOString(),
-              isHoliday: event.isHoliday
-            }))
-            .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
-            .map((event) => ({
-                ...event,
-                id: idCounter++,
-                startTime: new Date(event.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-              }));
-          setEvents(sortedEvents); 
+              time: eventTime
+            });
+          });
+          weekdaysTemp.forEach((weekday) => {
+            weekday.events.sort((a, b) => {
+              const timeA = new Date(`1970/01/01 ${a.time}`);
+              const timeB = new Date(`1970/01/01 ${b.time}`);
+              return timeA - timeB;
+            });
+          });
+          setWeekdays(weekdaysTemp.filter((weekday) => weekday.events.length > 0));
       }
       handleWeekEvents()
     }, [date, reloadEvents])
 
+    console.log(weekdays);
 
-    async function getWeekEvents() {
-      const response = await fetch(bp.buildPath('/api/searchMonthlyEvent'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id, searchTitle: '', firstDay, lastDay, jwtToken }),
-      });
-
-      const data = await response.json();
-
-    }
       return (
-        <div className="maincontainer">
-        <FullCalendar
-          plugins={[ dayGridPlugin, interactionPlugin, listPlugin ]}
-          initialView="listWeek"
-          headerToolbar={{
-            left: '',
-            center: 'title',
-            right: 'today,prev,next'
-          }}
-          
-        />
-
-    </div>
-    
+        <div className='maincontainer'>
+            <div className='weekly-header'>
+              <div className='prev-week-button' onClick={goLastWeek}>
+                  <LeftArrow  />
+              </div>
+              <div className='current-week-dates'>
+                  <p>{formattedFirstDay} - {formattedLastDay}</p>
+              </div>
+              <div className='next-week-button' onClick={goNextWeek}>
+                  <RightArrow />
+              </div>
+            </div>
+            <div className='weekly-container'>
+              <div className='weekdays-list'>
+                  {weekdays.map((weekday) => (
+                    (weekday.events.length > 0) && (
+                    <li className='listed-day'>
+                      <p className='listed-day-weekday'>{weekday.weekday}</p>
+                      <div className='listed-day-events'>
+                      {weekday.events.map((event) => (
+                        <div className='listed-event'>
+                          <p className='listed-event-time'>{event.time}</p>
+                          <p className='listed-event-title'>{event.title}</p>
+                        </div>
+                      ))}
+                      </div>
+                    </li>
+                    )
+                  ))}
+              </div>
+            </div>
+        </div>
     )
-  }
-export default AgendaView;
+}
 
+export default AgendaView;
