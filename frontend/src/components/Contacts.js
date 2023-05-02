@@ -88,7 +88,7 @@ const Contacts = () => {
         if (contacts.length === 0)
             return(
                 <div style={{alignItems: "center", justifyContent: "center", marginTop: 300}}>
-                    <p>You have no contacts</p>
+                    <p className='pcontacts'>You have no contacts</p>
                 </div>
             )
         else
@@ -123,6 +123,7 @@ const Contacts = () => {
 
 
     function ClearFields() {
+        console.log("got in")
         document.getElementById("name").value = "";
         document.getElementById("email").value = "";
         document.getElementById("phone").value = "";
@@ -257,7 +258,7 @@ const Contacts = () => {
                 </div>
                 <div className='back-button' onClick={() => {
                             addContact();
-                            //ClearFields();
+                            ClearFields();
                     }}> <AddContactIcon /> </div>
             </div>
         <div class="table-responsive" id="contactsTable">
@@ -275,7 +276,7 @@ const Contacts = () => {
 							<th>Name</th>
 							<th>Email</th>
 							<th>Phone</th>
-                            <th>Actions </th>
+                            <th>Action</th>
 						</tr>
 					</thread>
                     {displayContacts()}
