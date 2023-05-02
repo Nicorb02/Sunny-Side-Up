@@ -653,19 +653,9 @@ exports.setApp = function (app, client)
         console.log(e.message);
     }
 
-    // check if any fields are empty
-    if (!title)
-    {   
-        error = 'Please add a title';
-        var ret = {error: error};
-        res.status(400).json(ret);
-        return
-    }
-
     // connect to database and get userid
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-    const dateStartTime = new Date(startTime)
     const itemObjectId = new ObjectId(itemId);
 
     // pull events that match criteria
