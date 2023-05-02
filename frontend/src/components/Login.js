@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useNavigate } from "react-router-dom";
 import Blobs from './Blobs';
 import '../styles/Login.css';
+import PassReset from './PassReset';
 
 // imports svgs for password visibility and alert
 import EyeOpen from '../styles/assets/EyeOpen';
@@ -26,6 +27,7 @@ function Login() {
   // useStates to check if password requirements form needs to be displayed
   const [isPassCompFormSlid, setIsPassCompFormSlid] = useState(false);
   const [isEmailVerFormSlid, setIsEmailVerFormSlid] = useState(false);
+  const [isPassResetFormSlid, setIsPassResetFormSlid] = useState(false);
   // useState for email validity alery (Invalid Alert)
   const [isValidEmail, setIsValidEmail] = useState(true);
   // useState for password visibility
@@ -156,6 +158,11 @@ function Login() {
         console.error(data.error);
     }
   }
+
+  function togglePassResetForm () {
+    if (isPassResetFormSlid) setIsPassResetFormSlid(false);
+    else setIsPassResetFormSlid(true);
+  }
   
   // jsx ("html") of the login and register forms
   return (
@@ -166,6 +173,9 @@ function Login() {
         </div>    
         {/* start of entire login form, checks isLoginFormSlid for hiding */}
         <div className={`login-form ${isLoginFormSlid ? 'slide-left' : ''}`}>
+            <div className={`password-reset-comp-form ${isPassResetFormSlid ? 'slide-in' : ''}`}>
+                 <PassReset />
+            </div>
             <p className="welcome-text">Welcome Back</p>
             <section className="email-section">
                 <div className="email-div">
@@ -177,6 +187,7 @@ function Login() {
                 <div className="password-div">
                     <span className="form-name">Password</span>
                     <input type={showPassword ? "text" : "password"} className="field-input" value={password} onChange={e => setPassword(e.target.value)}></input>
+                    <span className="forgot-password-prompt" onClick={togglePassResetForm}>Forgot Password?</span>
                 </div>
                 {/* password visibility on login form */}
                 <button type="button" className="password-toggle" onClick={toggleShowPassword}>

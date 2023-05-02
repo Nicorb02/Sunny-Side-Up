@@ -1,0 +1,71 @@
+.password-reset-form {
+    height: 120px;
+    width: 250px;
+    background: #343434;
+    border-radius: 15px;
+    position: absolute;
+    left: 50%; 
+    transform: translateX(-50%);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    transition: top 0.4s ease-in-out 0.25s;
+}
+
+.password-reset-form.slide-down {
+    top: 10px;
+}
+
+.pass-reset-email {
+    font-weight: bold;
+    font-family: Oswald, sans-serif;
+    font-size: 14px;
+    text-align: justify;
+    color: #f7fff7;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.pass-reset-email-input {
+    width: 150px;
+    text-align: center;
+    background:#f7fff7;
+    border-radius: 5px;
+    border: none;
+}
+
+.send-email-button {
+    background: #f7fff7;
+    border-style: none;
+    border-radius: 10px;
+    font-family: 'Abyssinica SIL';
+    font-weight: bold;
+    color: #343434;
+    height: 26px;
+    width: 63px;
+    margin-top: 10px;
+    margin-bottom: -10px;
+    cursor: pointer;
+}
+
+.password-reset-email-form {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.password-reset-code-form {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.password-reset-newpass-form {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
