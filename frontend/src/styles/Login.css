@@ -175,13 +175,23 @@
 
 .password-div{
     position: absolute;
-    top: 50%;
+    top: 52.5%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 247px;
     height: 52px;
     background: rgba(102,16,242,0);
     margin: auto;
+}
+
+.forgot-password-prompt{
+    color: #f7fff7;
+    font-size: 15px;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: 'Abyssinica SIL';
+    position: absolute;
+    right: 0;
 }
 
 .login-form-button{
@@ -274,7 +284,7 @@
 
 .password-toggle {
     position: absolute;
-    top: 50%;
+    top: 52.5%;
     right: 10%;
     transform: translateY(-30%); 
     border: none;
@@ -345,6 +355,18 @@
     display: flex;
     flex-direction: column;
     transition: top 0.4s ease-in-out 0.25s;
+}
+
+.password-reset-comp-form {
+    position: absolute;
+    top: -130px; 
+    left: 50%;
+    transform: translateX(-50%);
+    transition: top 0.4s ease-in-out 0.25s;
+}
+
+.password-reset-comp-form.slide-in {
+    top: 10px;
 }
 
 .email-ver-form.slide-down {

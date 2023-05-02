@@ -107,13 +107,12 @@ exports.setApp = function (app, client)
         const db = client.db("COP4331");
         const userCheck = await db.collection("users").findOne({email:email});
         // ================================= UNCOMMENT THIS LATER, TESTING RN ======================
-        // if (userCheck != null){
-        //     error = 'Email taken';
-        //     var ret = {error: error};
-        //     res.status(400).json(ret);
-        //     return;
-        // }
-
+        if (userCheck != null){
+            error = 'Email taken';
+            var ret = {error: error};
+            res.status(400).json(ret);
+            return;
+        }
 
         const newUser = {firstName:firstName, lastName:lastName, email:email, password:password, events:eventsA, contacts:contactsA, todo:todoA, notes:notesA};
         try

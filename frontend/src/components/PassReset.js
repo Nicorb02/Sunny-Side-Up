@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import '../styles/PassResetEmail.css'
 
-const TestingPage = ({ setIsPassResetFormSlid }) => {
+const PassReset = ({ setIsPassResetFormSlid }) => {
     // import buildPath 
-    let bp = require('../components/Path.js');
+    let bp = require('./Path.js');
 
     async function handleSendCode () {
         const response = await fetch(bp.buildPath('/api/forgot-password'), {
@@ -115,4 +115,4 @@ const TestingPage = ({ setIsPassResetFormSlid }) => {
     );    
 };
 
-export default TestingPage;
+export default PassReset;
