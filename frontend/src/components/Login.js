@@ -8,6 +8,7 @@ import PassReset from './PassReset';
 import EyeOpen from '../styles/assets/EyeOpen';
 import EyeClosed from '../styles/assets/EyeClosed';
 import InvalidAlert from '../styles/assets/InvalidAlert';
+import AboutUsIcon from '../styles/assets/AboutUsIcon';
 
 function Login() {
   // "email" is the variable name, "setEmail" is the function we invoke later in the html to set the email value
@@ -41,6 +42,10 @@ function Login() {
   function toggleShowPassword() {
     setShowPassword(!showPassword);
   }
+
+  function doAboutUs (){
+    navigate("/About");
+    }
 
   // checking for password complexity 
   // 1 lowercase, 1 uppercase, 1 special, 1 num, length >= 8
@@ -263,7 +268,9 @@ function Login() {
                 {/* start animation to go to login form, hide register form */}
                 <a href="#" className="go-login-button" onClick={() => { setIsLoginFormSlid(false); setIsRegisterFormSlid(false);}}>Login</a>
             </section>
+            
         </div>
+        <div className='about-button' onClick={doAboutUs}><AboutUsIcon /> </div>
         {/* end of entire register form*/}
         {/* start of title div, link to our github*/}
         <div className="loginpage-background">

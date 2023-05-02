@@ -1,0 +1,115 @@
+@font-face {
+    font-family: Soap;
+    src: url(./fonts/Soap.woff);
+}
+
+@font-face {
+    font-family: Bodoni_72;
+    src: url(./fonts/Bodoni-72-Fatface.woff);
+}
+
+.maincontainer {
+    background-color: #f7fff7;
+    font-family: 'Times New Roman', Times, serif;
+    display: flex;
+    height: 100vh;
+    width: 70vw;
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weekly-header {
+    background: #ff9900;
+    height: 125px;
+    width: 100%;
+    display: flex;
+}
+
+.prev-week-button {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.current-week-dates {
+    height: 100%;
+    width: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-family: 'Times New Roman', Times, serif;
+    letter-spacing: 2px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #f7fff7;
+}
+
+.next-week-button {
+    height: 100%;
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.weekly-container {
+    background: #f7fff7;
+    height: 95%; /* set a fixed height */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .weekdays-list {
+    background: #e4e7e4;
+    max-height: 90%; /* set a max-height less than the parent's height */
+    width: 95%;
+    list-style-type: none;
+    border-radius: 15px;
+    overflow-y: scroll;
+    display: block;
+    justify-content: center;
+  }
+  
+  .listed-day {
+    height: auto;
+    width: 95%;
+    border: 1px solid #f7fff7;
+    border-radius: 15px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+  
+  .listed-day-weekday {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .listed-event {
+    display: inline-block;
+    width: 100%;
+    border-bottom: 1px solid rgba(247, 255, 247, 0.5);
+  }
+
+  .listed-event-time {
+        display: inline-block;
+        width: 50%;
+        text-align: center;
+        font-style: italic;
+  }
+
+  .listed-event-title {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    font-weight: bold;
+  }
+  
