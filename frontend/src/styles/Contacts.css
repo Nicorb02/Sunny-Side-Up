@@ -1,0 +1,286 @@
+@font-face {
+    font-family: Soap;
+    src: url(./fonts/Soap.woff);
+}
+
+@font-face {
+    font-family: Bodoni_72;
+    src: url(./fonts/Bodoni-72-Fatface.woff);
+}
+
+.contacts-background{
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Soap;
+    width: 70vw;
+    height: 100vh;
+    background: #F7FFF7;
+    justify-content: flex-start;
+
+}
+
+.contacts-body{
+    display: flex;
+
+    overflow: hidden;
+    font-family: Soap;
+
+    background: #F7FFF7;
+    justify-content: flex-start;
+    margin: 0;
+    height: 100%;
+
+}
+
+
+.contacts-container {
+    height: 20vh;
+    width: 70vw;
+    padding: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchInput {
+    border-radius: 15px;
+    font-family: Bodoni_72;
+    background: #f2f2f2;
+    color: black;
+    box-sizing: border-box;
+    font-size: 18px;
+    position: relative;
+    justify-content: center;
+    display: inline-block;
+}
+
+.search-bar {
+    width: 600px;
+    height: 70px;
+    background: #f7fff7;
+    display: flex;
+    border-radius: 60px;
+    align-self: center; 
+    align-items: center;
+}
+
+.tables {
+    align-self: center;
+    height: 100vh;
+}
+
+.tbl-content {
+    
+    overflow-x: auto;
+    margin-top: 0px;
+   
+    height: 100vh;
+}
+
+
+
+#contacts tr:hover {
+    background-color: black;
+}
+
+#contacts th {
+    padding: 20px 83px;
+    text-align: center;
+    font-family: Soap;
+    font-weight: 500;
+    font-size: 20px;
+    color: #f7fff7;
+    background-color: #ff9900;
+    text-transform: uppercase;
+    padding-top: 20px;
+    border-bottom:10pt solid #f7fff7;
+}
+
+#contacts td {
+    padding: 15px;
+    text-align: left;
+    font-family: Soap;
+    vertical-align: middle;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.contactSlip:hover{
+    background-color: #e0992e;
+}
+
+#contacts td span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 100%;
+    
+}
+table {
+    width:100%;
+    table-layout: fixed;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    justify-content: center;
+    display: inline-block;
+    
+}
+
+.search-bar input {
+    background: transparent;
+    flex: 1;
+    border: 0;
+    outline: none;
+    padding: 24px 20px;
+    font-size: 20px;
+    color: #000000;
+}
+
+.table-responsive {
+    background-color: #F0E9B2;
+    width: 70vw;
+    height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 20px;
+    justify-content: center;
+    display: inline-block;
+    overflow-y: scroll;
+    align-items: center;
+    
+}
+
+
+.form-container {
+    background: #e94d0b;
+    width: 30vw;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+}
+
+.back-button{
+    position: absolute;
+    margin-top: 3%;
+    margin-left: 3%;
+    cursor: pointer;
+}
+
+.addContact-form{
+    height: 60%;
+    margin-top: 0%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.thread{
+    display:table-header-group
+}
+
+.field-input{
+    font-size: 16px;
+    width: 248px;
+    background: rgba(247,255,247,0);
+    overflow: hidden;
+    padding-bottom: 0px;
+    margin-left: 0px;
+    padding-left: 0px;
+    text-align: right;
+    margin-right: 0px;
+    color: #f7fff7;
+    padding-right: 0px;
+    border-top-style: none;
+    font-family: Bodoni_72;
+    border-bottom: 1.5px solid #f7fff7;
+    border-right-style: none;
+    border-left-style: none;   
+    margin: auto;
+    display: block;  
+}
+
+.add-contact-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+.name-contacts{
+    height: 10vh;
+    text-align: right;
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+    color: #f7fff7;
+}
+
+.contacts-header{
+    padding-top: 40px;
+    text-align: center;
+    font-size: 16px;
+    color: #f7fff7;
+}
+
+.nameSlot{
+    text-align: left;
+    padding-right: 20px;
+    justify-content: left;
+    border-color: #343434;
+    border-radius: 5px;
+}
+
+.trashSlot{
+    text-align: left;
+    padding-right: 20px;
+    justify-content: left;
+    cursor: pointer;
+}
+
+.editSlot{
+    text-align: left;
+    padding-right: 20px;
+    justify-content: left;
+    cursor: pointer;
+}
+
+.emailSlot{
+    text-align: center;
+}
+
+.phoneSlot{
+    text-align: right;
+    padding-left: 30px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
+}
+
+.contactSlip{
+    height: 10vh;
+    text-align: right;
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+    color: #f7fff7;
+    background-color: #ff9900;
+}
+
+.search-button{
+
+    cursor: pointer;
+    padding-right: 50px;
+}
+
+

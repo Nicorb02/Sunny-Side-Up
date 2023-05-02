@@ -1,0 +1,31 @@
+.editform {
+    background: #e94d0b;
+    width: 30vw;
+    height: 50vh;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 30px;
+}
+
+.editbox{
+
+}
+
+.saveBtn{
+    padding-top: 10px;
+    text-align: center;
+    padding-right: 20px;
+    justify-content: center;
+    cursor: pointer;
+    display: flex;
+}
+
+.exitBtn{
+
+    text-align: center;
+    padding-right: 20px;
+    justify-content: center;
+    cursor: pointer;
+    display: flex;
+
+}

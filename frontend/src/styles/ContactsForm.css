@@ -1,0 +1,75 @@
+.form-container {
+    background: #e94d0b;
+    width: 30vw;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+}
+
+.back-button{
+    position: absolute;
+    margin-top: 3%;
+    margin-left: 3%;
+    cursor: pointer;
+}
+
+.addContact-form{
+    height: 60%;
+    margin-top: 0%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.field-input{
+    font-size: 16px;
+    width: 248px;
+    background: rgba(247,255,247,0);
+    overflow: hidden;
+    padding-bottom: 0px;
+    margin-left: 0px;
+    padding-left: 0px;
+    text-align: right;
+    margin-right: 0px;
+    color: #f7fff7;
+    padding-right: 0px;
+    border-top-style: none;
+    font-family: Oswald, sans-serif;
+    border-bottom: 1.5px solid #f7fff7;
+    border-right-style: none;
+    border-left-style: none;   
+    margin: auto;
+    display: block;  
+}
+
+.add-contact-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+.name-contacts{
+    height: 10vh;
+    text-align: right;
+    align-items: flex-end;
+    justify-content: center;
+    display: flex;
+    color: #f7fff7;
+}
+
+.contacts-header{
+    padding-top: 40px;
+    text-align: center;
+    font-size: 16px;
+    color: #f7fff7;
+}
+

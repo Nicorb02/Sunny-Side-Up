@@ -17,6 +17,15 @@
     justify-content: flex-start;
 }
 
+.about-button {
+
+    cursor: pointer;
+    
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+  }
+
 .login-form{
     background: #ff9900;
     height: 100vh;
