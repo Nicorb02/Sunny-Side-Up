@@ -409,7 +409,7 @@ exports.setApp = function (app, client)
     var o_id = new ObjectId(_id);
 
     // Find user and push new event
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{events:{title:title, startTime:dateStartTime, endTime:dateEndTime, isHoliday:0}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$push :{events:{_id:new ObjectId(), title:title, startTime:dateStartTime, endTime:dateEndTime, isHoliday:0}}});
     if(results == null){
         error = 'Not Not added, no user id found';
         var ret = {error: error};
@@ -634,7 +634,7 @@ exports.setApp = function (app, client)
     // incoming: id(of user), title, jwtToken
     // outgoing: error (if applicable)
     var error = '';
-    const {_id, title, startTime, jwtToken} = req.body;
+    const {_id, itemId, jwtToken} = req.body;
 
     // Ensure the jwt is not expired
     var token = require('./createJWT.js');
@@ -653,22 +653,13 @@ exports.setApp = function (app, client)
         console.log(e.message);
     }
 
-    // check if any fields are empty
-    if (!title)
-    {   
-        error = 'Please add a title';
-        var ret = {error: error};
-        res.status(400).json(ret);
-        return
-    }
-
     // connect to database and get userid
     const db = client.db("COP4331");
     var o_id = new ObjectId(_id);
-    const dateStartTime = new Date(startTime)
+    const itemObjectId = new ObjectId(itemId);
 
     // pull events that match criteria
-    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{title:title, startTime:dateStartTime}}});
+    const results = await db.collection('users').findOneAndUpdate({ _id: o_id }, {$pull:{events:{_id: itemObjectId}}});
     if(results == null){
 
         error = 'No event found';

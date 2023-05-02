@@ -103,26 +103,12 @@ const ScheduleScreen = ({ navigation }) => {
           }
     }
     
-
-    const editEvent = () => {
-      const updatedEvents = {...items}; 
-      const eventToEdit = updatedEvents[timeToString(editItem.startTime)].find(event => event.id === editItem.id); 
-      if (eventToEdit.startTime == editStartTime) { 
-        eventToEdit.title = editTitle; 
-        eventToEdit.startTime = editStartTime; 
-        eventToEdit.endDate = editEndDate; 
-      }
-      
-      setItems(updatedEvents); 
-      setEditEventModal(false);
-  } 
-
-  const deleteEvent = async () => {
+  const deleteEvent = async (item) => {
     const { userData, jwtToken } = await getUserDataAndToken();
     const response = await fetch(buildPath('/api/delEvent'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify({ _id: userData.id, title: editItem.title, startTime: editItem.startTime, jwtToken })
+      body: JSON.stringify({ _id: userData.id, title: item.title, startTime: item.startTime, jwtToken })
     });
 
     const data = await response.json();
@@ -130,11 +116,11 @@ const ScheduleScreen = ({ navigation }) => {
     {
       console.log('success')
 
-      // const dateString = timeToString(editItem.startTime)
+      const dateString = timeToString(item.startTime)
 
-      // const updatedEvents = {...items}; // create a copy of the original object
-      // updatedEvents[dateString] = updatedEvents[dateString].filter((item) => !(item.startTime === editItem.startTime && item.title === editItem.title))
-      // setItems(updatedEvents); // set the updated object to the state
+      const updatedEvents = {...items}; // create a copy of the original object
+      updatedEvents[dateString] = updatedEvents[dateString].filter((event) => !(event.startTime === item.startTime && event.title === item.title))
+      setItems(updatedEvents); // set the updated object to the state
 
       setEditEventModal(false)
 
@@ -227,6 +213,12 @@ const ScheduleScreen = ({ navigation }) => {
         console.log(endDate)
 
         const newItems = await getItemsFromServer(startTime, endDate);
+
+        // sort the array by date field in ascending order
+        newItems.sort((a, b) => {
+          return Date.parse(a.startTime) - Date.parse(b.startTime);
+        });
+
         const transformedItems = transformArrayToItems(newItems);
 
         for (let i = -pastDays; i < futureDays; i++) {
@@ -243,30 +235,53 @@ const ScheduleScreen = ({ navigation }) => {
           // console.log(items[timeToString(new Date())])
       // }, 1000);
   }
+  const convertTo12Hour = (timeStr) => {
+    const [hour, minute] = timeStr.split(':');
+    let suffix = 'AM';
+    let convertedHour = parseInt(hour, 10);
+    if (convertedHour > 12) {
+      convertedHour -= 12;
+      suffix = 'PM';
+    } else if (convertedHour === 12) {
+      suffix = 'PM';
+    } else if (convertedHour === 0) {
+      convertedHour = 12;
+    }
+    return `${convertedHour}:${minute} ${suffix}`;
+  }
+
   const getTime = (dateString) => {
+
+    const date = new Date(dateString);
+    date.setHours(date.getHours() - 4);
+    const newIsoString = date.toISOString();
     // extract the hours and minutes from the string
     let time = '';
-    let hours = parseInt(dateString.substring(11, 13));
+    let hours = parseInt(newIsoString.substring(11, 13));
     if (hours < 10) {
     time += '0'; // add leading zero if necessary
     }
     time += hours + ':';
 
-    let minutes = parseInt(dateString.substring(14, 16));
+    let minutes = parseInt(newIsoString.substring(14, 16));
     if (minutes < 10) {
     time += '0'; // add leading zero if necessary
     }
     time += minutes;
-    return time
+    const timeStr = time.toString();
+    const convertedTime = convertTo12Hour(timeStr);
+
+    return convertedTime
   }
       const renderItem = (item) => {
         const time = getTime(item.startTime)
         console.log(item.title)
           return(
               <EventItem title={item.title} isHoliday={item.isHoliday} startTime={time} onPress={() => {
-
-                openEditModal(item)
-              }}/>
+                deleteEvent(item)
+              }}
+              key={item.title}
+              />
           )
       }
 
@@ -286,7 +301,7 @@ const ScheduleScreen = ({ navigation }) => {
           return []
         }
       }
-      
+
       const [fontsLoaded] = useFonts({
         SoapRegular,
       });
@@ -324,59 +339,16 @@ const ScheduleScreen = ({ navigation }) => {
                 items={console.log(items) || items}
                 loadItemsForMonth={loadItems}
                 selected={timeToString(date)}
-
                 refreshControl={null}
                 showClosingKnob={true}
                 refreshing={false}
                 renderItem={renderItem}
                 
             />
-
-            {/* <ActionButtons onPressEvent={toggleCreateEventModal} onPressHoliday={toggleCreateHolidayModal}/> */}
             <CircleButton icon="plus" onPress={toggleCreateEventModal}/>
             <Modal animationType="none" transparent={false} visible={createEventModal}>
                 <CreateEventScreen onPressAdd={addEvent} onPressCancel={() => {setCreateEventModal(false)}}/>
             </Modal>
-
-            <Modal animationType="slide" transparent={false} visible={editEventModal}>
-            <SafeAreaView style={styles.root}>
-
-            <Text style={styles.title}>Edit Event</Text>
-
-            <View style={{width: '100%', marginTop: 20}}>
-                <TextInput 
-                    style={styles.input} 
-                    mode="outlined" 
-                    label="Event" 
-                    value={editTitle} 
-                    onChangeText={editTitle => setEditTitle(editTitle)}
-                    autoCapitalize="none"
-                    />
-            <View style={{width: '100%', marginTop: 30}}>
-                <View style={styles.dateContainer}>
-                    <Text style={styles.text}>Start</Text>
-                    <DTPicker value={editStartTime} onChange={changeStartTime}/>
-                </View>
-            </View>
-                </View>
-
-            <View style={{width: '100%', marginBottom: 50}}>
-                <CustomButton text="Apply Changes" onPress={() => {
-                  editEvent()
-                }}/>
-                <CustomButton text="Delete Event" type="DELETE" onPress={() => {
-                    deleteEvent()
-                }}/>
-                <CustomButton text="Cancel" onPress={() =>{
-                  setEditEventModal(false)
-                }} type="TERTIARY"/>
-            </View>
-        </SafeAreaView>
-        {/* <EditEventScreen title={editTitle} startTime={editstartTime} endDate={editEndDate} onPressCancel={()=> {
-          setEditEventModal(false)}
-          } onPressEdit={editEvent}/> */}
-            </Modal>
-
         </SafeAreaView>
     );
 }   

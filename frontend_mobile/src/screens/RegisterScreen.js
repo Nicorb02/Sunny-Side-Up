@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable, SafeAreaView, KeyboardAvoidingView} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions, Modal, Pressable, SafeAreaView, KeyboardAvoidingView, Alert} from 'react-native';
 
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
@@ -77,20 +77,44 @@ const RegisterScreen = ({navigation}) => {
             // prints to console for now (inspect element to see console)
             if (data.error === '') 
             {
-                console.log('good register');
+                Alert.alert(
+                    "Registration Successful",
+                    "You have successfully registered!",
+                    [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+                );
+                navigation.navigate('Login')
             } 
             else 
             {
-                console.error(data.error);
+                Alert.alert(
+                    "Email Taken",
+                    "It seems a user with this email already exists.",
+                    [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+                );
+
+                console.log(data.error);
             }
         }
     }
 
     const handleEmailVer = async() => {
         // first check for password complexity
+        if (!firstName || !lastName)
+        {
+            Alert.alert(
+                "Empty Fields",
+                "Make sure all fields are filled out.",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+            );
+            return
+        }
         if (!isPasswordValidFunc(password))
         {
-            setIsPassCompFormSlid(true);
+            Alert.alert(
+                "Password does not meet requirements",
+                "Make sure it's at least 8 characters including a number, 1 uppercase and 1 lowercase letter, and a special character.",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+            );
             console.log("invalid password")
 
             return;
@@ -108,8 +132,7 @@ const RegisterScreen = ({navigation}) => {
             // found email, store the verification code
             if (data.error == '')
             {
-                setIsValidEmail(true);
-                setIsPassCompFormSlid(false);
+                setEnteredCode('')
                 setVerCode(data.code);
                 setModalVisible(true);
                 console.log(data.code)
@@ -118,8 +141,12 @@ const RegisterScreen = ({navigation}) => {
             else
             {
                 // email is invalid, display Invalid Alert
-                setIsValidEmail(false);
-                console.error(data.error);
+                Alert.alert(
+                    "Invalid Email",
+                    "Make sure you entered a valid email.",
+                    [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+                );
+                console.log(data.error);
             }
         }
     }
@@ -136,8 +163,12 @@ const RegisterScreen = ({navigation}) => {
         else 
         {
             // entered code is wrong
-            setValidCode(false);
-            console.error('Invalid code, try again');
+            Alert.alert(
+                "Invalid Code",
+                "Make sure entered the reset code correctly.",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+            );
+            console.log('Invalid code, try again');
         }
     }
 

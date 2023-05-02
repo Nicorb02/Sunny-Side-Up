@@ -47,8 +47,8 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
           let idCounter = 1;
           const sortedEvents = data.results
             .map((event) => ({
-              id: event._id,
               title: event.title,
+              event_id: event._id,
               startTime: new Date(event.startTime).toISOString(),
               isHoliday: event.isHoliday
             }))
@@ -102,39 +102,22 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
         else toggleReloadEvents(true);
     }
 
-    // delete events api when click trash
-    // format json parameters then call delEvent
-    function prepareDelEvent () {
-        const dateString = date.toISOString().substr(0, 10);
-        let timeString = eventTime;
-        let [hours, minutes, ampm] = timeString.match(/(\d{1,2}):(\d{2})\s?([AP]M)/).slice(1);
-        hours = (ampm === 'PM' && hours !== '12') ? String(Number(hours) + 12) : hours;
-        hours = (ampm === 'AM' && hours === '12') ? '00' : hours;
-        timeString = `${hours}:${minutes}:00.000`;
-        let workingDate = `${dateString}T${timeString}`;
-    
-        const estDate = new Date(workingDate);
-        const utcString = estDate.toISOString();
-        setStartTime(utcString);
-
-        console.log(date.toISOString())
-        console.log(startTime);
-        
-        handleDelEvent();
-    }
-
     async function handleDelEvent () {
         const response = await fetch(bp.buildPath('/api/delEvent'), {
             method :'POST',
             headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({ _id, title, startTime, jwtToken })
+            body: JSON.stringify({ _id, itemId: eventObjectId, jwtToken })
         });
 
         const data = await response.json();
         if (data.error === '')
         {
             console.log("good delete");
+            console.log(eventObjectId);
+            setEventObjectId('');
+            setSelectedEventId(null);
             toggleReload();
+
         }
         else
         {
@@ -142,16 +125,19 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
             console.log("bad delete");
         }
     }
+   
 
     const [selectedEventId, setSelectedEventId] = useState(null);
     const [title, setTitle] = useState('');
     const [startTime, setStartTime] = useState('');
     const [eventTime, setEventTime] = useState('');
+    const [eventObjectId, setEventObjectId] = useState('');
 
     const handleItemClick = (event) => {
         setSelectedEventId(event.id);
         setTitle(event.title);
         setEventTime(event.startTime);
+        setEventObjectId(event.event_id)
     };
 
 
@@ -176,7 +162,7 @@ const DayForm = ({ date, setDate, setDisplayAddEvent, toggleReloadEvents, reload
                     <div className='events-list'>
                         {events.map((event) => (
                           <li className={event.isHoliday ? 'event-item holiday' : 'event-item' }key={event.id}>
-                            <div className={selectedEventId === event.id ? 'trash-icon' : 'trash-icon-hidden'} onClick={prepareDelEvent}> <Trash /> </div>
+                            <div className={selectedEventId === event.id ? 'trash-icon' : 'trash-icon-hidden'} onClick={() => {handleDelEvent(event)}}> <Trash /> </div>
                             <p className='event-title' onClick={() => handleItemClick(event)}>{event.title}</p>
                             {event.isHoliday ? <p className='event-time'>Holiday</p> : <p className='event-time'>{event.startTime}</p>}
                           </li>
